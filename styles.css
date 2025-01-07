@@ -1,0 +1,61 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    justify-content: center;
+    align-items: center;
+    background-color: #f4f4f4;
+}
+
+
+/* Grey out locked fields */
+input[readonly] {
+    background-color: #d3d3d3;
+    color: #555;
+    pointer-events: none;
+}
+
+/* Ensure text is always underlined */
+.underline {
+    display: inline-block;
+    min-width: 80px; /* Ensures underline fits empty space */
+    text-align: left;
+    padding-inline: 10px;
+
+}
+/* Ensures a solid contract-style underline */
+.contract-field {
+    display: inline-block;
+    min-width: 80px; /* Adjust to fit contract spacing */
+    border-bottom: 1px solid #0000002b; /* Keeps it solid */
+     font-size: 12px;
+
+}
+
+.container {
+display: grid;
+justify-content: center;
+}
+
+.row-container {
+    margin-bottom: 10px;
+}
+label {
+    font-weight: bold;
+    display: block;
+}
+input {
+    padding: 5px;
+    width: 100%;
+    margin-top: 5px;
+  
+    
+}
+button {
+    margin-top: 10px;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+}
+
