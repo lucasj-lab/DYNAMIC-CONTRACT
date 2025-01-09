@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $_SESSION['alias'] = isset($_POST["alias"]) ? htmlspecialchars($_POST["alias"]) : "";
     $_SESSION['charges'] = isset($_POST["charges"]) ? htmlspecialchars($_POST["charges"]) : "";
     $_SESSION['dmv'] = isset($_POST["dmv"]) ? htmlspecialchars($_POST["dmv"]) : "";
-    $_SESSION['ssn'] = isset($_POST["ssn"]) ? htmlspecialchars($_POST["ssn"]) : "";
+    $_SESSION['ssnInput'] = isset($_POST["ssnInput"]) ? htmlspecialchars($_POST["ssnInput"]) : "";
 }
 // Function to format date from YYYY-MM-DD to MM/DD/YYYY
 function formatDate($date)
@@ -293,7 +293,7 @@ function formatCharges($charges)
     <div class="container">
         <div class="card">
             <div class="card-content">
-                <p><strong>Sex:</strong> <span
+                <p><strong>SEX:</strong> <span
                         class="contract-field"><?php echo formatUnderline($_SESSION['sex'] ?? '', 10); ?></span></p>
             </div>
         </div>
@@ -301,14 +301,14 @@ function formatCharges($charges)
 
         <div class="card">
             <div class="card-content">
-                <p><strong>Race:</strong> <span
+                <p><strong>RACE</strong> <span
                         class="contract-field"><?php echo formatUnderline($_SESSION['race'] ?? '', 15); ?></span></p>
             </div>
         </div>
 
         <div class="card">
             <div class="card-content">
-                <p><strong>Today's Date:</strong> <span
+                <p><strong>TODAY'S DATE:</strong> <span
                         class="contract-field"><?php echo formatUnderline($_SESSION['todayDate'] ?? '', 15); ?></span>
                 </p>
             </div>
@@ -316,7 +316,7 @@ function formatCharges($charges)
 
         <div class="card">
             <div class="card-content">
-                <p><strong>Court Date:</strong> <span
+                <p><strong>CRT/DATE/TIME:</strong> <span
                         class="contract-field"><?php echo formatDate($_SESSION['courtDate'] ?? ''); ?></span></p>
             </div>
         </div>
@@ -464,10 +464,25 @@ function formatCharges($charges)
 
     <!-- Row 8: Def Name & Address -->
     <div class="container">
-        <p><strong>NAME:</strong> <span
+    <div class="card">
+    <div class="card-content">
+        <p><strong>DEFENDANT NAME:</strong> <span
                 class="contract-field"><?php echo formatFullName($_SESSION['defFirstName'], $_SESSION['defMiddleName'], $_SESSION['lastName']); ?></span>
         </p>
     </div>
+    </div>
+    </div>
+
+
+        <!-- Row 9: Def Name & Address -->
+        <div class="container">
+        <div class="card">
+        <div class="card-content">
+        <p><strong>COSIGNER NAME:</strong> <span
+                class="contract-field"><?php echo formatFullName($_SESSION['cosFirstName'], $_SESSION['cosMiddleName'], $_SESSION['coslastName']); ?></span>
+        </p>
+    </div>
+
 
 
 

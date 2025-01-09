@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $_SESSION['alias'] = isset($_POST["alias"]) ? htmlspecialchars($_POST["alias"]) : "";
     $_SESSION['charges'] = isset($_POST["charges"]) ? htmlspecialchars($_POST["charges"]) : "";
     $_SESSION['dmv'] = isset($_POST["dmv"]) ? htmlspecialchars($_POST["dmv"]) : "";
-    $_SESSION['ssn'] = isset($_POST["ssn"]) ? htmlspecialchars($_POST["ssn"]) : "";
+    $_SESSION['ssnInput'] = isset($_POST["ssnInput"]) ? htmlspecialchars($_POST["ssnInput"]) : "";
 } ?>
 
 <!DOCTYPE html>
@@ -466,7 +466,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
 
                     <div class="card">
-                        <div class="card-content" id="row3">
+                        <div class="card-content">
                             <button type="button" class="confirm-btn" onclick="lockRow('row3')">Confirm Row</button>
                             <button type="button" class="edit-btn" onclick="unlockRow('row3')">Edit</button>
                             <button type="submit">Preview</button>
@@ -526,7 +526,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                         <input type="hidden" name="idMarksData" id="idMarksData">
 
-                        <button type="submit">Preview</button>
+            
 
                         <input type="hidden" name="idMarksData" id="idMarksData">
 
@@ -787,7 +787,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
                             <div class="card">
-                                <div class="card-content" id="row7">
+                                <div class="card-content" id="row8">
                                     <h2>Name</h2>
                                     <p>
                                         <label for="defFirstName">FIRST:</label>
@@ -809,10 +809,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
                             <div class="card">
-                                <div class="card-content" id="row7">
-                                    <button type="button" class="confirm-btn" onclick="lockRow('row7')">Confirm
+                                <div class="card-content">
+                                    <button type="button" class="confirm-btn" onclick="lockRow('row8')">Confirm
                                         Row</button>
-                                    <button type="button" class="edit-btn" onclick="unlockRow('row7')">Edit</button>
+                                    <button type="button" class="edit-btn" onclick="unlockRow('row8')">Edit</button>
                                     <button type="submit">Preview</button>
                                 </div>
                             </div>
@@ -824,6 +824,69 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     <script>
+
+document.addEventListener("DOMContentLoaded", () => {
+        const dmvInput = document.getElementById("dmv");
+        let allowBackspace = false;
+
+        dmvInput.addEventListener("input", (event) => {
+            let value = dmvInput.value.replace(/-/g, ''); // Remove existing dashes
+            let formattedValue = '';
+
+            if (allowBackspace) {
+                allowBackspace = false;
+                return; // Skip formatting if user pressed backspace
+            }
+
+            for (let i = 0; i < value.length; i++) {
+                if (i > 0 && i % 3 === 0 && i < 12) {
+                    formattedValue += '-'; // Add dash after every 3rd character
+                }
+                formattedValue += value[i];
+            }
+
+            dmvInput.value = formattedValue;
+        });
+
+        dmvInput.addEventListener("keydown", (event) => {
+            if (event.key === "Backspace") {
+                allowBackspace = true; // Allow backspace to remove dashes
+            }
+        });
+    });
+
+document.addEventListener("DOMContentLoaded", () => {
+        const dobInput = document.getElementById("date-of-birth");
+        const ageDisplay = document.getElementById("age-display");
+
+        function calculateAge() {
+            let dobValue = dobInput.value;
+
+            if (dobValue) {
+                let birthDate = new Date(dobValue);
+                let today = new Date();
+                let age = today.getFullYear() - birthDate.getFullYear();
+                let monthDiff = today.getMonth() - birthDate.getMonth();
+
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                    age--; // Adjust age if birthday hasn't occurred yet this year
+                }
+
+                ageDisplay.value = age;
+            } else {
+                ageDisplay.value = ""; // Clear age field if no DOB is selected
+            }
+        }
+
+        // Update age on DOB input change
+        dobInput.addEventListener("input", calculateAge);
+
+        // Run on page load if DOB exists
+        if (dobInput.value) {
+            calculateAge();
+        }
+    });
+
       document.addEventListener("DOMContentLoaded", function () {
     let datalistInputs = document.querySelectorAll("input[list]");
 
@@ -872,7 +935,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Function to restore locked state from sessionStorage on page load
     function restoreLockedRows() {
-        document.querySelectorAll(".row-container, .section-container").forEach(row => {
+        document.querySelectorAll(".card, .container").forEach(row => {
             let rowId = row.id;
             if (sessionStorage.getItem(`locked-${rowId}`) === "true") {
                 lockRow(rowId);
