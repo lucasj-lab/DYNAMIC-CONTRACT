@@ -1,11 +1,9 @@
-<?php
-session_start();
-
+<?php session_start();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $_SESSION['sex'] = htmlspecialchars($_POST["sex"]);
     $_SESSION['race'] = htmlspecialchars($_POST["race"]);
     $_SESSION['todayDate'] = htmlspecialchars($_POST["todayDate"]);
-     $_SESSION['height'] = htmlspecialchars($_POST["height"], ENT_QUOTES);
+    $_SESSION['height'] = htmlspecialchars($_POST["height"], ENT_QUOTES);
     $_SESSION['weight'] = htmlspecialchars($_POST["weight"]);
     $_SESSION['bondAmount'] = htmlspecialchars($_POST["bondAmount"]);
     $_SESSION['county'] = htmlspecialchars($_POST["county"]);
@@ -19,262 +17,936 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $_SESSION['lastName'] = htmlspecialchars($_POST["lastName"]);
     $_SESSION['dob'] = htmlspecialchars($_POST["date-of-birth"]);
     $_SESSION['courtDateInput'] = htmlspecialchars($_POST["courtDateInput"]);
-
-}
-?>
+    $_SESSION['idMarks'] = isset($_POST["idMarksData"]) ? htmlspecialchars($_POST["idMarksData"]) : "None";
+    $_SESSION['holds'] = isset($_POST["holds"]) ? htmlspecialchars($_POST["holds"]) : "";
+    $_SESSION['alias'] = isset($_POST["alias"]) ? htmlspecialchars($_POST["alias"]) : "";
+    $_SESSION['charges'] = isset($_POST["charges"]) ? htmlspecialchars($_POST["charges"]) : "";
+    $_SESSION['dmv'] = isset($_POST["dmv"]) ? htmlspecialchars($_POST["dmv"]) : "";
+    $_SESSION['ssn'] = isset($_POST["ssn"]) ? htmlspecialchars($_POST["ssn"]) : "";
+} ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bail Bond Form</title>
-    <link rel="stylesheet" href="styles.css">
     <script>
-    
+        const ssnInput = document.getElementById('ssnInput');
 
-    // Function to calculate age
-    function calculateAge() {
-        let dob = dobInput.value;
-        if (dob) {
-            let dateParts = dob.split('/');
-            let birthDate = new Date(`${dateParts[2]}-${dateParts[0]}-${dateParts[1]}`); // Convert MM/DD/YYYY to valid JS Date format
-            let today = new Date();
-            let age = today.getFullYear() - birthDate.getFullYear();
-            let monthDiff = today.getMonth() - birthDate.getMonth();
-            
-            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                age--;
+        /**
+         * Formats a string of digits as a US Social Security Number (xxx-xx-xxxx).
+         * @param {string} inputValue The unformatted input string.
+         * @returns {string} The formatted SSN string.
+         */
+        function formatSsn(inputValue) {
+            // Remove all non-digit characters
+            const digits = inputValue.replace(/[^0-9]/g, '');
+
+            // If fewer than 4 digits, just return what we have
+            if (digits.length < 4) {
+                return digits;
             }
-            
-            document.getElementById("age-display").value = age;
-        }
-    }
-    
-    document.addEventListener("DOMContentLoaded", function () {
-    let today = new Date();
-    let month = (today.getMonth() + 1).toString().padStart(2, '0'); // Get month (January is 0)
-    let day = today.getDate().toString().padStart(2, '0'); // Get day and pad with zero if needed
-    let year = today.getFullYear();
-    
-    let formattedDate = `${month}/${day}/${year}`; // Format: MM/DD/YYYY
-    document.getElementById("todayDate").value = formattedDate;
-    });
-    document.querySelector("form").addEventListener("submit", function (event) {
-        let courtDateInput = document.getElementById("dateInput");
-        let selectedDate = new Date(courtDateInput.value);
-        
-        if (!isNaN(selectedDate)) {
-            let formattedCourtDate = `${(selectedDate.getMonth() + 1)
-                .toString()
-                .padStart(2, '0')}/${selectedDate
-                .getDate()
-                .toString()
-                .padStart(2, '0')}/${selectedDate.getFullYear()}`;
-            
-            courtDateInput.value = formattedCourtDate; // Modify before submission
-        }
-    });
-    document.addEventListener('DOMContentLoaded', () => {
-    const heightInput = document.getElementById('height');
-
-    heightInput.addEventListener('input', () => {
-        let numericString = heightInput.value.replace(/[^0-9]/g, ''); // Strip non-digits
-
-        if (numericString === '') {
-            heightInput.value = ''; // Allow clearing the field
-            return;
+            // If 4 or 5 digits, we have: xxx-xx
+            if (digits.length < 6) {
+                return digits.slice(0, 3) + '-' + digits.slice(3);
+            }
+            // If 6 or more digits, format: xxx-xx-xxxx
+            return digits.slice(0, 3) + '-' + digits.slice(3, 5) + '-' + digits.slice(5, 9);
         }
 
-        let feet = parseInt(numericString.substring(0, 1), 10) || 0; // First digit is feet
-        let inches = parseInt(numericString.substring(1), 10) || 0; // Remaining digits are inches
+        // Listen for input on the SSN field
+        ssnInput.addEventListener('input', function () {
+            this.value = formatSsn(this.value);
+        });
+        let idMarksArray = [];
 
-        if (inches > 11) {
-            inches = inches % 10; // Prevent inches from exceeding 11
+        function openIdMarksPopup() {
+            document.getElementById("idMarksPopup").style.display = "block";
         }
 
-        // Preserve backspace functionality by only formatting when more than 1 digit is entered
-        if (numericString.length === 1) {
-            heightInput.value = feet; // Show only feet for single-digit input
-        } else {
-            heightInput.value = `${feet}'${inches}"`; // Properly format feet & inches
+        function closeIdMarksPopup() {
+            document.getElementById("idMarksPopup").style.display = "none";
         }
-    });
-});
+
+        function addIdMark() {
+            let type = document.getElementById("idMarkType").value;
+            let location = document.getElementById("idMarkLocation").value;
+            let quantity = document.getElementById("idMarkQuantity").value;
+
+            if (type === "" || location === "") {
+                alert("Please select a type and specify a location.");
+                return;
+            }
+
+            let idMarkEntry = `${quantity}x ${type} on ${location}`;
+            idMarksArray.push(idMarkEntry);
+
+            document.getElementById("idMarks").value = idMarksArray.join(", ");
+            document.getElementById("idMarksData").value = idMarksArray.join("|"); // Hidden input for backend processing
+            closeIdMarksPopup();
+        }
+    </script>
+    <script>
+        let chargesArray = [];
+
+        function openChargesPopup() {
+            document.getElementById("chargesPopup").style.display = "block";
+        }
+
+        function closeChargesPopup() {
+            document.getElementById("chargesPopup").style.display = "none";
+        }
+
+        function addCharge() {
+            let type = document.getElementById("chargeType").value;
+            let severity = document.getElementById("chargeSeverity").value;
+
+            if (type === "") {
+                alert("Please select or enter a charge.");
+                return;
+            }
+
+            let chargeEntry = `${type} (${severity})`;
+            chargesArray.push(chargeEntry);
+
+            document.getElementById("charges").value = chargesArray.join(", ");
+            document.getElementById("chargesData").value = chargesArray.join("|"); // Hidden input for backend processing
+            closeChargesPopup();
+        }
+    </script>
+    <script>
+
+
+        // Function to calculate age
+        function calculateAge() {
+            let dob = dobInput.value;
+            if (dob) {
+                let dateParts = dob.split('/');
+                let birthDate = new Date(`${dateParts[2]}-${dateParts[0]}-${dateParts[1]}`); // Convert MM/DD/YYYY to valid JS Date format
+                let today = new Date();
+                let age = today.getFullYear() - birthDate.getFullYear();
+                let monthDiff = today.getMonth() - birthDate.getMonth();
+
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+
+                document.getElementById("age-display").value = age;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            let today = new Date();
+            let month = (today.getMonth() + 1).toString().padStart(2, '0'); // Get month (January is 0)
+            let day = today.getDate().toString().padStart(2, '0'); // Get day and pad with zero if needed
+            let year = today.getFullYear();
+
+            let formattedDate = `${month}/${day}/${year}`; // Format: MM/DD/YYYY
+            document.getElementById("todayDate").value = formattedDate;
+        });
+        document.querySelector("form").addEventListener("submit", function (event) {
+            let courtDateInput = document.getElementById("dateInput");
+            let selectedDate = new Date(courtDateInput.value);
+
+            if (!isNaN(selectedDate)) {
+                let formattedCourtDate = `${(selectedDate.getMonth() + 1)
+                    .toString()
+                    .padStart(2, '0')}/${selectedDate
+                        .getDate()
+                        .toString()
+                        .padStart(2, '0')}/${selectedDate.getFullYear()}`;
+
+                courtDateInput.value = formattedCourtDate; // Modify before submission
+            }
+        });
+        document.addEventListener('DOMContentLoaded', () => {
+            const heightInput = document.getElementById('height');
+
+            heightInput.addEventListener('input', () => {
+                let numericString = heightInput.value.replace(/[^0-9]/g, ''); // Strip non-digits
+
+                if (numericString === '') {
+                    heightInput.value = ''; // Allow clearing the field
+                    return;
+                }
+
+                let feet = parseInt(numericString.substring(0, 1), 10) || 0; // First digit is feet
+                let inches = parseInt(numericString.substring(1), 10) || 0; // Remaining digits are inches
+
+                if (inches > 11) {
+                    inches = inches % 10; // Prevent inches from exceeding 11
+                }
+
+                // Preserve backspace functionality by only formatting when more than 1 digit is entered
+                if (numericString.length === 1) {
+                    heightInput.value = feet; // Show only feet for single-digit input
+                } else {
+                    heightInput.value = `${feet}'${inches}"`; // Properly format feet & inches
+                }
+            });
+        });
 
     </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        input[readonly] {
+            background-color: #d3d3d3;
+            color: #555;
+            pointer-events: none;
+        }
+
+        .row-container {
+            margin-bottom: 10px;
+        }
+
+
+        label {
+            font-weight: bold;
+            display: block;
+        }
+
+        input {
+            padding: 5px;
+            width: 90%;
+            margin-top: 5px;
+        }
+
+
+
+        button {
+            margin-top: 10px;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+
+        /* Switch styling */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 34px;
+            height: 20px;
+            margin-left: 10px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: #4CAF50;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(14px);
+        }
+
+        /* Disabled input styling */
+        input[disabled] {
+            background-color: #f0f0f0;
+            color: #a0a0a0;
+            cursor: not-allowed;
+        }
+
+        .charges-section {
+            height: 3em;
+            /* Ensures charges section is taller */
+            overflow: hidden;
+            white-space: pre-line;
+        }
+
+
+        .row-container input[readonly] {
+            cursor: pointer;
+            background-color: #f9f9f9;
+        }
+
+
+        .section-container {
+            margin-bottom: 15px;
+        }
+
+
+        .section-container input[readonly] {
+            cursor: pointer;
+            background-color: #f9f9f9;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 15px;
+            border: 1px solid black;
+            box-shadow: 0px 0px 10px #888;
+            z-index: 1000;
+        }
+
+        .row-container input[readonly] {
+            cursor: pointer;
+            background-color: #f9f9f9;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #e1e1e1;
+            padding: 5px 10px;
+            margin: 5px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .tag button {
+            background: none;
+            border: none;
+            margin-left: 5px;
+            cursor: pointer;
+            color: red;
+            font-weight: bold;
+        }
+    </style>
 </head>
+
 <body>
-    <div class="container">
-        <h2>Bail Bond Form</h2>
-
+    <header>
+        <button type="button" onclick="window.location.href='preview.php'">Go to Preview</button>
+    </header>
+    <main>
         <form action="preview.php" method="post">
-            <!-- Row 1:  Today's Date, Sex, Race, Court Date -->
-            <div class="row-container" id="row1">
-                <label for="todayDate">Today's Date:</label>
-                <input type="text" id="todayDate" name="todayDate" value="<?php echo $_SESSION['todayDate'] ?? ''; ?>" readonly>
-            </div>
-            <div class="row-container" id="row1">
-            <label for="dateInput">Court Date:</label>
-            <input type="date" id="dateInput" name="courtDate" value="<?php echo $_SESSION['courtDate'] ?? ''; ?>" required>
-        </div>
-            <div class="row-container" id="row1">
-                <label for="sex">SEX:</label>
-                <input list="sex-options" id="sex" name="sex" value="<?php echo $_SESSION['sex'] ?? ''; ?>" required>
-                <datalist id="sex-options">
-                    <option value="Male">
-                    <option value="Female">
-                </datalist>
-            </div>
 
-            <div class="row-container" id="row1">
-                <label for="race">RACE:</label>
-                <input list="race-options" id="race" name="race" value="<?php echo $_SESSION['race'] ?? ''; ?>" required>
-                <datalist id="race-options">
-                    <option value="White">
-                    <option value="Black">
-                    <option value="Asian">
-                    <option value="Hispanic">
-                    <option value="Native American">
-                    <option value="Other">
-                </datalist>
-            </div>
-            <div class="row-container" id="row1">
-                <button type="button" class="confirm-btn" onclick="lockRow('row1')">Confirm Row</button>
-                <button type="button" class="edit-btn" onclick="unlockRow('row1')">Edit</button>
-                <button type="submit">Preview</button>
-            </div>
 
-              <!-- Row 2: Name & DOB-->
-              <div class="row-container" id="row2">
-                <label for="height">HGT:</label>
-                <input type="text" id="height" name="height" value="<?php echo $_SESSION['height'] ?? ''; ?>" required>
-            </div>
-            <div class="row-container" id="row2">
-                <label for="weight">WGT:</label>
-                <input type="text" id="weight" name="weight" value="<?php echo $_SESSION['weight'] ?? ''; ?>" required>
-            </div>
-            <div class="row-container" id="row2">
-                <label for="bondAmount">BOND AMOUNT $:</label>
-                <input type="text" id="bondAmount" name="bondAmount" placeholder="0.00" value="<?php echo $_SESSION['bondAmount'] ?? ''; ?>" required>
-            </div>
-        
-            <div class="row-container" id="row2">
-            <label for="county">COUNTY:</label>
-            <input list="county-options" id="county" name="county" value="<?php echo $_SESSION['county'] ?? ''; ?>" required oninput="updateCourtAndJail()">
-            <datalist id="county-options">
-                <option value="Barrow">
-                <option value="Bartow">
-                <option value="Carroll">
-                <option value="Cherokee">
-                <option value="Clarke">
-                <option value="Cobb">
-                <option value="Floyd">
-                <option value="Gordon">
-                <option value="Gwinnett">
-                <option value="Haralson">
-                <option value="Paulding">
-                <option value="Polk">
-                <option value="Pickens">
-            </datalist>
-        </div>
 
-        <div class="row-container" id="row2">
-                <button type="button" class="confirm-btn" onclick="lockRow('row2')">Confirm Row</button>
-                <button type="button" class="edit-btn" onclick="unlockRow('row2')">Edit</button>
-                <button type="submit">Preview</button>
-            </div>
+            <div class="page-wrapper">
 
-            <div class="row-container" id="row3">
-            <!-- Hair Color -->
-            <label for="hair">HAIR:</label>
-            <input list="hair-options" id="hair" name="hair" value="<?php echo $_SESSION['hair'] ?? ''; ?>" required>
-            <datalist id="hair-options">
-                <option value="Black">
-                <option value="Brown">
-                <option value="Blonde">
-                <option value="Red">
-                <option value="Gray">
-                <option value="Bald">
-                <option value="Other">
-            </datalist>
-        </div>
+                <h2>Bail Bond Form</h2>
 
-        <div class="row-container" id="row3">
-            <!-- Eye Color -->
-            <label for="eyes">EYES:</label>
-            <input list="eyes-options" id="eyes" name="eyes" value="<?php echo $_SESSION['eyes'] ?? ''; ?>" required>
-            <datalist id="eyes-options">
-                <option value="Brown">
-                <option value="Blue">
-                <option value="Green">
-                <option value="Hazel">
-                <option value="Gray">
-                <option value="Other">
-            </datalist>
-        </div>
+                <!-- Row 1:  Today's Date, Sex, Race, Court Date -->
 
-        <div class="row-container" id="row3">
-            <!-- Warrant # -->
-            <label for="warrantNumber">WARRANT #:</label>
-            <input type="text" id="warrantNumber" name="warrantNumber" value="<?php echo $_SESSION['warrantNumber'] ?? ''; ?>">
-        </div>
+                <div class="container">
+                    <div class="card">
+                        <div class="card-content" id="row1">
 
-        <div class="row-container" id="row3">
-            <!-- Case # -->
-            <label for="caseNumber">CASE #:</label>
-            <input type="text" id="caseNumber" name="caseNumber" value="<?php echo $_SESSION['caseNumber'] ?? ''; ?>">
-        </div>
+                            <label for="todayDate">Today's Date:</label>
+                            <input type="text" id="todayDate" name="todayDate"
+                                value="<?php echo $_SESSION['todayDate'] ?? ''; ?>" readonly>
+                        </div>
+                    </div>
 
-        <div class="row-container" id="row3">
-            <!-- Court -->
-            <label for="courtLocation">COURT:</label>
-            <input list="court-options" id="courtLocation" name="courtLocation" value="<?php echo $_SESSION['courtLocation'] ?? ''; ?>" required>
-            <datalist id="court-options">
-                <!-- Courts will be dynamically populated by JavaScript -->
-            </datalist>
-        </div>
-             
-        <div class="row-container" id="row3">
-                <button type="button" class="confirm-btn" onclick="lockRow('row3')">Confirm Row</button>
-                <button type="button" class="edit-btn" onclick="unlockRow('row3')">Edit</button>
-                <button type="submit">Preview</button>
-            </div>
 
-            <div class="row-container" id="row7">
-                <h2>Name</h2>
-                <p>
-                    <label for="defFirstName">FIRST:</label>
-                    <input type="text" id="defFirstName" name="defFirstName" value="<?php echo $_SESSION['defFirstName'] ?? ''; ?>" required>
-                </p>
-                <p>
-                    <label for="defMiddleName">MIDDLE:</label>
-                    <input type="text" id="defMiddleName" name="defMiddleName" value="<?php echo $_SESSION['defMiddleName'] ?? ''; ?>">
-                </p>
-                <p>
-                    <label for="lastName">LAST:</label>
-                    <input type="text" id="lastName" name="lastName" value="<?php echo $_SESSION['lastName'] ?? ''; ?>" required>
-                </p>
-            </div>
+                    <div class="card">
+                        <div class="card-content" id="row1">
 
-            <div class="row-container" id="row7">
-                <label for="date-of-birth">DOB:</label>
-                <input type="date" id="date-of-birth" name="dob" value="<?php echo $_SESSION['dob'] ?? ''; ?>" required>
-            </div>
+                            <label for="dateInput">Court Date:</label>
+                            <input type="date" id="dateInput" name="courtDate"
+                                value="<?php echo $_SESSION['courtDate'] ?? ''; ?>" required>
+                        </div>
+                    </div>
 
-            <div class="row-container" id="row7">
-                <label for="age-display">AGE:</label>
-                <input type="text" id="age-display" name="age-display" value="<?php echo $_SESSION['age'] ?? ''; ?>" readonly>
-            </div>
 
-            <div class="row-container">
-                <button type="button" class="confirm-btn" onclick="lockRow('row7')">Confirm Row</button>
-                <button type="button" class="edit-btn" onclick="unlockRow('row7')">Edit</button>
-                <button type="submit">Preview</button>
-            </div>
+                    <div class="card">
+                        <div class="card-content" id="row1">
+                            <label for="sex">SEX:</label>
+                            <input list="sex-options" id="sex" name="sex" value="<?php echo $_SESSION['sex'] ?? ''; ?>"
+                                required>
+                            <datalist id="sex-options">
+                                <option value="Male">
+                                <option value="Female">
+                            </datalist>
+                        </div>
+                    </div>
 
+
+                    <div class="card">
+                        <div class="card-content" id="row1">
+                            <label for="race">RACE:</label>
+                            <input list="race-options" id="race" name="race"
+                                value="<?php echo $_SESSION['race'] ?? ''; ?>" required>
+                            <datalist id="race-options">
+                                <option value="White">
+                                <option value="Black">
+                                <option value="Asian">
+                                <option value="Hispanic">
+                                <option value="Native American">
+                                <option value="Other">
+                            </datalist>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-content" id="row1">
+                            <button type="button" class="confirm-btn" onclick="lockRow('row1')">Confirm Row</button>
+                            <button type="button" class="edit-btn" onclick="unlockRow('row1')">Edit</button>
+                            <button type="submit">Preview</button>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+
+
+
+                <!-- Row 2: HGT, WGT, BOND AMOUNT, COUNTY -->
+
+                <div class="container">
+                    <div class="card">
+                        <div class="card-content" id="row2">
+
+
+                            <label for="height">HEIGHT:</label>
+                            <input list="height-options" id="height" name="height"
+                                value="<?php echo $_SESSION['height'] ?? ''; ?>" required>
+                            <datalist id="height-options">
+                                <?php
+                                for ($feet = 4; $feet <= 7; $feet++) {
+                                    for ($inches = 0; $inches <= 11; $inches++) {
+                                        echo '<option value="' . $feet . "'" . $inches . '"></option>'; // No extra escaping needed
+                                    }
+                                }
+                                ?>
+                            </datalist>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-content" id="row2">
+
+                            <label for="weight">WEIGHT:</label>
+                            <input list="weight-options" id="weight" name="weight"
+                                value="<?php echo $_SESSION['weight'] ?? ''; ?>" required>
+                            <datalist id="weight-options">
+                                <?php
+                                for ($weight = 100; $weight <= 500; $weight += 5) {
+                                    echo "<option value=\"$weight lbs\"></option>";
+                                }
+                                ?>
+                            </datalist>
+                        </div>
+                    </div>
+
+
+                    <div class="card">
+                        <div class="card-content" id="row2">
+
+                            <label for="bondAmount">BOND AMOUNT:</label>
+                            <input list="bond-amount-options" id="bondAmount" name="bondAmount"
+                                value="<?php echo $_SESSION['bondAmount'] ?? ''; ?>" required>
+                            <datalist id="bond-amount-options">
+                                <?php
+                                for ($amount = 500; $amount <= 50000; $amount += 50) {
+                                    echo "<option value=\"\$$amount\"></option>";
+                                }
+                                ?>
+                            </datalist>
+                        </div>
+                    </div>
+
+
+                    <div class="card">
+                        <div class="card-content" id="row2">
+
+                            <label for="county">COUNTY:</label>
+                            <input list="county-options" id="county" name="county"
+                                value="<?php echo $_SESSION['county'] ?? ''; ?>" required
+                                oninput="updateCourtAndJail()">
+                            <datalist id="county-options">
+                                <option value="Barrow">
+                                <option value="Bartow">
+                                <option value="Carroll">
+                                <option value="Cherokee">
+                                <option value="Clarke">
+                                <option value="Cobb">
+                                <option value="Floyd">
+                                <option value="Gordon">
+                                <option value="Gwinnett">
+                                <option value="Haralson">
+                                <option value="Paulding">
+                                <option value="Polk">
+                                <option value="Pickens">
+                            </datalist>
+                        </div>
+                    </div>
+
+
+                    <div class="card">
+                        <div class="card-content" id="row2">
+
+                            <button type="button" class="confirm-btn" onclick="lockRow('row2')">Confirm Row</button>
+                            <button type="button" class="edit-btn" onclick="unlockRow('row2')">Edit</button>
+                            <button type="submit">Preview</button>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+
+                <!-- Row 3: Hair, Eyes, Warrant/case, Courtlocation-->
+
+
+
+                <div class="container">
+                    <div class="card">
+                        <div class="card-content" id="row3">
+
+                            <!-- Hair Color -->
+                            <label for="hair">HAIR:</label>
+                            <input list="hair-options" id="hair" name="hair"
+                                value="<?php echo $_SESSION['hair'] ?? ''; ?>" required>
+                            <datalist id="hair-options">
+                                <option value="Black">
+                                <option value="Brown">
+                                <option value="Blonde">
+                                <option value="Red">
+                                <option value="Gray">
+                                <option value="Bald">
+                                <option value="Other">
+                            </datalist>
+                        </div>
+                    </div>
+
+
+
+                    <div class="card">
+                        <div class="card-content" id="row3">
+
+                            <!-- Eye Color -->
+                            <label for="eyes">EYES:</label>
+                            <input list="eyes-options" id="eyes" name="eyes"
+                                value="<?php echo $_SESSION['eyes'] ?? ''; ?>" required>
+                            <datalist id="eyes-options">
+                                <option value="Brown">
+                                <option value="Blue">
+                                <option value="Green">
+                                <option value="Hazel">
+                                <option value="Gray">
+                                <option value="Other">
+                            </datalist>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-content" id="row3">
+                            <!-- Warrant # -->
+                            <label for="warrantNumber">WARRANT #:</label>
+                            <input type="text" id="warrantNumber" name="warrantNumber"
+                                value="<?php echo $_SESSION['warrantNumber'] ?? ''; ?>">
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-content" id="row3">
+                            <!-- Case # -->
+                            <label for="caseNumber">CASE #:</label>
+                            <input type="text" id="caseNumber" name="caseNumber"
+                                value="<?php echo $_SESSION['caseNumber'] ?? ''; ?>">
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-content" id="row3">
+                            <!-- Court -->
+                            <label for="courtLocation">COURT:</label>
+                            <input list="court-options" id="courtLocation" name="courtLocation"
+                                value="<?php echo $_SESSION['courtLocation'] ?? ''; ?>" required>
+                            <datalist id="court-options">
+                                <!-- Courts will be dynamically populated by JavaScript -->
+                            </datalist>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-content" id="row3">
+                            <button type="button" class="confirm-btn" onclick="lockRow('row3')">Confirm Row</button>
+                            <button type="button" class="edit-btn" onclick="unlockRow('row3')">Edit</button>
+                            <button type="submit">Preview</button>
+                        </div>
+                    </div>
+                    <!-- Row 4: ID MARK, HOLDS, ALIAS -->
+
+
+
+                    <div class="container">
+                        <div class="card">
+                            <div class="card-content" id="row4">
+                                <label for="idMarks">ID MARKS:</label>
+                                <input type="text" id="idMarks" name="idMarks" placeholder="Select Type" readonly
+                                    onclick="openIdMarksPopup()">
+                                <div id="idMarksPopup" class="popup">
+                                    <label for="idMarkType">Type:</label>
+                                    <input list="idMarks-options" id="idMarkType">
+                                    <datalist id="idMarks-options">
+                                        <option value="Tattoo">
+                                        <option value="Scar">
+                                        <option value="Piercing">
+                                        <option value="Birthmark">
+                                        <option value="Burn Mark">
+                                        <option value="Other">
+                                    </datalist>
+
+                                    <label for="idMarkLocation">Select Location(s):</label>
+                                    <select id="idMarkLocation" multiple>
+                                        <option value="Head">Head</option>
+                                        <option value="Face">Face</option>
+                                        <option value="Neck">Neck</option>
+                                        <option value="Left Arm">Left Arm</option>
+                                        <option value="Right Arm">Right Arm</option>
+                                        <option value="Left Leg">Left Leg</option>
+                                        <option value="Right Leg">Right Leg</option>
+                                        <option value="Chest">Chest</option>
+                                        <option value="Back">Back</option>
+                                        <option value="Abdomen">Abdomen</option>
+                                        <option value="Hand">Hand</option>
+                                        <option value="Foot">Foot</option>
+                                    </select>
+
+                                    <div id="selectedLocations"></div> <!-- Tags Display Here -->
+
+                                    <label for="idMarkQuantity">Quantity:</label>
+                                    <input type="number" id="idMarkQuantity" min="1" value="1">
+
+                                    <button type="button" onclick="addIdMark()">Add Mark</button>
+                                    <button type="button" onclick="closeIdMarksPopup()">Close</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="idMarksData" id="idMarksData">
+
+                        <button type="submit">Preview</button>
+
+                        <input type="hidden" name="idMarksData" id="idMarksData">
+
+                        <div class="card">
+                            <div class="card-content" id="row4">
+                                <label for="holds">HOLDS:</label>
+                                <input list="holds-options" id="holds" name="holds"
+                                    value="<?php echo $_SESSION['holds'] ?? 'None'; ?>" required
+                                    oninput="updateMultiSelect('holds' 'holds-options')">
+                                <datalist id="holds-options">
+                                    <option value="None">
+                                    <option value="Federal Hold">
+                                    <option value="State Hold">
+                                    <option value="County Hold">
+                                    <option value="Parole Hold">
+                                    <option value="Probation Hold">
+                                    <option value="ICE Hold">
+                                </datalist>
+
+
+
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-content" id="row4">
+                                <label for="alias">ALIAS:</label>
+                                <input list="alias-options" id="alias" name="alias"
+                                    value="<?php echo $_SESSION['alias'] ?? 'None'; ?>" required
+                                    oninput="updateMultiSelect('alias' 'alias-options')">
+                                <datalist id="alias-options">
+                                    <option value="None">
+                                    <option value="Known Alias">
+                                    <option value="Street Name">
+                                    <option value="Nickname">
+                                    <option value="False Identity">
+                                </datalist>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-content" id="row4">
+                                <button type="button" class="confirm-btn" onclick="lockRow('row4')">Confirm Row</button>
+                                <button type="button" class="edit-btn" onclick="unlockRow('row4')">Edit</button>
+                                <button type="submit">Preview</button>
+                            </div>
+                        </div>
+
+
+
+
+                        <!-- Row 5: DMV & CHARGES -->
+                        <div class="container">
+                            <div class="card">
+                                <div class="card-content" id="row5">
+                                    <p>
+                                        <label for="dmv">DMV #:</label>
+                                        <input type="text" id="dmv" name="dmv" placeholder="123-456-789"
+                                            value="<?php echo $_SESSION['dmv'] ?? ''; ?>">
+                                    </p>
+                                </div>
+                            </div>
+
+
+
+                            <div class="card">
+                                <div class="card-content" id="row5">
+                                    <label for="charges">CHARGES:</label>
+                                    <input list="charges" id="charges" name="charges"
+                                        placeholder="Select or Enter Charges" readonly onclick="openChargesPopup()">
+                                    <div id="chargesPopup" class="popup">
+                                        <label for="chargeType">Charge:</label>
+                                        <input list="charges-options" id="chargeType">
+                                        <datalist id="charges-options">
+                                            <!-- Traffic & Driving Violations -->
+                                            <option value="Aggressive Driving">
+                                            <option value="Failure to Appear">
+                                            <option value="Driving Under Influence (DUI)">
+                                            <option value="Failure to Maintain Lane">
+                                            <option value="Reckless Driving">
+                                            <option value="Hit & Run">
+                                            <option value="Fleeing or Attempting to Elude Police">
+                                            <option value="Driving Without a License">
+                                            <option value="Driving With a Suspended License">
+                                            <option value="Improper Passing">
+                                            <option value="Failure to Stop at Stop Sign">
+                                            <option value="Running a Red Light">
+                                            <option value="Speeding">
+                                            <option value="Racing on Highway">
+                                            <option value="Failure to Yield">
+                                            <option value="Improper Lane Change">
+                                            <option value="Driving in Emergency Lane/Gore">
+                                            <option value="Failure to Signal">
+                                            <option value="Defective Equipment">
+                                            <option value="Window Tint Violation">
+                                            <option value="Failure to Maintain Insurance">
+                                            <option value="Failure to Register Vehicle">
+                                            <option value="Expired Registration">
+
+                                                <!-- Drug & Controlled Substances -->
+                                            <option value="Possession of Firearm with Controlled Substance">
+                                            <option value="Possession of Marijuana (<1oz)">
+                                            <option value="Possession of Marijuana (>1oz) (Felony)">
+                                            <option value="Possession of Schedule I or II Controlled Substance">
+                                            <option value="Possession of Schedule III, IV, or V Controlled Substance">
+                                            <option value="Possession of Drug Paraphernalia">
+                                            <option value="Sale/Distribution of Controlled Substance">
+                                            <option value="Trafficking in Controlled Substances">
+                                            <option value="Possession of Methamphetamine">
+                                            <option value="Possession of Cocaine">
+                                            <option value="Possession of Heroin">
+                                            <option value="Possession of Fentanyl">
+                                            <option value="Possession of THC Oil">
+                                            <option value="Distribution of Marijuana">
+                                            <option value="Drug Smuggling">
+
+                                                <!-- Theft, Fraud & Financial Crimes -->
+                                            <option value="Theft by Taking">
+                                            <option value="Theft by Deception">
+                                            <option value="Shoplifting">
+                                            <option value="Forgery">
+                                            <option value="Identity Fraud">
+                                            <option value="Credit Card Fraud">
+                                            <option value="Insurance Fraud">
+                                            <option value="Embezzlement">
+                                            <option value="Counterfeiting">
+                                            <option value="Burglary (1st Degree)">
+                                            <option value="Burglary (2nd Degree)">
+                                            <option value="Armed Robbery">
+                                            <option value="Robbery by Intimidation">
+
+                                                <!-- Assault & Violent Crimes -->
+                                            <option value="Simple Assault">
+                                            <option value="Aggravated Assault">
+                                            <option value="Battery">
+                                            <option value="Aggravated Battery">
+                                            <option value="Domestic Violence">
+                                            <option value="Child Abuse">
+                                            <option value="Elder Abuse">
+                                            <option value="Homicide">
+                                            <option value="Manslaughter (Voluntary)">
+                                            <option value="Manslaughter (Involuntary)">
+                                            <option value="Kidnapping">
+                                            <option value="False Imprisonment">
+                                            <option value="Criminal Threats">
+
+                                                <!-- Sexual Offenses -->
+                                            <option value="Sexual Battery">
+                                            <option value="Rape">
+                                            <option value="Statutory Rape">
+                                            <option value="Child Molestation">
+                                            <option value="Aggravated Child Molestation">
+                                            <option value="Indecent Exposure">
+                                            <option value="Solicitation of a Minor">
+                                            <option value="Possession of Child Pornography">
+                                            <option value="Distribution of Obscene Material">
+
+                                                <!-- Weapons Charges -->
+                                            <option value="Unlawful Possession of Firearm">
+                                            <option value="Carrying a Concealed Weapon Without Permit">
+                                            <option value="Possession of Firearm by Convicted Felon">
+                                            <option value="Possession of Stolen Firearm">
+                                            <option value="Discharging a Firearm in Public">
+                                            <option value="Unlawful Sale of Firearm">
+                                            <option value="Possession of Firearm in Commission of Crime">
+                                            <option value="Carrying a Weapon in School Zone">
+
+                                                <!-- Other Felonies & Misdemeanors -->
+                                            <option value="Parole Violation">
+                                            <option value="Probation Violation">
+                                            <option value="Obstruction of Justice">
+                                            <option value="Tampering with Evidence">
+                                            <option value="Resisting Arrest">
+                                            <option value="Hindering 911 Call">
+                                            <option value="Harboring a Fugitive">
+                                            <option value="Perjury">
+                                            <option value="Failure to Register as Sex Offender">
+                                            <option value="Criminal Trespassing">
+                                            <option value="Stalking">
+                                            <option value="Violation of Protection Order">
+                                            <option value="Animal Cruelty">
+                                        </datalist>
+
+                                        <label for="chargeSeverity">Severity:</label>
+                                        <select id="chargeSeverity">
+                                            <option value="Misdemeanor">Misdemeanor</option>
+                                            <option value="Felony">Felony</option>
+                                        </select>
+
+                                        <button type="button" onclick="addCharge()">Add Charge</button>
+                                        <button type="button" onclick="closeChargesPopup()">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-content" id="row5">
+                                    <button type="button" class="confirm-btn" onclick="lockRow('row5')">Confirm
+                                        Row</button>
+                                    <button type="button" class="edit-btn" onclick="unlockRow('row5')">Edit</button>
+                                    <button type="submit">Preview</button>
+                                </div>
+                            </div>
+
+
+                            <!-- Row 6: DOB / CHARGES -->
+
+                            <div class="card">
+                                <div class="card-content" id="row6">
+                                    <label for="date-of-birth">DOB:</label>
+                                    <input type="date" id="date-of-birth" name="dob"
+                                        value="<?php echo $_SESSION['dob'] ?? ''; ?>" required>
+                                </div>
+                            </div>
+
+
+                            <div class="card">
+                                <div class="card-content" id="row6">
+                                    <label for="age-display">AGE:</label>
+                                    <input type="text" id="age-display" name="age-display"
+                                        value="<?php echo $_SESSION['age'] ?? ''; ?>" readonly>
+                                </div>
+                            </div>
+
+
+                            <div class="card">
+                                <div class="card-content" id="row6">
+                                    <button type="button" class="confirm-btn" onclick="lockRow('row6')">Confirm
+                                        Row</button>
+                                    <button type="button" class="edit-btn" onclick="unlockRow('row6')">Edit</button>
+                                    <button type="submit">Preview</button>
+                                </div>
+                            </div>
+
+
+
+                            <!-- Row 7: SSN / CHARGES -->
+                            <div class="card">
+                                <div class="card-content" id="row7">
+                                    <p>
+                                        <label for="ssnInput">SSN:</label>
+                                        <input type="text" id="ssnInput" name="ssnInput" placeholder="123-45-6789"
+                                            value="<?php echo $_SESSION['ssnInput'] ?? ''; ?>">
+                                    </p>
+                                </div>
+                            </div>
+
+
+                            <div class="card">
+                                <div class="card-content" id="row7">
+                                    <button type="button" class="confirm-btn" onclick="lockRow('row7')">Confirm Row
+                                        </butto>
+                                        <button type="button" class="edit-btn" onclick="unlockRow('row7')">Edit</button>
+                                        <button type="submit">Preview</button>
+                                </div>
+                            </div>
+
+
+                            <div class="card">
+                                <div class="card-content" id="row7">
+                                    <h2>Name</h2>
+                                    <p>
+                                        <label for="defFirstName">FIRST:</label>
+                                        <input type="text" id="defFirstName" name="defFirstName"
+                                            value="<?php echo $_SESSION['defFirstName'] ?? ''; ?>" required>
+                                    </p>
+                                    <p>
+                                        <label for="defMiddleName">MIDDLE:</label>
+                                        <input type="text" id="defMiddleName" name="defMiddleName"
+                                            value="<?php echo $_SESSION['defMiddleName'] ?? ''; ?>">
+                                    </p>
+                                    <p>
+                                        <label for="lastName">LAST:</label>
+                                        <input type="text" id="lastName" name="lastName"
+                                            value="<?php echo $_SESSION['lastName'] ?? ''; ?>" required>
+                                    </p>
+                                </div>
+                            </div>
+
+
+                            <div class="card">
+                                <div class="card-content" id="row7">
+                                    <button type="button" class="confirm-btn" onclick="lockRow('row8')">Confirm
+                                        Row</button>
+                                    <button type="button" class="edit-btn" onclick="unlockRow('row8')">Edit</button>
+                                    <button type="submit">Preview</button>
+                                </div>
+                            </div>
         </form>
-    </div>
-    <script defer src="script.js"></script>
+        <script defer src="script.js"></script>
+    </main>
 </body>
+
 </html>

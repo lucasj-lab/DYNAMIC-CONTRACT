@@ -276,3 +276,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+function updateMultiSelect(inputId, datalistId) {
+    let inputElement = document.getElementById(inputId);
+    let currentValue = inputElement.value;
+
+    if (currentValue === "None") {
+        inputElement.value = ""; // Clear if "None" is selected
+    }
+
+    let existingValues = inputElement.value.split(', ');
+    let datalistOptions = [...document.getElementById(datalistId).options].map(option => option.value);
+
+    if (datalistOptions.includes(currentValue) && !existingValues.includes(currentValue)) {
+        existingValues.push(currentValue);
+        inputElement.value = existingValues.join(', ');
+    }
+}
+
