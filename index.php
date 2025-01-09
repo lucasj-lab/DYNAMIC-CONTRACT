@@ -32,181 +32,73 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bail Bond Form</title>
-    <script>
-        const ssnInput = document.getElementById('ssnInput');
-
-        /**
-         * Formats a string of digits as a US Social Security Number (xxx-xx-xxxx).
-         * @param {string} inputValue The unformatted input string.
-         * @returns {string} The formatted SSN string.
-         */
-        function formatSsn(inputValue) {
-            // Remove all non-digit characters
-            const digits = inputValue.replace(/[^0-9]/g, '');
-
-            // If fewer than 4 digits, just return what we have
-            if (digits.length < 4) {
-                return digits;
-            }
-            // If 4 or 5 digits, we have: xxx-xx
-            if (digits.length < 6) {
-                return digits.slice(0, 3) + '-' + digits.slice(3);
-            }
-            // If 6 or more digits, format: xxx-xx-xxxx
-            return digits.slice(0, 3) + '-' + digits.slice(3, 5) + '-' + digits.slice(5, 9);
-        }
-
-        // Listen for input on the SSN field
-        ssnInput.addEventListener('input', function () {
-            this.value = formatSsn(this.value);
-        });
-        let idMarksArray = [];
-
-        function openIdMarksPopup() {
-            document.getElementById("idMarksPopup").style.display = "block";
-        }
-
-        function closeIdMarksPopup() {
-            document.getElementById("idMarksPopup").style.display = "none";
-        }
-
-        function addIdMark() {
-            let type = document.getElementById("idMarkType").value;
-            let location = document.getElementById("idMarkLocation").value;
-            let quantity = document.getElementById("idMarkQuantity").value;
-
-            if (type === "" || location === "") {
-                alert("Please select a type and specify a location.");
-                return;
-            }
-
-            let idMarkEntry = `${quantity}x ${type} on ${location}`;
-            idMarksArray.push(idMarkEntry);
-
-            document.getElementById("idMarks").value = idMarksArray.join(", ");
-            document.getElementById("idMarksData").value = idMarksArray.join("|"); // Hidden input for backend processing
-            closeIdMarksPopup();
-        }
-    </script>
-    <script>
-        let chargesArray = [];
-
-        function openChargesPopup() {
-            document.getElementById("chargesPopup").style.display = "block";
-        }
-
-        function closeChargesPopup() {
-            document.getElementById("chargesPopup").style.display = "none";
-        }
-
-        function addCharge() {
-            let type = document.getElementById("chargeType").value;
-            let severity = document.getElementById("chargeSeverity").value;
-
-            if (type === "") {
-                alert("Please select or enter a charge.");
-                return;
-            }
-
-            let chargeEntry = `${type} (${severity})`;
-            chargesArray.push(chargeEntry);
-
-            document.getElementById("charges").value = chargesArray.join(", ");
-            document.getElementById("chargesData").value = chargesArray.join("|"); // Hidden input for backend processing
-            closeChargesPopup();
-        }
-    </script>
-    <script>
-
-
-        // Function to calculate age
-        function calculateAge() {
-            let dob = dobInput.value;
-            if (dob) {
-                let dateParts = dob.split('/');
-                let birthDate = new Date(`${dateParts[2]}-${dateParts[0]}-${dateParts[1]}`); // Convert MM/DD/YYYY to valid JS Date format
-                let today = new Date();
-                let age = today.getFullYear() - birthDate.getFullYear();
-                let monthDiff = today.getMonth() - birthDate.getMonth();
-
-                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                    age--;
-                }
-
-                document.getElementById("age-display").value = age;
-            }
-        }
-
-        document.addEventListener("DOMContentLoaded", function () {
-            let today = new Date();
-            let month = (today.getMonth() + 1).toString().padStart(2, '0'); // Get month (January is 0)
-            let day = today.getDate().toString().padStart(2, '0'); // Get day and pad with zero if needed
-            let year = today.getFullYear();
-
-            let formattedDate = `${month}/${day}/${year}`; // Format: MM/DD/YYYY
-            document.getElementById("todayDate").value = formattedDate;
-        });
-        document.querySelector("form").addEventListener("submit", function (event) {
-            let courtDateInput = document.getElementById("dateInput");
-            let selectedDate = new Date(courtDateInput.value);
-
-            if (!isNaN(selectedDate)) {
-                let formattedCourtDate = `${(selectedDate.getMonth() + 1)
-                    .toString()
-                    .padStart(2, '0')}/${selectedDate
-                        .getDate()
-                        .toString()
-                        .padStart(2, '0')}/${selectedDate.getFullYear()}`;
-
-                courtDateInput.value = formattedCourtDate; // Modify before submission
-            }
-        });
-        document.addEventListener('DOMContentLoaded', () => {
-            const heightInput = document.getElementById('height');
-
-            heightInput.addEventListener('input', () => {
-                let numericString = heightInput.value.replace(/[^0-9]/g, ''); // Strip non-digits
-
-                if (numericString === '') {
-                    heightInput.value = ''; // Allow clearing the field
-                    return;
-                }
-
-                let feet = parseInt(numericString.substring(0, 1), 10) || 0; // First digit is feet
-                let inches = parseInt(numericString.substring(1), 10) || 0; // Remaining digits are inches
-
-                if (inches > 11) {
-                    inches = inches % 10; // Prevent inches from exceeding 11
-                }
-
-                // Preserve backspace functionality by only formatting when more than 1 digit is entered
-                if (numericString.length === 1) {
-                    heightInput.value = feet; // Show only feet for single-digit input
-                } else {
-                    heightInput.value = `${feet}'${inches}"`; // Properly format feet & inches
-                }
-            });
-        });
-
-    </script>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color:rgb(255, 255, 255);
         }
+
+        /* Wrapper for all Containers */
+        .page-wrapper {
+  display: grid;
+  gap: 20px;
+  padding: 20px;
+  background-color:rgb(255, 255, 255);
+  
+  /* Define a grid layout with 2 columns */
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+
+  /* Align items properly */
+  justify-content: start; /* Aligns grid items to the left */
+  align-items: start; /* Aligns grid items to the top */
+}
+
+        /* Each Container (Row) */
+        .container {
+  display: flex;
+  width: 80%;
+  max-width: 1200px;
+  gap: 10px;
+  padding: 15px;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex-direction: column;
+
+        }
+
+
+        .card {
+    background: white;
+    /* Remove fixed height */
+    min-height: 25px; /* Ensures a base height but allows expansion */
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    padding: 10px; /* Increase padding to give text more space */
+    font-size: 14px;
+    font-weight: bold;
+    background-color: lightblue;
+    overflow: hidden; /* Keep this only if necessary */
+    white-space: normal; /* Allows text to wrap instead of cutting off */
+    word-wrap: break-word; /* Ensures long words don’t break layout */
+}
+        
+.card-content {
+    flex-grow: 1;
+    text-align: left;
+    overflow-wrap: break-word; /* Ensures text breaks within the available space */
+    white-space: normal; /* Allows multi-line text */
+}
 
         input[readonly] {
             background-color: #d3d3d3;
             color: #555;
             pointer-events: none;
         }
-
-        .row-container {
-            margin-bottom: 10px;
-        }
-
 
         label {
             font-weight: bold;
@@ -219,15 +111,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             margin-top: 5px;
         }
 
-
-
         button {
             margin-top: 10px;
             padding: 10px;
             border: none;
             cursor: pointer;
         }
-
 
         /* Switch styling */
         .switch {
@@ -290,23 +179,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             white-space: pre-line;
         }
 
-
-        .row-container input[readonly] {
-            cursor: pointer;
-            background-color: #f9f9f9;
-        }
-
-
-        .section-container {
-            margin-bottom: 15px;
-        }
-
-
-        .section-container input[readonly] {
-            cursor: pointer;
-            background-color: #f9f9f9;
-        }
-
         .popup {
             display: none;
             position: fixed;
@@ -320,10 +192,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             z-index: 1000;
         }
 
-        .row-container input[readonly] {
-            cursor: pointer;
-            background-color: #f9f9f9;
-        }
 
         .tag {
             display: inline-block;
@@ -342,6 +210,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             color: red;
             font-weight: bold;
         }
+
     </style>
 </head>
 
@@ -349,14 +218,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <header>
         <button type="button" onclick="window.location.href='preview.php'">Go to Preview</button>
     </header>
-    <main>
+
         <form action="preview.php" method="post">
 
-
+                <h2>Bail Bond Form</h2>
 
             <div class="page-wrapper">
 
-                <h2>Bail Bond Form</h2>
 
                 <!-- Row 1:  Today's Date, Sex, Race, Court Date -->
 
@@ -438,7 +306,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 value="<?php echo $_SESSION['height'] ?? ''; ?>" required>
                             <datalist id="height-options">
                                 <?php
-                                for ($feet = 4; $feet <= 7; $feet++) {
+                                for ($feet = 5; $feet <= 7; $feet++) {
                                     for ($inches = 0; $inches <= 11; $inches++) {
                                         echo '<option value="' . $feet . "'" . $inches . '"></option>'; // No extra escaping needed
                                     }
@@ -604,11 +472,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <button type="submit">Preview</button>
                         </div>
                     </div>
+                    </div>
+
+
                     <!-- Row 4: ID MARK, HOLDS, ALIAS -->
 
 
 
-                    <div class="container">
+                        <div class="container">
                         <div class="card">
                             <div class="card-content" id="row4">
                                 <label for="idMarks">ID MARKS:</label>
@@ -703,12 +574,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <button type="submit">Preview</button>
                             </div>
                         </div>
-
+                        </div>
 
 
 
                         <!-- Row 5: DMV & CHARGES -->
-                        <div class="container">
+                            <div class="container">
                             <div class="card">
                                 <div class="card-content" id="row5">
                                     <p>
@@ -859,10 +730,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <button type="submit">Preview</button>
                                 </div>
                             </div>
-
+                            </div>
 
                             <!-- Row 6: DOB / CHARGES -->
-
+                            <div class="container">
                             <div class="card">
                                 <div class="card-content" id="row6">
                                     <label for="date-of-birth">DOB:</label>
@@ -871,7 +742,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 </div>
                             </div>
 
-
+                      
                             <div class="card">
                                 <div class="card-content" id="row6">
                                     <label for="age-display">AGE:</label>
@@ -880,7 +751,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 </div>
                             </div>
 
-
+                
                             <div class="card">
                                 <div class="card-content" id="row6">
                                     <button type="button" class="confirm-btn" onclick="lockRow('row6')">Confirm
@@ -889,10 +760,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <button type="submit">Preview</button>
                                 </div>
                             </div>
-
+</div>
 
 
                             <!-- Row 7: SSN / CHARGES -->
+                            <div class="container">
                             <div class="card">
                                 <div class="card-content" id="row7">
                                     <p>
@@ -938,15 +810,456 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                             <div class="card">
                                 <div class="card-content" id="row7">
-                                    <button type="button" class="confirm-btn" onclick="lockRow('row8')">Confirm
+                                    <button type="button" class="confirm-btn" onclick="lockRow('row7')">Confirm
                                         Row</button>
-                                    <button type="button" class="edit-btn" onclick="unlockRow('row8')">Edit</button>
+                                    <button type="button" class="edit-btn" onclick="unlockRow('row7')">Edit</button>
                                     <button type="submit">Preview</button>
                                 </div>
                             </div>
+                            </div>
+                            <script defer src="script.js"></script>          
         </form>
-        <script defer src="script.js"></script>
-    </main>
+       
+    
+
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+    let datalistInputs = document.querySelectorAll("input[list]");
+
+    datalistInputs.forEach(input => {
+        input.addEventListener("focus", function () {
+            this.setAttribute("autocomplete", "off"); // Disable autocomplete interference
+            this.value = ""; // Clears the input temporarily to show all options
+        });
+
+        input.addEventListener("blur", function () {
+            if (!this.value.trim()) {
+                this.value = sessionStorage.getItem(this.id) || ""; // Restore previous value if empty
+            }
+        });
+
+        input.addEventListener("input", function () {
+            sessionStorage.setItem(this.id, this.value); // Save input value for auto-save
+        });
+    });
+
+    // Function to lock all inputs (including datalist and date fields) in a row and persist through refresh
+    window.lockRow = function (rowId) {
+        let rowElements = document.querySelectorAll(`#${rowId} input`);
+        rowElements.forEach(element => {
+            element.readOnly = true;
+            element.style.backgroundColor = "#d3d3d3"; // Grey out the field
+            element.style.pointerEvents = "none"; // Prevent interactions
+        });
+
+        // Store locked state in sessionStorage
+        sessionStorage.setItem(`locked-${rowId}`, "true");
+    };
+
+    // Function to unlock fields in a row and remove grey-out effect
+    window.unlockRow = function (rowId) {
+        let rowElements = document.querySelectorAll(`#${rowId} input`);
+        rowElements.forEach(element => {
+            element.readOnly = false;
+            element.style.backgroundColor = ""; // Restore normal background
+            element.style.pointerEvents = "auto"; // Allow interactions again
+        });
+
+        // Remove locked state from sessionStorage
+        sessionStorage.removeItem(`locked-${rowId}`);
+    };
+
+    // Function to restore locked state from sessionStorage on page load
+    function restoreLockedRows() {
+        document.querySelectorAll(".row-container, .section-container").forEach(row => {
+            let rowId = row.id;
+            if (sessionStorage.getItem(`locked-${rowId}`) === "true") {
+                lockRow(rowId);
+            }
+        });
+    }
+
+    // Auto-save function to store progress every 3 seconds
+    function autoSaveForm() {
+        let formFields = document.querySelectorAll("input");
+        formFields.forEach(field => {
+            sessionStorage.setItem(field.id, field.value);
+        });
+    }
+
+    // Restore saved data from sessionStorage
+    function restoreFormData() {
+        let formFields = document.querySelectorAll("input");
+        formFields.forEach(field => {
+            if (sessionStorage.getItem(field.id)) {
+                field.value = sessionStorage.getItem(field.id);
+            }
+        });
+    }
+
+    // Auto-save every 3 seconds
+    setInterval(autoSaveForm, 3000);
+
+    // Restore saved data and locked states on page load
+    restoreFormData();
+    restoreLockedRows();
+});
+
+function updateCourtAndJail() {
+    let county = document.getElementById("county").value;
+    console.log("Selected County:", county);
+    // Future logic for updating court and jail options based on county will be added here
+}
+document.addEventListener('DOMContentLoaded', () => {
+    const countyCourts = {
+        'Barrow': [
+            'State Court',
+            'Superior Court',
+            'Auburn City Court',
+            'Statham City Court',
+            'Winder City Court'
+        ],
+        'Bartow': [
+            'State Court',
+            'Superior Court',
+            'Adairsville City Court',
+            'Cartersville City Court'
+        ],
+        'Carroll': [
+            'State Court',
+            'Superior Court',
+            'Carrollton City Court',
+            'Villa Rica City Court'
+        ],
+        'Cherokee': [
+            'State Court',
+            'Superior Court',
+            'Canton City Court',
+            'Woodstock City Court'
+        ],
+        'Clarke': [
+            'State Court',
+            'Superior Court',
+            'Athens-Clarke County Court'
+        ],
+        'Cobb': [
+            'State Court',
+            'Superior Court',
+            'Marietta City Court',
+            'Smyrna City Court',
+            'Kennesaw City Court',
+            'Acworth City Court',
+            'Powder Springs City Court',
+            'Austell City Court'
+        ],
+        'Floyd': [
+            'State Court',
+            'Superior Court',
+            'Rome City Court',
+            'Cave Spring City Court'
+        ],
+        'Gordon': [
+            'State Court',
+            'Superior Court',
+            'Calhoun City Court',
+            'Fairmount City Court'
+        ],
+        'Gwinnett': [
+            'State Court',
+            'Superior Court',
+            'Duluth City Court',
+            'Lawrenceville City Court',
+            'Lilburn City Court',
+            'Norcross City Court',
+            'Snellville City Court',
+            'Suwanee City Court'
+        ],
+        'Haralson': [
+            'State Court',
+            'Superior Court',
+            'Bremen City Court',
+            'Tallapoosa City Court',
+            'Buchanan City Court',
+            'Waco City Court'
+        ],
+        'Paulding': [
+            'State Court',
+            'Superior Court',
+            'Hiram City Court',
+            'Dallas City Court'
+        ],
+        'Polk': [
+            'State Court',
+            'Superior Court',
+            'Cedartown City Court',
+            'Rockmart City Court',
+            'Aragon City Court',
+            'Braswell City Court'
+        ],
+        'Pickens': [
+            'State Court',
+            'Superior Court',
+            'Jasper City Court',
+            'Nelson City Court',
+            'Talking Rock City Court'
+        ]
+    };
+
+    const countyInput = document.getElementById('county');
+    const courtInput = document.getElementById('courtLocation');
+    const courtDatalist = document.getElementById('court-options');
+
+    countyInput.addEventListener('input', () => {
+        const selectedCounty = countyInput.value;
+        
+        // Clear previous options
+        courtDatalist.innerHTML =  '<option value="">Select Court</option>';
+        if (selectedCounty in countyCourts) {
+          countyCourts[selectedCounty].forEach(court => {
+              let option = document.createElement('option');
+              option.value = court;
+              courtDatalist.appendChild(option);
+          });
+        }
+    });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const courtDateInput = document.getElementById('courtDateInput');
+    
+    courtDateInput.addEventListener('change', () => {
+        let value = courtDateInput.value;
+
+    });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const heightInput = document.getElementById('height');
+
+    heightInput.addEventListener('input', () => {
+        let numericString = heightInput.value.replace(/[^0-9]/g, ''); // Strip non-digits
+
+        if (numericString === '') {
+            heightInput.value = ''; // Allow clearing the field
+            return;
+        }
+
+        let feet = parseInt(numericString.substring(0, 1), 10) || 0; // First digit is feet
+        let inches = parseInt(numericString.substring(1), 10) || 0; // Remaining digits are inches
+
+        if (inches > 11) {
+            inches = inches % 10; // Prevent inches from exceeding 11
+        }
+
+        // Preserve backspace functionality by only formatting when more than 1 digit is entered
+        if (numericString.length === 1) {
+            heightInput.value = feet; // Show only feet for single-digit input
+        } else {
+            heightInput.value = `${feet}'${inches}"`; // Properly format feet & inches
+        }
+    });
+
+    // WEIGHT FORMATTING
+    const weightInput = document.getElementById('weight');
+    weightInput.addEventListener('blur', () => {
+        const value = weightInput.value.replace(/[^0-9]/g, ''); // Strip non-numeric characters
+        if (value) {
+            weightInput.value = `${parseInt(value, 10)} lbs`;
+        } else {
+            weightInput.value = ''; // Clear if empty
+        }
+    });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const bondAmountInput = document.getElementById('bondAmount');
+
+    bondAmountInput.addEventListener('input', () => {
+        let value = bondAmountInput.value.replace(/[^0-9.]/g, ''); // Remove non-numeric characters except for '.'
+
+        // Ensure only one decimal point
+        let parts = value.split('.');
+        if (parts.length > 2) {
+            value = parts[0] + '.' + parts.slice(1).join(''); // Keep only the first decimal point
+        }
+
+        bondAmountInput.value = value; // Update the field with clean numeric value
+    });
+
+    bondAmountInput.addEventListener('blur', () => {
+        let value = bondAmountInput.value.replace(/[^0-9.]/g, ''); // Remove unwanted characters
+        let numericValue = parseFloat(value);
+
+        if (!isNaN(numericValue)) {
+            bondAmountInput.value = numericValue.toLocaleString('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2,
+            });
+        } else {
+            bondAmountInput.value = ''; // Clear if invalid
+        }
+    });
+});
+
+function updateMultiSelect(inputId, datalistId) {
+    let inputElement = document.getElementById(inputId);
+    let currentValue = inputElement.value;
+
+    if (currentValue === "None") {
+        inputElement.value = ""; // Clear if "None" is selected
+    }
+
+    let existingValues = inputElement.value.split(', ');
+    let datalistOptions = [...document.getElementById(datalistId).options].map(option => option.value);
+
+    if (datalistOptions.includes(currentValue) && !existingValues.includes(currentValue)) {
+        existingValues.push(currentValue);
+        inputElement.value = existingValues.join(', ');
+    }
+}
+
+const ssnInput = document.getElementById('ssnInput');
+
+        /**
+         * Formats a string of digits as a US Social Security Number (xxx-xx-xxxx).
+         * @param {string} inputValue The unformatted input string.
+         * @returns {string} The formatted SSN string.
+         */
+        function formatSsn(inputValue) {
+            // Remove all non-digit characters
+            const digits = inputValue.replace(/[^0-9]/g, '');
+
+            // If fewer than 4 digits, just return what we have
+            if (digits.length < 4) {
+                return digits;
+            }
+            // If 4 or 5 digits, we have: xxx-xx
+            if (digits.length < 6) {
+                return digits.slice(0, 3) + '-' + digits.slice(3);
+            }
+            // If 6 or more digits, format: xxx-xx-xxxx
+            return digits.slice(0, 3) + '-' + digits.slice(3, 5) + '-' + digits.slice(5, 9);
+        }
+
+        // Listen for input on the SSN field
+        ssnInput.addEventListener('input', function () {
+            this.value = formatSsn(this.value);
+        });
+
+
+        let idMarksArray = [];
+
+        function openIdMarksPopup() {
+            document.getElementById("idMarksPopup").style.display = "block";
+        }
+
+        function closeIdMarksPopup() {
+            document.getElementById("idMarksPopup").style.display = "none";
+        }
+
+        function addIdMark() {
+            let type = document.getElementById("idMarkType").value;
+            let location = document.getElementById("idMarkLocation").value;
+            let quantity = document.getElementById("idMarkQuantity").value;
+
+            if (type === "" || location === "") {
+                alert("Please select a type and specify a location.");
+                return;
+            }
+
+            let idMarkEntry = `${quantity}x ${type} on ${location}`;
+            idMarksArray.push(idMarkEntry);
+
+            document.getElementById("idMarks").value = idMarksArray.join(", ");
+            document.getElementById("idMarksData").value = idMarksArray.join("|"); // Hidden input for backend processing
+            closeIdMarksPopup();
+        }
+
+        let chargesArray = [];
+
+        function openChargesPopup() {
+            document.getElementById("chargesPopup").style.display = "block";
+        }
+
+        function closeChargesPopup() {
+            document.getElementById("chargesPopup").style.display = "none";
+        }
+
+        function addCharge() {
+            let type = document.getElementById("chargeType").value;
+            let severity = document.getElementById("chargeSeverity").value;
+
+            if (type === "") {
+                alert("Please select or enter a charge.");
+                return;
+            }
+
+            let chargeEntry = `${type} (${severity})`;
+            chargesArray.push(chargeEntry);
+
+            document.getElementById("charges").value = chargesArray.join(", ");
+            document.getElementById("chargesData").value = chargesArray.join("|"); // Hidden input for backend processing
+            closeChargesPopup();
+        }
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            let today = new Date();
+            let month = (today.getMonth() + 1).toString().padStart(2, '0'); // Get month (January is 0)
+            let day = today.getDate().toString().padStart(2, '0'); // Get day and pad with zero if needed
+            let year = today.getFullYear();
+
+            let formattedDate = `${month}/${day}/${year}`; // Format: MM/DD/YYYY
+            document.getElementById("todayDate").value = formattedDate;
+        });
+
+
+        document.querySelector("form").addEventListener("submit", function (event) {
+            let courtDateInput = document.getElementById("dateInput");
+            let selectedDate = new Date(courtDateInput.value);
+
+            if (!isNaN(selectedDate)) {
+                let formattedCourtDate = `${(selectedDate.getMonth() + 1)
+                    .toString()
+                    .padStart(2, '0')}/${selectedDate
+                        .getDate()
+                        .toString()
+                        .padStart(2, '0')}/${selectedDate.getFullYear()}`;
+
+                courtDateInput.value = formattedCourtDate; // Modify before submission
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const heightInput = document.getElementById('height');
+
+            heightInput.addEventListener('input', () => {
+                let numericString = heightInput.value.replace(/[^0-9]/g, ''); // Strip non-digits
+
+                if (numericString === '') {
+                    heightInput.value = ''; // Allow clearing the field
+                    return;
+                }
+
+                let feet = parseInt(numericString.substring(0, 1), 10) || 0; // First digit is feet
+                let inches = parseInt(numericString.substring(1), 10) || 0; // Remaining digits are inches
+
+                if (inches > 11) {
+                    inches = inches % 10; // Prevent inches from exceeding 11
+                }
+
+                // Preserve backspace functionality by only formatting when more than 1 digit is entered
+                if (numericString.length === 1) {
+                    heightInput.value = feet; // Show only feet for single-digit input
+                } else {
+                    heightInput.value = `${feet}'${inches}"`; // Properly format feet & inches
+                }
+            });
+        });
+ 
+    </script>
 </body>
 
 </html>
