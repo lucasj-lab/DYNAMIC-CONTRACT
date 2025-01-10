@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $_SESSION['dob'] = htmlspecialchars($_POST["dob"]);
     $_SESSION['dob'] = htmlspecialchars($_POST["dob"]);
     $_SESSION['courtDate'] = htmlspecialchars($_POST["courtDate"]);
-    $_SESSION['idMarks'] = isset($_POST["idMarksData"]) ? htmlspecialchars($_POST["idMarksData"]) : "None";
+    $_SESSION['idMarks'] = isset($_POST["idMarks"]) ? htmlspecialchars($_POST["idMarks"]) : "None";
     $_SESSION['holds'] = isset($_POST["holds"]) ? htmlspecialchars($_POST["holds"]) : "";
     $_SESSION['alias'] = isset($_POST["alias"]) ? htmlspecialchars($_POST["alias"]) : "";
     $_SESSION['charges'] = isset($_POST["charges"]) ? htmlspecialchars($_POST["charges"]) : "";
@@ -127,161 +127,9 @@ function formatCharges($charges)
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="preview.css">
     <title>Print Preview</title>
-    <style>
-                      
-                      body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
 
-
-        /* Wrapper for all Containers */
-        .page-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            /* Centers containers if needed */
-            gap: 20px;
-            /* Space between each container */
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-
-        /* Ensure text is always underlined */
-        .underline {
-            display: inline-block;
-            min-width: 80px;
-            /* Ensures underline fits empty space */
-            text-align: left;
-            padding-inline: 10px;
-
-        }
-
-        /* Ensures a solid contract-style underline */
-        .contract-field {
-            display: inline-block;
-            min-width: 80px;
-            /* Adjust to fit contract spacing */
-            border-bottom: 1px solid #0000002b;
-            /* Keeps it solid */
-            font-size: 12px;
-
-        }
-
-        .container {
-            display: flex;
-            flex-direction: column;
-
-        }
-
-
-
-        /* Each Container (Row) */
-        .container {
-            display: flex;
-            align-items: center;
-            width: 80%;
-            /* Adjust width for better readability */
-            max-width: 1200px;
-            /* Ensures it doesn’t get too large on big screens */
-            gap: 10px;
-            padding: 15px;
-            border-radius: 8px;
-            background: #fff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            flex-direction: row;
-        }
-
-        /* Left Section */
-        .left {
-            display: flex;
-            width: 30%;
-            gap: 5px;
-            flex-direction: column;
-        }
-
-        .card {
-            background: white;
-            height: 25px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            padding: 5px 10px;
-            font-size: 14px;
-            font-weight: bold;
-            background-color: lightblue;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-
-        .card-content {
-            flex-grow: 1;
-            text-align: left;
-        }
-
-        /* Right Section */
-        .right {
-            width: 70%;
-            height: 100px;
-            background: white;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            font-weight: bold;
-            background-color: lightcoral;
-            padding: 10px;
-        }
-
-        label {
-            font-weight: lighter;
-            display: block;
-            font-size: 12px;
-        }
-
-        .print-btn {
-            background-color: green;
-            color: white;
-            padding: 10px;
-            border: none;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .back-btn {
-            background-color: red;
-            color: white;
-            padding: 10px;
-            border: none;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        /* Ensure text is always underlined */
-        .underline {
-            display: inline-block;
-            min-width: 80px;
-            /* Ensures underline fits empty space */
-            text-align: left;
-            padding-inline: 10px;
-
-        }
-
-        @media print {
-
-            .back-btn,
-            .print-btn {
-                display: none;
-            }
-        }
-    </style>
 </head>
 
 
@@ -324,35 +172,35 @@ function formatCharges($charges)
 
     <!-- Row 2: HGT, WGT, BOND AMOUNT, COUNTY -->
     <div class="container">
-    <div class="card">
-    <div class="card-content">
-            <p><strong>HGT:</strong> <span
-                    class="contract-field"><?php echo htmlspecialchars_decode(formatUnderline(formatHeight($_SESSION['height'] ?? ''), 10)); ?></span>
-            </p>
-            </div>
-</div>
-
-
-            <div class="card">
+        <div class="card">
             <div class="card-content">
-            <p><strong>WGT:</strong> <span
-                    class="contract-field"><?php echo formatUnderline($_SESSION['weight'] ?? '', 10); ?></span></p>
-                    </div>
-</div>
+                <p><strong>HGT:</strong> <span
+                        class="contract-field"><?php echo htmlspecialchars_decode(formatUnderline(formatHeight($_SESSION['height'] ?? ''), 10)); ?></span>
+                </p>
+            </div>
+        </div>
 
-                    <div class="card">
-                    <div class="card-content">
-                    <p><strong>BOND AMOUNT:</strong> <span
-                    class="contract-field"><?php echo formatBondAmount($_SESSION['bondAmount'] ?? ''); ?></span></p>
-                    </div>
-</div>
 
-                    <div class="card">
-                    <div class="card-content">
-                    <p><strong>COUNTY:</strong> <span
-                    class="contract-field"><?php echo formatUnderline($_SESSION['county'] ?? '', 15); ?></span></p>
-                    </div>
-</div>
+        <div class="card">
+            <div class="card-content">
+                <p><strong>WGT:</strong> <span
+                        class="contract-field"><?php echo formatUnderline($_SESSION['weight'] ?? '', 10); ?></span></p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-content">
+                <p><strong>BOND AMOUNT:</strong> <span
+                        class="contract-field"><?php echo formatBondAmount($_SESSION['bondAmount'] ?? ''); ?></span></p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-content">
+                <p><strong>COUNTY:</strong> <span
+                        class="contract-field"><?php echo formatUnderline($_SESSION['county'] ?? '', 15); ?></span></p>
+            </div>
+        </div>
 
     </div>
 
@@ -450,55 +298,802 @@ function formatCharges($charges)
                             class="contract-field"><?php echo $_SESSION['ssnInput'] ?? ''; ?></span></p>
                 </div>
             </div>
-            </div>
+        </div>
 
-            <!-- Row 5-6-7: CHARGES - RIGHT -->
-            <div class="right">
-                <div class="card-content">
-                    <p><strong>CHARGES:</strong></p>
-                    <p><?php echo formatCharges($_SESSION['charges']); ?></p>
-                </div>
-            </div>
-    </div>
-    
-
-    <!-- Row 8: Def Name & Address -->
-    <div class="container">
-    <div class="card">
-    <div class="card-content">
-        <p><strong>DEFENDANT NAME:</strong> <span
-                class="contract-field"><?php echo formatFullName($_SESSION['defFirstName'], $_SESSION['defMiddleName'], $_SESSION['lastName']); ?></span>
-        </p>
-    </div>
-    </div>
-    </div>
-
-
-        <!-- Row 9: Def Name & Address -->
-        <div class="container">
-        <div class="card">
-        <div class="card-content">
-        <p><strong>COSIGNER NAME:</strong> <span
-                class="contract-field"><?php echo formatFullName($_SESSION['cosFirstName'], $_SESSION['cosMiddleName'], $_SESSION['coslastName']); ?></span>
-        </p>
-    </div>
-
-
-
-
-    <!-- Row xxx: THE FINAL ROW -->
-    <div class="container">
-        <div class="card">
+        <!-- Row 5-6-7: CHARGES - RIGHT -->
+        <div class="right">
             <div class="card-content">
-                <button class="print-btn" onclick="window.print()">Print</button>
-                <button class="back-btn" onclick="window.location.href='index.php'">Go Back</button>
+                <p><strong>CHARGES:</strong></p>
+                <p><?php echo formatCharges($_SESSION['charges']); ?></p>
             </div>
         </div>
     </div>
-</div>
-</div>
-</div>
-</div>
+
+
+    <!-- Row 8: Def Name & Address -->
+    <div class="containerDEF">
+        <div class="card">
+            <div class="card-content">
+                <p><strong>DEFENDANT NAME:</strong> <span
+                        class="contract-field"><?php echo formatFullName($_SESSION['defFirstName'], $_SESSION['defMiddleName'], $_SESSION['lastName']); ?></span>
+                </p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-content">
+                <p><strong>ADD:</strong>
+                </p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-content">
+                <p><strong>CELL #:</strong>
+                </p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-content">
+                <p><strong>EMAIL:</strong>
+                </p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-content">
+                <p><strong>VEHICLE YEAR:</strong>
+                </p>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-content">
+                <p><strong>MAKE:</strong>
+                </p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-content">
+                <p><strong>MODEL:</strong>
+                </p>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-content">
+                <p><strong>COLOR:</strong>
+                </p>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-content">
+                <p><strong>TAG#:</strong>
+                </p>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-content">
+                <p><strong>EMPLOYER:</strong>
+                </p>
+            </div>
+        </div>
+
+
+
+        <div class="card">
+            <div class="card-content">
+                <p><strong>PHONE:</strong>
+                </p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-content">
+                <p><strong>CITY:</strong>
+                </p>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-content">
+                <p><strong>STATE:</strong>
+                </p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-content">
+                <p><strong>PHONE:</strong>
+                </p>
+            </div>
+        </div>
+
+
+
+        <div class="card">
+            <div class="card-content">
+                <p><strong>PREVIOUS EMPLOYER:</strong>
+                </p>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-content">
+                <p><strong>CITY</strong>
+                </p>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-content">
+                <p><strong>STATE:</strong>
+                </p>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-content">
+                <p><strong>WHEN:</strong>
+                </p>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-content">
+                <p><strong>PREVIOUS ARREST</strong>
+                </p>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-content">
+                <p><strong>PREVIOUS ARREST</strong>
+                </p>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-content">
+                <p><strong>PREVIOUS ARREST</strong>
+                </p>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-content">
+                <p><strong>PREVIOUS ARREST</strong>
+                </p>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-content">
+                <p><strong>PREVIOUS ARREST</strong>
+                </p>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-content">
+                <p><strong>PREVIOUS ARREST</strong>
+                </p>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-content">
+                <p><strong>PREVIOUS ARREST</strong>
+                </p>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-content">
+                <p><strong>PREVIOUS ARREST</strong>
+                </p>
+            </div>
+        </div>
+
+
+
+
+    </div>
+
+
+
+    <!-- Row 9: DEFENDANTS SPOUSE -->
+    <div class="container">
+        <div class="card">
+            <div class="card-content">
+                <p><strong> DEFENDANTS MOTHER-FATHER AND 3 REFERENCES : </strong>
+                </p>
+            </div>
+
+
+            <div class="card">
+                <div class="card-content">
+                    <p><strong> DEFENDANTS SPOUSE NAME: </strong>
+                    </p>
+                </div>
+
+                <div class="card">
+                    <div class="card-content">
+                        <p><strong> DEFENDANTS SPOUSE NAME: </strong>
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-content">
+                            <p><strong> DEFENDANTS SPOUSE NAME: </strong>
+                            </p>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-content">
+                                <p><strong> DEFENDANTS SPOUSE NAME: </strong>
+                                </p>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-content">
+                                    <p><strong> DEFENDANTS SPOUSE NAME: </strong>
+                                    </p>
+                                </div>
+
+                                <div class="card">
+                                    <div class="card-content">
+                                        <p><strong> DEFENDANTS SPOUSE NAME: </strong>
+                                        </p>
+                                    </div>
+
+                                    <div class="card">
+                                        <div class="card-content">
+                                            <p><strong> DEFENDANTS SPOUSE NAME: </strong>
+                                            </p>
+                                        </div>
+
+
+                                        <div class="card">
+                                            <div class="card-content">
+                                                <p><strong> DEFENDANTS SPOUSE NAME: </strong>
+                                                </p>
+                                            </div>
+
+
+                                            <div class="card">
+                                                <div class="card-content">
+                                                    <p><strong> DEFENDANTS SPOUSE NAME: </strong>
+                                                    </p>
+                                                </div>
+
+                                                <div class="card">
+                                                    <div class="card-content">
+                                                        <p><strong> DEFENDANTS SPOUSE NAME: </strong>
+                                                        </p>
+                                                    </div>
+
+                                                    <div class="card">
+                                                        <div class="card-content">
+                                                            <p><strong> DEFENDANTS SPOUSE NAME: </strong>
+                                                            </p>
+                                                        </div>
+
+                                                        <div class="card">
+                                                            <div class="card-content">
+                                                                <p><strong> DEFENDANTS SPOUSE NAME: </strong>
+                                                                </p>
+                                                            </div>
+
+                                                            <div class="card">
+                                                                <div class="card-content">
+                                                                    <p><strong> DEFENDANTS SPOUSE NAME: </strong>
+                                                                    </p>
+                                                                </div>
+
+                                                                <div class="card">
+                                                                    <div class="card-content">
+                                                                        <p><strong> DEFENDANTS SPOUSE NAME: </strong>
+                                                                        </p>
+                                                                    </div>
+
+
+                                                                    <div class="card">
+                                                                        <div class="card-content">
+                                                                            <p><strong> DEFENDANTS SPOUSE NAME:
+                                                                                </strong>
+                                                                            </p>
+                                                                        </div>
+
+                                                                        <div class="card">
+                                                                            <div class="card-content">
+                                                                                <p><strong> DEFENDANTS SPOUSE NAME:
+                                                                                    </strong>
+                                                                                </p>
+                                                                            </div>
+
+
+
+                                                                            <!-- Row 10: DEFENDANTS MOTHER-FATHER AND 3 REFERENCES -->
+                                                                            <div class="container">
+                                                                                <div class="card">
+                                                                                    <div class="card-content">
+                                                                                        <p><strong> DEFENDANTS MOTHER:
+                                                                                            </strong>
+
+                                                                                        </p>
+                                                                                    </div>
+
+                                                                                    <div class="card">
+                                                                                        <div class="card-content">
+                                                                                            <p><strong> DEFENDANTS
+                                                                                                    MOTHER: </strong>
+
+                                                                                            </p>
+                                                                                        </div>
+
+                                                                                        <div class="card">
+                                                                                            <div class="card-content">
+                                                                                                <p><strong> DEFENDANTS
+                                                                                                        MOTHER:
+                                                                                                    </strong>
+
+                                                                                                </p>
+                                                                                            </div>
+
+                                                                                            <div class="card">
+                                                                                                <div
+                                                                                                    class="card-content">
+                                                                                                    <p><strong>
+                                                                                                            DEFENDANTS
+                                                                                                            MOTHER:
+                                                                                                        </strong>
+
+                                                                                                    </p>
+                                                                                                </div>
+
+                                                                                                <div class="card">
+                                                                                                    <div
+                                                                                                        class="card-content">
+                                                                                                        <p><strong>
+                                                                                                                DEFENDANTS
+                                                                                                                MOTHER:
+                                                                                                            </strong>
+                                                                                                    </div>
+
+
+                                                                                                    <div class="card">
+                                                                                                        <div
+                                                                                                            class="card-content">
+                                                                                                            <p><strong>
+                                                                                                                    DEFENDANTS
+                                                                                                                    FATHER:</strong>
+                                                                                                            </p>
+                                                                                                        </div>
+
+                                                                                                        <div
+                                                                                                            class="card">
+                                                                                                            <div
+                                                                                                                class="card-content">
+                                                                                                                <p><strong>
+                                                                                                                        DEFENDANTS
+                                                                                                                        MOTHER:
+                                                                                                                    </strong>
+                                                                                                                </p>
+                                                                                                            </div>
+
+
+                                                                                                            <div
+                                                                                                                class="card">
+                                                                                                                <div
+                                                                                                                    class="card-content">
+                                                                                                                    <p><strong>
+                                                                                                                            DEFENDANTS
+                                                                                                                            MOTHER:
+                                                                                                                        </strong>
+
+                                                                                                                    </p>
+                                                                                                                </div>
+
+                                                                                                                <div
+                                                                                                                    class="card">
+                                                                                                                    <div
+                                                                                                                        class="card-content">
+                                                                                                                        <p><strong>
+                                                                                                                                DEFENDANTS
+                                                                                                                                MOTHER:
+                                                                                                                            </strong>
+
+                                                                                                                        </p>
+                                                                                                                    </div>
+
+                                                                                                                    <div
+                                                                                                                        class="card">
+                                                                                                                        <div
+                                                                                                                            class="card-content">
+                                                                                                                            <p><strong>
+                                                                                                                                    REFERENCE
+                                                                                                                                    1
+                                                                                                                                    :
+                                                                                                                                </strong>
+
+                                                                                                                            </p>
+                                                                                                                        </div>
+
+                                                                                                                        <div
+                                                                                                                            class="card">
+                                                                                                                            <div
+                                                                                                                                class="card-content">
+                                                                                                                                <p><strong>
+                                                                                                                                        REFERENCE
+                                                                                                                                        1
+                                                                                                                                        :
+                                                                                                                                    </strong>
+
+                                                                                                                                </p>
+                                                                                                                            </div>
+
+                                                                                                                            <div
+                                                                                                                                class="card">
+                                                                                                                                <div
+                                                                                                                                    class="card-content">
+                                                                                                                                    <p><strong>
+                                                                                                                                            REFERENCE
+                                                                                                                                            1
+                                                                                                                                            :
+                                                                                                                                        </strong>
+
+                                                                                                                                    </p>
+                                                                                                                                </div>
+
+                                                                                                                                <div
+                                                                                                                                    class="card">
+                                                                                                                                    <div
+                                                                                                                                        class="card-content">
+                                                                                                                                        <p><strong>
+                                                                                                                                                REFERENCE
+                                                                                                                                                1
+                                                                                                                                                :
+                                                                                                                                            </strong>
+
+                                                                                                                                        </p>
+                                                                                                                                    </div>
+
+                                                                                                                                    <div
+                                                                                                                                        class="card">
+                                                                                                                                        <div
+                                                                                                                                            class="card-content">
+                                                                                                                                            <p><strong>
+                                                                                                                                                    REFERENCE
+                                                                                                                                                    2
+                                                                                                                                                    :
+                                                                                                                                                </strong>
+
+                                                                                                                                            </p>
+                                                                                                                                        </div>
+
+                                                                                                                                        <div
+                                                                                                                                            class="card">
+                                                                                                                                            <div
+                                                                                                                                                class="card-content">
+                                                                                                                                                <p><strong>
+                                                                                                                                                        REFERENCE
+                                                                                                                                                        2
+                                                                                                                                                        :
+                                                                                                                                                    </strong>
+
+                                                                                                                                                </p>
+                                                                                                                                            </div>
+
+                                                                                                                                            <div
+                                                                                                                                                class="card">
+                                                                                                                                                <div
+                                                                                                                                                    class="card-content">
+                                                                                                                                                    <p><strong>
+                                                                                                                                                            REFERENCE
+                                                                                                                                                            2
+                                                                                                                                                            :
+                                                                                                                                                        </strong>
+
+                                                                                                                                                    </p>
+                                                                                                                                                </div>
+
+                                                                                                                                                <div
+                                                                                                                                                    class="card">
+                                                                                                                                                    <div
+                                                                                                                                                        class="card-content">
+                                                                                                                                                        <p><strong>
+                                                                                                                                                                REFERENCE
+                                                                                                                                                                2
+                                                                                                                                                                :
+                                                                                                                                                            </strong>
+
+                                                                                                                                                        </p>
+                                                                                                                                                    </div>
+
+
+
+
+                                                                                                                                                    <div
+                                                                                                                                                        class="card">
+                                                                                                                                                        <div
+                                                                                                                                                            class="card-content">
+                                                                                                                                                            <p><strong>
+                                                                                                                                                                    REFERENCE
+                                                                                                                                                                    3
+                                                                                                                                                                    :
+                                                                                                                                                                </strong>
+
+                                                                                                                                                            </p>
+                                                                                                                                                        </div>
+
+                                                                                                                                                        <div
+                                                                                                                                                            class="card">
+                                                                                                                                                            <div
+                                                                                                                                                                class="card-content">
+                                                                                                                                                                <p><strong>
+                                                                                                                                                                        REFERENCE3
+                                                                                                                                                                        3
+                                                                                                                                                                        :
+                                                                                                                                                                    </strong>
+
+                                                                                                                                                                </p>
+                                                                                                                                                            </div>
+
+                                                                                                                                                            <div
+                                                                                                                                                                class="card">
+                                                                                                                                                                <div
+                                                                                                                                                                    class="card-content">
+                                                                                                                                                                    <p><strong>
+                                                                                                                                                                            REFERENCE
+                                                                                                                                                                            3
+                                                                                                                                                                            :
+                                                                                                                                                                        </strong>
+
+                                                                                                                                                                    </p>
+                                                                                                                                                                </div>
+
+                                                                                                                                                                <div
+                                                                                                                                                                    class="card">
+                                                                                                                                                                    <div
+                                                                                                                                                                        class="card-content">
+                                                                                                                                                                        <p><strong>
+                                                                                                                                                                                REFERENCE
+                                                                                                                                                                                3
+                                                                                                                                                                                :
+                                                                                                                                                                            </strong>
+
+                                                                                                                                                                        </p>
+                                                                                                                                                                    </div>
+
+                                                                                                                                                                    <div
+                                                                                                                                                                        class="card">
+                                                                                                                                                                        <div
+                                                                                                                                                                            class="card-content">
+                                                                                                                                                                            <p><strong>
+                                                                                                                                                                                    DEFENDANT
+                                                                                                                                                                                    ATTORNEY:
+                                                                                                                                                                                </strong>
+
+                                                                                                                                                                            </p>
+                                                                                                                                                                        </div>
+
+
+                                                                                                                                                                        <div
+                                                                                                                                                                            class="card">
+                                                                                                                                                                            <div
+                                                                                                                                                                                class="card-content">
+                                                                                                                                                                                <p><strong>
+                                                                                                                                                                                        DEFENDANT
+                                                                                                                                                                                        ATTORNEY
+                                                                                                                                                                                        PHONE
+                                                                                                                                                                                        #:
+                                                                                                                                                                                    </strong>
+
+                                                                                                                                                                                </p>
+                                                                                                                                                                            </div>
+
+
+
+                                                                                                                                                                            <!-- Row 11: COS Name, ADDRESS, PHONE #, EMAIL, HOUSING, VEHICLE, EMPLOYMENT/HISTORY, PRIOR ARREST -->
+                                                                                                                                                                            <div
+                                                                                                                                                                                class="container">
+                                                                                                                                                                                <div
+                                                                                                                                                                                    class="card">
+                                                                                                                                                                                    <div
+                                                                                                                                                                                        class="card-content">
+                                                                                                                                                                                        <p><strong>COSIGNER
+                                                                                                                                                                                                NAME:</strong>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </div>
+
+                                                                                                                                                                                <div
+                                                                                                                                                                                    class="card">
+                                                                                                                                                                                    <div
+                                                                                                                                                                                        class="card-content">
+                                                                                                                                                                                        <p><strong>DEFENDANT
+                                                                                                                                                                                                NAME:</strong>
+                                                                                                                                                                                            <span
+                                                                                                                                                                                                class="contract-field"><?php echo formatFullName($_SESSION['defFirstName'], $_SESSION['defMiddleName'], $_SESSION['lastName']); ?></span>
+                                                                                                                                                                                        </p>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </div>
+
+                                                                                                                                                                                <div
+                                                                                                                                                                                    class="card">
+                                                                                                                                                                                    <div
+                                                                                                                                                                                        class="card-content">
+                                                                                                                                                                                        <p><strong>ADD:</strong>
+                                                                                                                                                                                        </p>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </div>
+
+                                                                                                                                                                                <div
+                                                                                                                                                                                    class="card">
+                                                                                                                                                                                    <div
+                                                                                                                                                                                        class="card-content">
+                                                                                                                                                                                        <p><strong>CELL
+                                                                                                                                                                                                #:</strong>
+                                                                                                                                                                                        </p>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </div>
+
+                                                                                                                                                                                <div
+                                                                                                                                                                                    class="card">
+                                                                                                                                                                                    <div
+                                                                                                                                                                                        class="card-content">
+                                                                                                                                                                                        <p><strong>EMAIL:</strong>
+                                                                                                                                                                                        </p>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </div>
+
+                                                                                                                                                                                <div
+                                                                                                                                                                                    class="card">
+                                                                                                                                                                                    <div
+                                                                                                                                                                                        class="card-content">
+                                                                                                                                                                                        <p><strong>VEHICLE
+                                                                                                                                                                                                YEAR:</strong>
+                                                                                                                                                                                        </p>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </div>
+
+
+                                                                                                                                                                                <div
+                                                                                                                                                                                    class="card">
+                                                                                                                                                                                    <div
+                                                                                                                                                                                        class="card-content">
+                                                                                                                                                                                        <p><strong>MAKE:</strong>
+                                                                                                                                                                                        </p>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </div>
+
+                                                                                                                                                                                <div
+                                                                                                                                                                                    class="card">
+                                                                                                                                                                                    <div
+                                                                                                                                                                                        class="card-content">
+                                                                                                                                                                                        <p><strong>MODEL:</strong>
+                                                                                                                                                                                        </p>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </div>
+
+
+                                                                                                                                                                                <div
+                                                                                                                                                                                    class="card">
+                                                                                                                                                                                    <div
+                                                                                                                                                                                        class="card-content">
+                                                                                                                                                                                        <p><strong>COLOR:</strong>
+                                                                                                                                                                                        </p>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </div>
+
+
+                                                                                                                                                                                <div
+                                                                                                                                                                                    class="card">
+                                                                                                                                                                                    <div
+                                                                                                                                                                                        class="card-content">
+                                                                                                                                                                                        <p><strong>TAG#:</strong>
+                                                                                                                                                                                        </p>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </div>
+
+
+                                                                                                                                                                                <div
+                                                                                                                                                                                    class="card">
+                                                                                                                                                                                    <div
+                                                                                                                                                                                        class="card-content">
+                                                                                                                                                                                        <p><strong>EMPLOYER:</strong>
+                                                                                                                                                                                        </p>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </div>
+
+
+
+                                                                                                                                                                                <div
+                                                                                                                                                                                    class="card">
+                                                                                                                                                                                    <div
+                                                                                                                                                                                        class="card-content">
+                                                                                                                                                                                        <p><strong>PHONE:</strong>
+                                                                                                                                                                                        </p>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </div>
+
+                                                                                                                                                                                <div
+                                                                                                                                                                                    class="card">
+                                                                                                                                                                                    <div
+                                                                                                                                                                                        class="card-content">
+                                                                                                                                                                                        <p><strong>CITY:</strong>
+                                                                                                                                                                                        </p>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </div>
+
+
+                                                                                                                                                                                <div
+                                                                                                                                                                                    class="card">
+                                                                                                                                                                                    <div
+                                                                                                                                                                                        class="card-content">
+                                                                                                                                                                                        <p><strong>STATE:</strong>
+                                                                                                                                                                                        </p>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </div>
+
+                                                                                                                                                                                <div
+                                                                                                                                                                                    class="card">
+                                                                                                                                                                                    <div
+                                                                                                                                                                                        class="card-content">
+                                                                                                                                                                                        <p><strong>PHONE:</strong>
+                                                                                                                                                                                        </p>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </div>
+
+
+
+
+
+                                                                                                                                                                                <!-- Row xxx: THE FINAL ROW -->
+                                                                                                                                                                                <div
+                                                                                                                                                                                    class="container">
+                                                                                                                                                                                    <div
+                                                                                                                                                                                        class="card">
+                                                                                                                                                                                        <div
+                                                                                                                                                                                            class="card-content">
+                                                                                                                                                                                            <button
+                                                                                                                                                                                                class="print-btn"
+                                                                                                                                                                                                onclick="window.print()">Print</button>
+                                                                                                                                                                                            <button
+                                                                                                                                                                                                class="back-btn"
+                                                                                                                                                                                                onclick="window.location.href='index.php'">Go
+                                                                                                                                                                                                Back</button>
+                                                                                                                                                                                        </div>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </div>
+                                                                                                                                                                            </div>
+
+
+
+
+                                                                                                                                                                        </div>
+                                                                                                                                                                    </div>
+                                                                                                                                                                </div>
 
 
 
@@ -509,6 +1104,6 @@ function formatCharges($charges)
 
 
 
-</body>
+                                                                                                                                                                </body>
 
 </html>
