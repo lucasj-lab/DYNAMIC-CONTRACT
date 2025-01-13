@@ -1,0 +1,22 @@
+<h2>DEFENDANT MIRRORED DATA</h2>
+<p><strong>FIRST NAME:</strong> <input type="text" id="defendantFirstNameCopy" class="mirror-target"></p>
+<p><strong>MIDDLEPhone NAME:</strong> <input type="text" id="defendantmiddleNameCopy" class="mirror-target"></p>
+<p><strong>LAST NAME:</strong> <input type="text" id="defendantLastNameCopy" class="mirror-target"></p>
+<p><strong>PHONE NUMBER:</strong> <input type="text" id="ddefendantPhoneCopy" class="mirror-target"></p>
+
+<h2>MOTHER MIRRORED DATA</h2>
+<p><strong>FIRST NAME:</strong> <input type="text" id="motherFirstNameCopy" class="mirror-target"></p>
+<p><strong>MIDDLE NAME:</strong> <input type="text" id="motherMiddleNameCopy" class="mirror-target"></p>
+<p><strong>LAST NAME:</strong> <input type="text" id="motherLastNameCopy" class="mirror-target"></p>
+<p><strong>City:</strong> <input type="text" id="motherCityCopy" class="mirror-target"></p>
+<p><strong>State:</strong> <input type="text" id="motherStateCopy" class="mirror-target"></p>
+<p><strong>PHONE #:</strong> <input type="text" id="motherPhoneCopy" class="mirror-target"></p>
+
+
+<h2>FATHER MIRRORED DATA</h2>
+<p><strong>FIRST NAME:</strong> <input type="text" id="fatherFirstNameCopy" class="mirror-target"></p>
+<p><strong>MIDDLE NAME:</strong> <input type="text" id="fatherMiddleNameCopy" class="mirror-target"></p>
+<p><strong>LAST NAME:</strong> <input type="text" id="fatherLastNameCopy" class="mirror-target"></p>
+<p><strong>CITY:</strong> <input type="text" id="fatherCityCopy" class="mirror-target"></p>
+<p><strong>STATE:</strong> <input type="text" id="fatherStateCopy" class="mirror-target"></p>
+<p><strong>PHONE #:</strong> <input type="text" id="fatherPhoneCopy, fatherPhoneReadOnly" class="mirror-target"></p>

@@ -3,7 +3,7 @@ body {
     display: flex;
     padding: 0;
     margin: 0;
-    background-color: rgb(255, 255, 255);
+    background-color: rgb(42 47 65);
     text-align: center;
     justify-content: center;
     flex-wrap: wrap;
@@ -37,6 +37,7 @@ body {
     max-width: 1200px;
     margin: auto;
     text-align: center;
+    /* background-color: #7788991f; */
 }
 
 /* Input Fields */
@@ -56,16 +57,28 @@ input {
    
     
      /* Ensures inputs align in the center */
-    width: 100%;
-    max-width: 300px;
-    gap: 10px;
-    padding: 15px;
-    border-radius: 10px;
-    background: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    flex-wrap: wrap;
-    flex-direction: column;
+   
+width: 100%;
+   
+max-width: 300px;
+   
+gap: 10px;
+   
+padding: 15px;
+   
+border-radius: 10px;
+   
+background: #794b7d70;
+   
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+   
+text-align: center;
+   
+flex-wrap: wrap;
+   
+flex-direction: column;
+   
+color: ghostwhite;
 }
 
 /* Button Styling */
@@ -78,12 +91,6 @@ button {
     border-radius: 5px;
 }
 
-/* Ensure responsive layout */
-@media (max-width: 599px) {
-    .container-wrapper {
-        grid-template-columns: repeat(1, 1fr); /* Single column for small screens */
-    }
-}
 
 /* Confirm and Edit Buttons */
 .confirm-btn {
@@ -104,10 +111,13 @@ button {
     margin-top: 10px;
 }
 
+
+
+
 /* Responsive Grid Layout - Adjusts the number of containers based on screen width */
 @media (min-width: 1200px) {
     .container-wrapper {
-        grid-template-columns: repeat(4, 1fr); /* 4 columns */
+        grid-template-columns: repeat(6, 1fr); /* 4 columns */
     }
 }
 
@@ -131,19 +141,18 @@ button {
 
 /* Card Styling */
 .card {
-    background: white;
+    background: #ffffff;
     min-height: 25px;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
-    flex-direction: column;
     padding: 10px;
     font-size: 14px;
     font-weight: bold;
-    background-color: lightblue;
+    background-color: #353b51;
     overflow: hidden;
     white-space: normal;
-    word-wrap: break-word;
+    /* word-wrap: break-word; */
 }
 
 /* Card Content */
@@ -152,6 +161,7 @@ button {
     text-align: left;
     overflow-wrap: break-word;
     white-space: normal;
+    color: ghostwhite;
 }
 
 /* Input Styling */
@@ -167,4 +177,17 @@ input[disabled] {
     background-color: #f0f0f0;
     color: #a0a0a0;
     cursor: not-allowed;
+}
+/* Ensure popups are hidden by default */
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 15px;
+    border: 1px solid black;
+    box-shadow: 0px 0px 10px #888;
+    z-index: 1000;
 }

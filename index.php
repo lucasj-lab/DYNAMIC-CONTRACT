@@ -321,6 +321,8 @@ for ($i = 1; $i <= 3; $i++) {
     }
 }
 $_SESSION['confirmed'] = $_POST['confirmed'] ?? []; // Track confirmed fields
+
+
 ?>
 
 
@@ -336,190 +338,328 @@ $_SESSION['confirmed'] = $_POST['confirmed'] ?? []; // Track confirmed fields
 
 
 
-<div class="contianer-wrapper">
 
-        <form action="index.php" method="post">
-          
 
-            <?php if (!empty($_SESSION['errors'])): ?>
+<form action="index.php" method="post">
+<div class="container-wrapper">     
+        <?php if (!empty($_SESSION['errors'])): ?>
                 <div style="color: red;">
                     <?php foreach ($_SESSION['errors'] as $error) {
                         echo "<p>$error</p>";
                     }
                     unset($_SESSION['errors']); ?>
                 </div>
-            <?php endif; ?>
-            <div class="container">
-    <div class="card">
-        <div class="card-content">
-            <h2>DEFENDANT MIRRORED DATA</h2>
-            <p><strong>First Name:</strong> <input type="text" id="defendantFirstNameCopy" class="mirror-target"></p>
-            <p><strong>Middle Name:</strong> <input type="text" id="defendantMiddleNameCopy" class="mirror-target"></p>
-            <p><strong>Last Name:</strong> <input type="text" id="defendantLastNameCopy" class="mirror-target"></p>
-            <p><strong>Phone Number:</strong> <input type="text" id="defendantPhoneCopy" class="mirror-target"></p>
-
-            <h2>MOTHER MIRRORED DATA</h2>
-            <p><strong>First Name:</strong> <input type="text" id="motherFirstNameCopy" class="mirror-target"></p>
-            <p><strong>Last Name:</strong> <input type="text" id="motherLastNameCopy" class="mirror-target"></p>
-            <p><strong>Phone Number:</strong> <input type="text" id="motherPhoneCopy" class="mirror-target"></p>
-            <p><strong>City:</strong> <input type="text" id="motherCityCopy" class="mirror-target"></p>
-            <p><strong>State:</strong> <input type="text" id="motherStateCopy" class="mirror-target"></p>
-
-            <h2>FATHER MIRRORED DATA</h2>
-            <p><strong>First Name:</strong> <input type="text" id="fatherFirstNameCopy" class="mirror-target"></p>
-            <p><strong>Last Name:</strong> <input type="text" id="fatherLastNameCopy" class="mirror-target"></p>
-            <p><strong>Phone Number:</strong> <input type="text" id="fatherPhoneCopy" class="mirror-target"></p>
-            <p><strong>City:</strong> <input type="text" id="fatherCityCopy" class="mirror-target"></p>
-            <p><strong>State:</strong> <input type="text" id="fatherStateCopy" class="mirror-target"></p>
-        </div>
-    </div>
-</div>
-
-
-            <div class="container entry-group">
+            <?php endif; ?>           
+<div class="container">
     <h1>DEFENDANT</h1>
     <div class="card">
-        <div class="card-content" id="row15">
+        <div class="card-content">
             <p>
                 <label for="defendantFirstName">FIRST NAME:</label>
                 <input type="text" id="defendantFirstName" name="address[defendant][name][first]" 
                     value="<?php echo $_SESSION['defendant']['name']['first'] ?? ''; ?>" 
-                    class="name-field first mirror-source" data-target="defendantFirstNameCopy" required>
+                    class="name-field first mirror-source" data-target="defendantFirstNameCopy, defendantFirstNameReadOnly" required>
+            </p>
+            <p>
+                <label for="defendantMiddleName">MIDDLE NAME:</label>
+                <input type="text" id="defendantMiddleName" name="address[defendant][name][middle]" 
+                    value="<?php echo $_SESSION['defendant']['name']['middle'] ?? ''; ?>" 
+                    class="name-field last mirror-source" data-target="defendantmiddleNameCopy, defendantMiddleNameReadOnly" >
             </p>
             <p>
                 <label for="defendantLastName">LAST NAME:</label>
                 <input type="text" id="defendantLastName" name="address[defendant][name][last]" 
                     value="<?php echo $_SESSION['defendant']['name']['last'] ?? ''; ?>" 
-                    class="name-field last mirror-source" data-target="defendantLastNameCopy" required>
+                    class="name-field last mirror-source" data-target="defendantLastNameCopy, defendantLastNameReadOnly" required>
             </p>
             <p>
                 <label for="defendantPhone">PHONE NUMBER:</label>
                 <input type="text" id="defendantPhone" name="defendant_phone" 
                     value="<?php echo $_SESSION['defendant']['phone'] ?? ''; ?>" 
-                    class="phone-field mirror-source" data-target="defendantPhoneCopy" required>
-            </p>
+                    class="phone-field mirror-source" data-target="defendantPhoneCopy, defendantPhoneReadOnly" required>
+            </p> 
         </div>
     </div>
 </div>
 
-<div class="container entry-group">
-    <h1>FATHER</h1>
-    <div class="card">
-        <div class="card-content" id="row17">
-            <p>
-                <label for="fatherFirstName">FIRST NAME:</label>
-                <input type="text" id="fatherFirstName" name="address[defendant][parents][father][name][first]" 
-                    value="<?php echo $_SESSION['defendant']['parents']['father']['name']['first'] ?? ''; ?>" 
-                    class="name-field first mirror-source" data-target="fatherFirstNameCopy" required>
-            </p>
-            <p>
-                <label for="fatherLastName">LAST NAME:</label>
-                <input type="text" id="fatherLastName" name="address[defendant][parents][father][name][last]" 
-                    value="<?php echo $_SESSION['defendant']['parents']['father']['name']['last'] ?? ''; ?>" 
-                    class="name-field last mirror-source" data-target="fatherLastNameCopy" required>
-            </p>
-            <p>
-                <label for="fatherPhone">PHONE NUMBER:</label>
-                <input type="text" id="fatherPhone" name="father_phone" 
-                    value="<?php echo $_SESSION['defendant']['parents']['father']['phone'] ?? ''; ?>" 
-                    class="phone-field mirror-source" data-target="fatherPhoneCopy" required>
-            </p>
-        </div>
-    </div>
-</div>
-<div class="container entry-group">
+<div class="container">
     <h1>MOTHER</h1>
     <div class="card">
-        <div class="card-content" id="row16">
+        <div class="card-content">
             <p>
                 <label for="motherFirstName">FIRST NAME:</label>
                 <input type="text" id="motherFirstName" name="address[defendant][parents][mother][name][first]" 
                     value="<?php echo $_SESSION['defendant']['parents']['mother']['name']['first'] ?? ''; ?>" 
-                    class="name-field first mirror-source" data-target="motherFirstNameCopy" required>
+                    class="name-field first mirror-source" data-target="motherFirstNameCopy, motherFirstNameReadOnly" required>
             </p>
             <p>
+                <label for="motherMiddleName">MIDDLE NAME:</label>
+                <input type="text" id="motherMiddleName" name="address[defendant][parents][mother][name][middle]" 
+                    value="<?php echo $_SESSION['defendant']['parents']['mother']['name']['middle'] ?? ''; ?>" 
+                    class="name-field middle mirror-source" data-target="motherMiddleNameCopy, mothermiddleNameReadOnly" >
+            </p>
+             <p>
                 <label for="motherLastName">LAST NAME:</label>
                 <input type="text" id="motherLastName" name="address[defendant][parents][mother][name][last]" 
                     value="<?php echo $_SESSION['defendant']['parents']['mother']['name']['last'] ?? ''; ?>" 
-                    class="name-field last mirror-source" data-target="motherLastNameCopy" required>
+                    class="name-field last mirror-source" data-target="motherLastNameCopy, motherLastNameReadOnly" required>
             </p>
             <p>
-                <label for="motherPhone">PHONE NUMBER:</label>
+    <label for="motherCity">CITY:</label>
+    <input type="text" id="motherCity" name="address[defendant][parents][mother][city]" 
+        value="<?php echo $_SESSION['defendant']['parents']['mother']['city'] ?? ''; ?>" 
+        class="mirror-source" data-target="motherCityCopy, motherCityReadOnly" required>
+</p>
+            <p>
+                <label for="motherState">STATE:</label>
+                <input type="text" id="motherState" name="address[defendant][parents][mother][state]" 
+                    value="<?php echo $_SESSION['defendant']['parents']['mother']['state'] ?? ''; ?>" 
+                    class="mirror-source" data-target="motherStateCopy, motherStateReadOnly" required>
+            </p>
+            <p>               <label for="motherPhone">PHONE NUMBER:</label>
                 <input type="text" id="motherPhone" name="mother_phone" 
                     value="<?php echo $_SESSION['defendant']['parents']['mother']['phone'] ?? ''; ?>" 
-                    class="phone-field mirror-source" data-target="motherPhoneCopy" required>
+                    class="phone-field mirror-source" data-target="motherPhoneCopy, motherPhoneReadOnly" required>
             </p>
         </div>
     </div>
 </div>
 
+<div class="container">
+    <h1>FATHER</h1>
+    <div class="card">
+        <div class="card-content">
+            <p>
+            <label for="fatherFirstName">FIRST NAME:</label>
+<input type="text" id="fatherFirstName" name="address[defendant][parents][father][name][first]" 
+    value="<?php echo $_SESSION['defendant']['parents']['father']['name']['first'] ?? ''; ?>" 
+    class="name-field first mirror-source" data-target="fatherFirstNameCopy, fatherFirstNameReadOnly" required>
+</p>
+<p>
+<label for="fatherMiddleName">MIDDLE NAME:</label>
+<input type="text" id="fatherMiddleName" name="address[defendant][parents][father][name][middle]" 
+    value="<?php echo $_SESSION['defendant']['parents']['father']['name']['middle'] ?? ''; ?>" 
+    class="name-field middle mirror-source" data-target="fatherMiddleNameCopy, fathermiddleNameReadOnly" >
+</p>
+<p>
+<label for="fatherLastName">LAST NAME:</label>
+<input type="text" id="fatherLastName" name="address[defendant][parents][father][name][last]" 
+    value="<?php echo $_SESSION['defendant']['parents']['father']['name']['last'] ?? ''; ?>" 
+    class="name-field last mirror-source" data-target="fatherLastNameCopy, fatherLastNameReadOnly" required>
+</p>
+<p>
+<label for="fatherCity">CITY:</label>
+<input type="text" id="fatherCity" name="address[defendant][parents][father][city]" 
+value="<?php echo $_SESSION['defendant']['parents']['father']['city'] ?? ''; ?>" 
+class="mirror-source" data-target="fatherCityCopy, fatherCityReadOnly" required>
+</p>
+<p>
+<label for="fatherState">STATE:</label>
+<input type="text" id="fatherState" name="address[defendant][parents][father][state]" 
+    value="<?php echo $_SESSION['defendant']['parents']['father']['state'] ?? ''; ?>" 
+    class="mirror-source" data-target="fatherStateCopy, fatherStateReadOnly" required>
+</p>
+<p>               <label for="fatherPhone">PHONE NUMBER:</label>
+<input type="text" id="fatherPhone" name="father_phone" 
+    value="<?php echo $_SESSION['defendant']['parents']['father']['phone'] ?? ''; ?>" 
+    class="phone-field mirror-source" data-target="fatherPhoneCopy, fatherPhoneReadOnly" required>
+            </p>
+        </div>
     </div>
-    </div>
-    </div>        
-    <div class="container">
-    <h1>REFERENCES</h1>
+</div>
+
+ 
+
     <?php for ($i = 1; $i <= 3; $i++): ?>
-        <div class="card entry-group">
-            <div class="card-content" id="row<?= 18 + $i ?>">
-                <h2>REFERENCE <?= $i ?></h2>
+    <div class="container">
+    <h1>REFERENCE <?= $i ?></h1>
+        <div class="card">
+            <div class="card-content">
+              
                 <p>
                     <label for="ref<?= $i ?>_first">FIRST NAME:</label>
                     <input type="text" id="ref<?= $i ?>_first" name="address[defendant][references][<?= $i ?>][name][first]" 
                         value="<?php echo $_SESSION['defendant']['references'][$i]['name']['first'] ?? ''; ?>" 
-                        class="name-field first mirror-source" data-target="ref<?= $i ?>_firstCopy" required>
+                        class="name-field first mirror-source" data-target="ref<?= $i ?>_firstCopy, ref<?= $i ?>_firstReadOnly" required>
                 </p>
                 <p>
                     <label for="ref<?= $i ?>_last">LAST NAME:</label>
                     <input type="text" id="ref<?= $i ?>_last" name="address[defendant][references][<?= $i ?>][name][last]" 
                         value="<?php echo $_SESSION['defendant']['references'][$i]['name']['last'] ?? ''; ?>" 
-                        class="name-field last mirror-source" data-target="ref<?= $i ?>_lastCopy" required>
-                </p>
-                <p>
-                    <label for="ref<?= $i ?>_phone">PHONE NUMBER:</label>
-                    <input type="text" id="ref<?= $i ?>_phone" name="ref<?= $i ?>_phone" 
-                        value="<?php echo $_SESSION['defendant']['references'][$i]['phone'] ?? ''; ?>" 
-                        class="phone-field mirror-source" data-target="ref<?= $i ?>_phoneCopy" required>
+                        class="name-field last mirror-source" data-target="ref<?= $i ?>_lastCopy, ref<?= $i ?>_lastReadOnly" required>
                 </p>
                 <p>
                     <label for="ref<?= $i ?>_city">CITY:</label>
                     <input type="text" id="ref<?= $i ?>_city" name="ref<?= $i ?>_city" 
                         value="<?php echo $_SESSION['defendant']['references'][$i]['city'] ?? ''; ?>" 
-                        class="city-field mirror-source" data-target="ref<?= $i ?>_cityCopy" required>
+                        class="city-field mirror-source" data-target="ref<?= $i ?>_cityCopy, ref<?= $i ?>_cityReadOnly" required>
                 </p>
                 <p>
                     <label for="ref<?= $i ?>_state">STATE:</label>
                     <input type="text" id="ref<?= $i ?>_state" name="ref<?= $i ?>_state" 
                         value="<?php echo $_SESSION['defendant']['references'][$i]['state'] ?? ''; ?>" 
-                        class="state-field mirror-source" data-target="ref<?= $i ?>_stateCopy" required>
+                        class="state-field mirror-source" data-target="ref<?= $i ?>_stateCopy, ref<?= $i ?>_stateReadOnly" required>
                 </p>
                 <p>
                     <label for="ref<?= $i ?>_relation">RELATION:</label>
                     <input type="text" id="ref<?= $i ?>_relation" name="ref<?= $i ?>_relation" 
                         value="<?php echo $_SESSION['defendant']['references'][$i]['relation'] ?? ''; ?>" 
-                        class="relation-field mirror-source" data-target="ref<?= $i ?>_relationCopy" required>
+                        class="relation-field mirror-source" data-target="ref<?= $i ?>_relationCopy, ref<?= $i ?>_relationReadOnly" required>
+                </p>
+                <p>
+                    <label for="ref<?= $i ?>_phone">PHONE NUMBER:</label>
+                    <input type="text" id="ref<?= $i ?>_phone" name="ref<?= $i ?>_phone" 
+                        value="<?php echo $_SESSION['defendant']['references'][$i]['phone'] ?? ''; ?>" 
+                        class="phone-field mirror-source" data-target="ref<?= $i ?>_phoneCopy, ref<?= $i ?>_phoneReadOnly" required>
                 </p>
             </div>
         </div>
-    <?php endfor; ?>
+</div>
+<?php endfor; ?>
+
+
+
+
+<div class="container">
+<h1>DEFENDANT 2</h1>
+    <div class="card">
+        <div class="card-content">
+
+<p><strong>FIRST NAME:</strong> <input type="text" id="defendantFirstNameCopy" class="mirror-target"></p>
+<p><strong>MIDDLE NAME:</strong> <input type="text" id="defendantmiddleNameCopy" class="mirror-target"></p>
+<p><strong>LAST NAME:</strong> <input type="text" id="defendantLastNameCopy" class="mirror-target"></p>
+<p><strong>PHONE NUMBER:</strong> <input type="text" id="defendantPhoneCopy" class="mirror-target"></p>
+</div>
+</div>
+</div>
+
+
+<div class="container">
+<h1>MOTHER 2</h1>
+<div class="card">
+<div class="card-content">
+
+      
+
+<p><strong>FIRST NAME:</strong> <input type="text" id="motherFirstNameCopy" class="mirror-target"></p>
+<p><strong>MIDDLE NAME:</strong> <input type="text" id="motherMiddleNameCopy" class="mirror-target"></p>
+<p><strong>LAST NAME:</strong> <input type="text" id="motherLastNameCopy" class="mirror-target"></p>
+<p><strong>CITY:</strong> <input type="text" id="motherCityCopy" class="mirror-target"></p>
+<p><strong>STATE:</strong> <input type="text" id="motherStateCopy" class="mirror-target"></p>
+<p><strong>PHONE #:</strong> <input type="text" id="motherPhoneCopy" class="mirror-target"></p>
+</div>
+</div>
 </div>
 
 <div class="container">
+<h1>FATHER 2</h1>
     <div class="card">
         <div class="card-content">
-            <h2>REFERENCES MIRRORED DATA</h2>
-            <?php for ($i = 1; $i <= 3; $i++): ?>
-                <h3>REFERENCE <?= $i ?></h3>
+
+        
+<p><strong>FIRST NAME:</strong> <input type="text" id="fatherFirstNameCopy" class="mirror-target"></p>
+<p><strong>MIDDLE NAME:</strong> <input type="text" id="fatherMiddleNameCopy" class="mirror-target"></p>
+<p><strong>LAST NAME:</strong> <input type="text" id="fatherLastNameCopy" class="mirror-target"></p>
+<p><strong>CITY:</strong> <input type="text" id="fatherCityCopy" class="mirror-target"></p>
+<p><strong>STATE:</strong> <input type="text" id="fatherStateCopy" class="mirror-target"></p>
+<p><strong>PHONE #:</strong> <input type="text" id="fatherPhoneCopy" class="mirror-target"></p>
+
+</div>
+</div>
+</div>
+
+
+
+<?php for ($i = 1; $i <= 3; $i++): ?>        
+<div class="container">
+<h1>REFERENCE x<?= $i ?></h1>   
+<div class="card">
+        <div class="card-content">
+    
+        
+       
                 <p><strong>First Name:</strong> <input type="text" id="ref<?= $i ?>_firstCopy" class="mirror-target"></p>
                 <p><strong>Last Name:</strong> <input type="text" id="ref<?= $i ?>_lastCopy" class="mirror-target"></p>
-                <p><strong>Phone Number:</strong> <input type="text" id="ref<?= $i ?>_phoneCopy" class="mirror-target"></p>
                 <p><strong>City:</strong> <input type="text" id="ref<?= $i ?>_cityCopy" class="mirror-target"></p>
                 <p><strong>State:</strong> <input type="text" id="ref<?= $i ?>_stateCopy" class="mirror-target"></p>
                 <p><strong>Relation:</strong> <input type="text" id="ref<?= $i ?>_relationCopy" class="mirror-target"></p>
-            <?php endfor; ?>
+                <p><strong>Phone #:</strong> <input type="text" id="ref<?= $i ?>_phoneCopy" class="mirror-target"></p>
+          
         </div>
     </div>
 </div>
+<?php endfor; ?>
 
+
+<div class="container">
+    <h1>DEFENDANT 3</h1>
+        <div class="card">
+            <div class="card-content">
+    
+    <p><strong>FIRST NAME:</strong> <input type="text" id="defendantFirstNameReadOnly" class="mirror-target"></p>
+    <p><strong>MIDDLE NAME:</strong> <input type="text" id="defendantmiddleNameReadOnly" class="mirror-target"></p>
+    <p><strong>LAST NAME:</strong> <input type="text" id="defendantLastNameReadOnly" class="mirror-target"></p>
+    <p><strong>PHONE NUMBER:</strong> <input type="text" id="defendantPhoneReadOnly" class="mirror-target"></p>
+    </div>
+    </div>
+    </div>
+    
+    
+    <div class="container">
+    <h1>MOTHER 3</h1>
+    <div class="card">
+    <div class="card-content"
+    
+          
+    
+    <p><strong>FIRST NAME:</strong> <input type="text" id="motherFirstNameReadOnly" class="mirror-target"></p>
+    <p><strong>MIDDLE NAME:</strong> <input type="text" id="motherMiddleNameReadOnly" class="mirror-target"></p>
+    <p><strong>LAST NAME:</strong> <input type="text" id="motherLastNameReadOnly" class="mirror-target"></p>
+    <p><strong>CITY:</strong> <input type="text" id="motherCityReadOnly" class="mirror-target"></p>
+    <p><strong>STATE:</strong> <input type="text" id="motherStateReadOnly" class="mirror-target"></p>
+    <p><strong>PHONE #:</strong> <input type="text" id="motherPhoneReadOnly" class="mirror-target"></p>
+    </div>
+    </div>
+    </div>
+    
+    <div class="container">
+    <h1>FATHER 3</h1>
+        <div class="card">
+            <div class="card-content">
+    
+            
+    <p><strong>FIRST NAME:</strong> <input type="text" id="fatherFirstNameReadOnly" class="mirror-target"></p>
+    <p><strong>MIDDLE NAME:</strong> <input type="text" id="fatherMiddleNameReadOnly" class="mirror-target"></p>
+    <p><strong>LAST NAME:</strong> <input type="text" id="fatherLastNameReadOnly" class="mirror-target"></p>
+    <p><strong>CITY:</strong> <input type="text" id="fatherCityReadOnly" class="mirror-target"></p>
+    <p><strong>STATE:</strong> <input type="text" id="fatherStateReadOnly" class="mirror-target"></p>
+    <p><strong>PHONE #:</strong> <input type="text" id="fatherPhoneReadOnly" class="mirror-target"></p>
+    
+    </div>
+    </div>
+    </div>
+    
+    
+    
+    <?php for ($i = 1; $i <= 3; $i++): ?>        
+    <div class="container">
+    <h1>REFERENCE xx<?= $i ?></h1>   
+    <div class="card">
+            <div class="card-content">
+        
+            
+           
+                    <p><strong>First Name:</strong> <input type="text" id="ref<?= $i ?>_firstReadOnly" class="mirror-target"></p>
+                    <p><strong>Last Name:</strong> <input type="text" id="ref<?= $i ?>_lastReadOnly" class="mirror-target"></p>
+                    <p><strong>Phone Number:</strong> <input type="text" id="ref<?= $i ?>_phoneReadOnly" class="mirror-target"></p>
+                    <p><strong>City:</strong> <input type="text" id="ref<?= $i ?>_cityReadOnly" class="mirror-target"></p>
+                    <p><strong>State:</strong> <input type="text" id="ref<?= $i ?>_stateReadOnly" class="mirror-target"></p>
+                    <p><strong>Relation:</strong> <input type="text" id="ref<?= $i ?>_relationReadOnly" class="mirror-target"></p>
+              
+            </div>
+        </div>
+    </div>
+    <?php endfor; ?>
 
 
 <script>
@@ -577,10 +717,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-            <!-- ROW 1:BIOGRAPHY - NAME, DOB, AGE, DMV, SSN -->
+     <!-- ROW 1:BIOGRAPHY - NAME, DOB, AGE, DMV, SSN -->
+<div class="container">
 
-            <div class="container">
-
+            
 
 
                 <input type="hidden" id="todayDate" name="todayDate" style="none"
@@ -593,15 +733,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-                    <p>
+                         <p>
                             <label for="firstName">FIRST:</label>
                             <input type="text" id="firstName" name="address[defendant][name][first]" value="<?php echo $_SESSION['defendant']['name']['first'] ?? ''; ?>" required>
                         </p>
-                        <p>
+                         <p>
                             <label for="middleName">MIDDLE:</label>
                             <input type="text" id="middleName" name="address[defendant][name][middle]" value="<?php echo $_SESSION['defendant']['name']['middle'] ?? ''; ?>">
                         </p>
-                        <p>
+                         <p>
                             <label for="lastName">LAST:</label>
                             <input type="text" id="lastName" name="address[defendant][name][last]" value="<?php echo $_SESSION['defendant']['name']['last'] ?? ''; ?>" required>
                         </p>
@@ -609,8 +749,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     </div>
                 </div>
-
-
+             
+          
                 <div class="card">
                     <div class="card-content" id="row1">
                         <label for="alias">ALIAS:</label>
@@ -628,8 +768,68 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
 
 
-                <!--  5: Defendant Bio -->
 
+        
+                <div class="card">
+                    <div class="card-content" id="row1">
+                        <label for="idMarks">ID MARKS:</label>
+                        <input type="text" id="idMarks" name="idMarks" placeholder="Select Type" readonly
+                            onclick="openIdMarksPopup()">
+                        <div id="idMarksPopup" class="popup">
+                            <label for="idMarkType">Type:</label>
+                            <input list="idMarks-options" id="idMarkType">
+                            <datalist id="idMarks-options">
+                                <option value="Tattoo">
+                                <option value="Scar">
+                                <option value="Piercing">
+                                <option value="Birthmark">
+                                <option value="Burn Mark">
+                                <option value="Other">
+                            </datalist>
+
+                            <label for="idMarkLocation">Select Location(s):</label>
+                            <select id="idMarkLocation" multiple>
+                                <option value="Head">Head</option>
+                                <option value="Face">Face</option>
+                                <option value="Neck">Neck</option>
+                                <option value="Left Arm">Left Arm</option>
+                                <option value="Right Arm">Right Arm</option>
+                                <option value="Left Leg">Left Leg</option>
+                                <option value="Right Leg">Right Leg</option>
+                                <option value="Chest">Chest</option>
+                                <option value="Back">Back</option>
+                                <option value="Abdomen">Abdomen</option>
+                                <option value="Hand">Hand</option>
+                                <option value="Foot">Foot</option>
+                            </select>
+
+                            <div id="selectedLocations"></div> <!-- Tags Display Here -->
+
+                            <label for="idMarkQuantity">Quantity:</label>
+                            <input type="number" id="idMarkQuantity" min="1" value="1">
+
+                            <button type="button" onclick="addIdMark()">Add Mark</button>
+                            <button type="button" onclick="closeIdMarksPopup()">Close</button>
+                        </div>
+                    </div>
+                </div>
+ <input type="hidden" name="idMarksData" id="idMarksData">
+
+
+
+
+
+
+                <div class="card">
+                    <div class="card-content">
+                        <button type="button" class="confirm-btn" onclick="lockRow('row1')">Confirm Row</button>
+                        <button type="button" class="edit-btn" onclick="unlockRow('row1')">Edit</button>
+                        <button type="submit">Preview</button>
+                    </div>
+                </div>
+                </div>
+                <!--  5: Defendant Bio -->
+                <div class="container">
                 <h2>BIO</h2>
 
                 <div class="card">
@@ -679,8 +879,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
                 </div>
             </div>
-
-
+    
 
 
 
@@ -790,58 +989,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         </datalist>
                     </div>
                 </div>
-                <div class="card">
-                    <div class="card-content" id="row2">
-                        <label for="idMarks">ID MARKS:</label>
-                        <input type="text" id="idMarks" name="idMarks" placeholder="Select Type" readonly
-                            onclick="openIdMarksPopup()">
-                        <div id="idMarksPopup" class="popup">
-                            <label for="idMarkType">Type:</label>
-                            <input list="idMarks-options" id="idMarkType">
-                            <datalist id="idMarks-options">
-                                <option value="Tattoo">
-                                <option value="Scar">
-                                <option value="Piercing">
-                                <option value="Birthmark">
-                                <option value="Burn Mark">
-                                <option value="Other">
-                            </datalist>
-
-                            <label for="idMarkLocation">Select Location(s):</label>
-                            <select id="idMarkLocation" multiple>
-                                <option value="Head">Head</option>
-                                <option value="Face">Face</option>
-                                <option value="Neck">Neck</option>
-                                <option value="Left Arm">Left Arm</option>
-                                <option value="Right Arm">Right Arm</option>
-                                <option value="Left Leg">Left Leg</option>
-                                <option value="Right Leg">Right Leg</option>
-                                <option value="Chest">Chest</option>
-                                <option value="Back">Back</option>
-                                <option value="Abdomen">Abdomen</option>
-                                <option value="Hand">Hand</option>
-                                <option value="Foot">Foot</option>
-                            </select>
-
-                            <div id="selectedLocations"></div> <!-- Tags Display Here -->
-
-                            <label for="idMarkQuantity">Quantity:</label>
-                            <input type="number" id="idMarkQuantity" min="1" value="1">
-
-                            <button type="button" onclick="addIdMark()">Add Mark</button>
-                            <button type="button" onclick="closeIdMarksPopup()">Close</button>
-                        </div>
-                    </div>
-                </div>
-
-                <input type="hidden" name="idMarksData" id="idMarksData">
-
-
-
-                <input type="hidden" name="idMarksData" id="idMarksData">
-
-
-
 
                 <div class="card">
                     <div class="card-content">
@@ -851,7 +998,9 @@ document.addEventListener("DOMContentLoaded", function () {
                         <button type="submit">Preview</button>
                     </div>
                 </div>
-            </div>
+                </div>            
+        
+        
 
 
 
@@ -1087,7 +1236,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
                 <div class="card">
-                    <div class="card-content" id="row1">
+                    <div class="card-content" id="row3">
 
                         <label for="dateInput">COURT DATE:</label>
                         <input type="date" id="dateInput" name="courtDate"
@@ -1139,8 +1288,23 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
                 <div class="card">
                     <div class="card-content" id="row4">
+
+
+
+                    <p>
+                            <label for="city">CITY:</label>
+                            <input list="cityList" id="city" name="address[defendant][city]" required>
+                            <datalist id="cityList">
+                                <!-- Cities will be populated dynamically based on state selection -->
+                            </datalist>
+                        </p>
+                        </div>
+                        </div>
+                        
+                        <div class="card">
+                        <div class="card-content" id="row4">
                         <p>
-                            <label for="state">State:</label>
+                            <label for="state">STATE:</label>
                             <input list="stateList" id="state" name="address[defendant][state]"
                                 onchange="updateCities()" required>
                             <datalist id="stateList">
@@ -1197,13 +1361,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             </datalist>
                         </p>
 
-                        <p>
-                            <label for="city">City:</label>
-                            <input list="cityList" id="city" name="address[defendant][city]" required>
-                            <datalist id="cityList">
-                                <!-- Cities will be populated dynamically based on state selection -->
-                            </datalist>
-                        </p>
+                      
                     </div>
                 </div>
 
@@ -1215,7 +1373,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         </p>
                     </div>
                 </div>
-
+                </div>
 
 
 
@@ -1225,7 +1383,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 <!-- Row 8 : DEFENDANT RESIDENCE  -->
 
-
+                <div class="container">
                 <h2>RESIDENCE</h2>
                 <div class="card">
                     <div class="card-content" id="row4">
@@ -1331,12 +1489,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
                 </div>
             </div>
-        </div>
-        </div>
-
-
-
-
+            </div>
+            </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -2023,6 +2177,27 @@ document.addEventListener("DOMContentLoaded", function () {
         ssnInput.addEventListener('input', function () {
             this.value = formatSsn(this.value);
         });
+        document.addEventListener("DOMContentLoaded", function () {
+    // Ensure popups are hidden initially
+    document.getElementById("idMarksPopup").style.display = "none";
+    document.getElementById("chargesPopup").style.display = "none";
+});
+
+function openIdMarksPopup() {
+    document.getElementById("idMarksPopup").style.display = "block";
+}
+
+function closeIdMarksPopup() {
+    document.getElementById("idMarksPopup").style.display = "none";
+}
+
+function openChargesPopup() {
+    document.getElementById("chargesPopup").style.display = "block";
+}
+
+function closeChargesPopup() {
+    document.getElementById("chargesPopup").style.display = "none";
+}
 
 
         let idMarksArray = [];
@@ -2370,7 +2545,10 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
     </script>
+        </div>
     </form>
+    
+
 </body>
 
 </html>
