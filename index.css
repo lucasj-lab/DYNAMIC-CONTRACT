@@ -1,142 +1,62 @@
 /* Center the entire page content */
+* {
+    box-sizing: border-box;
+  }
 body {
     display: flex;
+    flex-direction: column;
     padding: 0;
     margin: 0;
-    background-color: rgb(42 47 65);
+    background-color: rgb(232, 237, 255);
     text-align: center;
     justify-content: center;
-    flex-wrap: wrap;
-    align-items: flex-start;
+    font-family: arial, sans-serif;
 }
 
-/* Center container elements */
-.container {
+/* Button Container - Sticky Menu Bar */
+.button-container {
+    position: sticky; /* Sticks the button bar to the top of the viewport */
+    top: 0;
+    z-index: 1000;
+    background-color: #353b51;
+    padding: 10px;
     display: flex;
-    
-     /* Ensures inputs align in the center */
-    width: 100%;
-    max-width: 300px;
+    flex-wrap: nowrap;
+    justify-content: center;
     gap: 10px;
-    padding: 15px;
-    border-radius: 10px;
-    background: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    flex-wrap: wrap;
-    flex-direction: column;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* Wrapper for the grid layout */
+
 .container-wrapper {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-auto-flow: row; /* Ensures items move from right to left */
+    grid-template-rows: repeat repeat(4, minmax(250px, 1fr)); /* Defines rows dynamically */
     gap: 20px;
-    justify-content: center;
     width: 100%;
     max-width: 1200px;
     margin: auto;
     text-align: center;
-    /* background-color: #7788991f; */
+    justify-content: center;
+    justify-items: center;
 }
 
-/* Input Fields */
-input {
-    display: block; /* Ensures input fields stack properly */
-    margin: 5px auto; /* Centers input fields */
-    padding: 10px;
-    width: 90%;
-    max-width: 250px; /* Keeps input fields within a reasonable width */
-    border-radius: 30px;
-    border: 1px solid #ccc;
-    text-align: center;
-}
-
-/* Read-only and mirrored input fields */
+/* Individual Containers */
 .container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 250px;
+    gap: 10px;
+    padding: 15px;
+    border-radius: 10px;
+    background: #889ada63;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    color: #353b51;
+    border: 1px solid #ccc; 
+    margin-bottom: 20px;
    
-    
-     /* Ensures inputs align in the center */
-   
-width: 100%;
-   
-max-width: 300px;
-   
-gap: 10px;
-   
-padding: 15px;
-   
-border-radius: 10px;
-   
-background: #794b7d70;
-   
-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-   
-text-align: center;
-   
-flex-wrap: wrap;
-   
-flex-direction: column;
-   
-color: ghostwhite;
-}
-
-/* Button Styling */
-button {
-    display: block;
-    margin: 10px auto; /* Centers buttons */
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-
-/* Confirm and Edit Buttons */
-.confirm-btn {
-    background-color: green;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-.edit-btn {
-    background-color: red;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-
-
-
-/* Responsive Grid Layout - Adjusts the number of containers based on screen width */
-@media (min-width: 1200px) {
-    .container-wrapper {
-        grid-template-columns: repeat(6, 1fr); /* 4 columns */
-    }
-}
-
-@media (max-width: 1199px) and (min-width: 900px) {
-    .container-wrapper {
-        grid-template-columns: repeat(3, 1fr); /* 3 columns */
-    }
-}
-
-@media (max-width: 899px) and (min-width: 600px) {
-    .container-wrapper {
-        grid-template-columns: repeat(2, 1fr); /* 2 columns */
-    }
-}
-
-@media (max-width: 599px) {
-    .container-wrapper {
-        grid-template-columns: repeat(1, 1fr); /* 1 column */
-    }
 }
 
 /* Card Styling */
@@ -146,38 +66,123 @@ button {
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
+    flex-direction: column;
     padding: 10px;
     font-size: 14px;
     font-weight: bold;
     background-color: #353b51;
     overflow: hidden;
     white-space: normal;
-    /* word-wrap: break-word; */
 }
 
 /* Card Content */
 .card-content {
     flex-grow: 1;
-    text-align: left;
+    text-align: center;
     overflow-wrap: break-word;
     white-space: normal;
-    color: ghostwhite;
+    color: rgb(255, 255, 255);
+    padding: 10px; 
 }
 
-/* Input Styling */
+.entry-group { 
+    
+    padding: 10px; 
+    border: 1px solid #ddd; 
+    border-radius: 5px; 
+}
+
+
+
+
+label {
+    display: block; 
+    margin-top: 10px; 
+    font-weight: bold; 
+}
+
+/* Input Fields */
 input {
-    padding:5px;
+    padding: 5px;
     margin-top: 5px;
     border-radius: 30px;
     border: 1px solid #ccc;
+    width: 90%;
+    max-width: 250px;
+    text-align: center;
 }
 
-/* Disabled input styling */
+/* Button Styling */
+button {
+    color: white;
+    display: block;
+    margin: 10px auto;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #0c8ce9;
+    width: 100%;
+}
+
+/* Confirm and Edit Buttons */
+.confirm-btn {
+    background-color: #09a56d;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.edit-btn {
+    background-color: #8e313a;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 100%;
+}
+
+
+/* Responsive Grid Layout */
+@media (min-width: 1200px) {
+    .container-wrapper {
+        grid-template-columns: repeat(4, minmax(250px, 1fr));
+        grid-auto-flow: row;
+    }
+}
+
+@media (max-width: 1199px) and (min-width: 900px) {
+    .container-wrapper {
+        grid-template-columns: repeat(3, minmax(250px, 1fr));
+        grid-auto-flow: row;
+    }
+}
+
+@media (max-width: 899px) and (min-width: 600px) {
+    .container-wrapper {
+        grid-template-columns: repeat(2, minmax(250px, 1fr));
+        grid-auto-flow: row;
+    }
+}
+
+@media (max-width: 599px) {
+    .container-wrapper {
+        grid-template-columns: repeat(1, minmax(250px, 1fr));
+        grid-auto-flow: row;
+    }
+}
+
+/* Disabled Input Styling */
 input[disabled] {
     background-color: #f0f0f0;
     color: #a0a0a0;
     cursor: not-allowed;
 }
+
 /* Ensure popups are hidden by default */
 .popup {
     display: none;
@@ -191,3 +196,45 @@ input[disabled] {
     box-shadow: 0px 0px 10px #888;
     z-index: 1000;
 }
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    align-items: center;
+    justify-content: center;
+}
+.overlay-content {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+/* Styling for Add Buttons */
+.add-btn {
+    background-color: #09a56d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin: 5px;
+}
+
+/* Styling for Remove Buttons */
+.remove-btn {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+
+}
+
+
+  html {
+    font-family: "Lucida Sans", sans-serif;
+  }
+  

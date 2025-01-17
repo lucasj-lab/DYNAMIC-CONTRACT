@@ -1,316 +1,166 @@
 <?php
 session_start();
 
-// Function to format phone numbers properly
+// Function to format phone numbers
 function formatPhoneNumber($phone) {
     $digits = preg_replace("/\D/", "", $phone);
-    if (strlen($digits) == 10) {
-        return "(".substr($digits, 0, 3).") ".substr($digits, 3, 3)."-".substr($digits, 6);
-    }
-    return $phone;
+    return strlen($digits) === 10 ? "(".substr($digits, 0, 3).") ".substr($digits, 3, 3)."-".substr($digits, 6) : $phone;
 }
 
-// Track confirmed fields and input states
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $_SESSION['confirmed'] = $_POST['confirmed'] ?? [];
-
-    // Process Defendant Data
-    if (!isset($_SESSION['confirmed']['defendant']) || isset($_POST['edit_defendant'])) {
-        $_SESSION['defendant'] = [
-            'name' => [
-                'first' => htmlspecialchars($_POST["address"]["defendant"]["name"]["first"] ?? ""),
-                'middle' => htmlspecialchars($_POST["address"]["defendant"]["name"]["middle"] ?? ""),
-                'last' => htmlspecialchars($_POST["address"]["defendant"]["name"]["last"] ?? "")
-            ],
-            'phone' => formatPhoneNumber($_POST["defendant_phone"] ?? "")
-        ];
-    }
-
-    // Process Defendant Mirrored Data
-    if (!isset($_SESSION['confirmed']['defendant_mirrored']) || isset($_POST['edit_defendant_mirrored'])) {
-        $_SESSION['defendant_mirrored'] = [
-            'name' => [
-                'first' => htmlspecialchars($_POST["defendantFirstNameCopy"] ?? ""),
-                'middle' => htmlspecialchars($_POST["defendantMiddleNameCopy"] ?? ""),
-                'last' => htmlspecialchars($_POST["defendantLastNameCopy"] ?? "")
-            ],
-            'phone' => formatPhoneNumber($_POST["defendantPhoneCopy"] ?? "")
-        ];
-    }
-
-    // Process Mother Data
-    if (!isset($_SESSION['confirmed']['mother']) || isset($_POST['edit_mother'])) {
-        $_SESSION['defendant']['parents']['mother'] = [
-            'name' => [
-                'first' => htmlspecialchars($_POST["mother_first"] ?? ""),
-                'last' => htmlspecialchars($_POST["mother_last"] ?? "")
-            ],
-            'phone' => formatPhoneNumber($_POST["mother_phone"] ?? ""),
-            'city' => htmlspecialchars($_POST["mother_city"] ?? ""),
-            'state' => htmlspecialchars($_POST["mother_state"] ?? "")
-        ];
-    }
-
-    // Process Mother Mirrored Data
-    if (!isset($_SESSION['confirmed']['mother_mirrored']) || isset($_POST['edit_mother_mirrored'])) {
-        $_SESSION['defendant_mirrored']['parents']['mother'] = [
-            'name' => [
-                'first' => htmlspecialchars($_POST["motherFirstNameCopy"] ?? ""),
-                'last' => htmlspecialchars($_POST["motherLastNameCopy"] ?? "")
-            ],
-            'phone' => formatPhoneNumber($_POST["motherPhoneCopy"] ?? ""),
-            'city' => htmlspecialchars($_POST["motherCityCopy"] ?? ""),
-            'state' => htmlspecialchars($_POST["motherStateCopy"] ?? "")
-        ];
-    }
-
-    // Process Father Data
-    if (!isset($_SESSION['confirmed']['father']) || isset($_POST['edit_father'])) {
-        $_SESSION['defendant']['parents']['father'] = [
-            'name' => [
-                'first' => htmlspecialchars($_POST["father_first"] ?? ""),
-                'last' => htmlspecialchars($_POST["father_last"] ?? "")
-            ],
-            'phone' => formatPhoneNumber($_POST["father_phone"] ?? ""),
-            'city' => htmlspecialchars($_POST["father_city"] ?? ""),
-            'state' => htmlspecialchars($_POST["father_state"] ?? "")
-        ];
-    }
-
-    // Process Father Mirrored Data
-    if (!isset($_SESSION['confirmed']['father_mirrored']) || isset($_POST['edit_father_mirrored'])) {
-        $_SESSION['defendant_mirrored']['parents']['father'] = [
-            'name' => [
-                'first' => htmlspecialchars($_POST["fatherFirstNameCopy"] ?? ""),
-                'last' => htmlspecialchars($_POST["fatherLastNameCopy"] ?? "")
-            ],
-            'phone' => formatPhoneNumber($_POST["fatherPhoneCopy"] ?? ""),
-            'city' => htmlspecialchars($_POST["fatherCityCopy"] ?? ""),
-            'state' => htmlspecialchars($_POST["fatherStateCopy"] ?? "")
-        ];
-    }
-
-    // Process References
-    for ($i = 1; $i <= 3; $i++) {
-        if (!isset($_SESSION['confirmed']["ref{$i}"]) || isset($_POST["edit_ref{$i}"])) {
-            $_SESSION['defendant']['references'][$i] = [
-                'name' => [
-                    'first' => htmlspecialchars($_POST["ref{$i}_first"] ?? ""),
-                    'last' => htmlspecialchars($_POST["ref{$i}_last"] ?? "")
-                ],
-                'phone' => formatPhoneNumber($_POST["ref{$i}_phone"] ?? ""),
-                'city' => htmlspecialchars($_POST["ref{$i}_city"] ?? ""),
-                'state' => htmlspecialchars($_POST["ref{$i}_state"] ?? ""),
-                'relation' => htmlspecialchars($_POST["ref{$i}_relation"] ?? "")
-            ];
-        }
-
-        // Process Reference Mirrored Data
-        if (!isset($_SESSION['confirmed']["ref{$i}_mirrored"]) || isset($_POST["edit_ref{$i}_mirrored"])) {
-            $_SESSION['defendant_mirrored']['references'][$i] = [
-                'name' => [
-                    'first' => htmlspecialchars($_POST["ref{$i}_firstCopy"] ?? ""),
-                    'last' => htmlspecialchars($_POST["ref{$i}_lastCopy"] ?? "")
-                ],
-                'phone' => formatPhoneNumber($_POST["ref{$i}_phoneCopy"] ?? ""),
-                'city' => htmlspecialchars($_POST["ref{$i}_cityCopy"] ?? ""),
-                'state' => htmlspecialchars($_POST["ref{$i}_stateCopy"] ?? ""),
-                'relation' => htmlspecialchars($_POST["ref{$i}_relationCopy"] ?? "")
-            ];
-        }
-    }
+// Store values in `$_SESSION` if they are submitted
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $_SESSION['form_data'] = $_POST; // Store the entire form data
 }
 
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-// Function to format phone numbers properly
-function formatPhoneNumber($phone) {
-    $digits = preg_replace("/\D/", "", $phone);
-    if (strlen($digits) == 10) {
-        return "(".substr($digits, 0, 3).") ".substr($digits, 3, 3)."-".substr($digits, 6);
+// Store values in `$_SESSION` if they are submitted
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    if (isset($_POST['fill_form'])) {
+        // Sample test data
+        $_SESSION['form_data'] = [
+            "address[defendant][name][first]" => "John",
+            "address[defendant][name][last]" => "Doe",
+            "defendant_phone" => formatPhoneNumber("1234567890"),
+            "mother_first" => "Mary",
+            "mother_last" => "Doe",
+            "mother_phone" => formatPhoneNumber("9876543210"),
+            "father_first" => "Robert",
+            "father_last" => "Doe",
+            "father_phone" => formatPhoneNumber("8765432109"),
+            "ref1_first" => "Alice",
+            "ref1_last" => "Smith",
+            "ref1_phone" => formatPhoneNumber("5551234567"),
+            "ref2_first" => "Bob",
+            "ref2_last" => "Johnson",
+            "ref2_phone" => formatPhoneNumber("5557654321"),
+            "ref3_first" => "Charlie",
+            "ref3_last" => "Brown",
+            "ref3_phone" => formatPhoneNumber("5559876543"),
+        ];
+    } else {
+        $_SESSION['form_data'] = $_POST; // Store user-submitted data
     }
-    return $phone;
 }
 
-// Initialize arrays for duplicate checking and error tracking
-$enteredPhones = [];
-$enteredNames = [];
+// Retrieve stored values
+function getValue($name, $default = '') {
+    return htmlspecialchars($_SESSION['form_data'][$name] ?? $default);
+}
+
+// Normalize name
+function normalizeName($first, $last) {
+    return strtolower(trim($first) . ' ' . trim($last));
+}
+
+// Normalize phone
+function normalizePhone($phone) {
+    return preg_replace("/\D/", "", $phone); // Remove non-numeric characters
+}
+
+// Validate and store names/phones
+function validateAndStore($role, $first, $last, $phone, &$enteredNames, &$enteredPhones, &$errors) {
+    $fullName = normalizeName($first, $last);
+    $normalizedPhone = normalizePhone($phone);
+
+    // Check duplicates for names
+    if (!empty($first) && !empty($last) && in_array($fullName, $enteredNames)) {
+        $errors[] = "Duplicate name detected for $role.";
+    } else {
+        $enteredNames[] = $fullName;
+    }
+
+    // Check duplicates for phones
+    if (!empty($normalizedPhone) && in_array($normalizedPhone, $enteredPhones)) {
+        $errors[] = "Duplicate phone number detected for $role.";
+    } else {
+        $enteredPhones[] = $normalizedPhone;
+    }
+}
+
+// Process form submission
 $errors = [];
-$_SESSION['error_fields'] = []; // Array to store field names with errors
+$enteredNames = [];
+$enteredPhones = [];
 
-
-    function getFullName($first, $last) {
-        return strtolower(trim($first) . ' ' . trim($last)); // Normalize names
-    }
-
-    // Store Defendant Information
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    // Process Defendant
     $_SESSION['defendant'] = [
         'name' => [
-            'first' => htmlspecialchars($_POST["address"]["defendant"]["name"]["first"] ?? ""),
-            'middle' => htmlspecialchars($_POST["address"]["defendant"]["name"]["middle"] ?? ""),
-            'last'  => htmlspecialchars($_POST["address"]["defendant"]["name"]["last"] ?? "")
+            'first' => htmlspecialchars(trim($_POST["address"]["defendant"]["name"]["first"] ?? "")),
+            'last' => htmlspecialchars(trim($_POST["address"]["defendant"]["name"]["last"] ?? ""))
         ],
         'phone' => formatPhoneNumber($_POST["defendant_phone"] ?? "")
     ];
 
-    $defendantFullName = getFullName($_SESSION['defendant']['name']['first'], $_SESSION['defendant']['name']['last']);
+    validateAndStore(
+        "Defendant",
+        $_SESSION['defendant']['name']['first'],
+        $_SESSION['defendant']['name']['last'],
+        $_SESSION['defendant']['phone'],
+        $enteredNames,
+        $enteredPhones,
+        $errors
+    );
 
-    if (in_array($defendantFullName, $enteredNames)) {
-        $errors[] = "Duplicate name detected for Defendant.";
-        $_SESSION['error_fields'][] = "defendant_first";
-        $_SESSION['error_fields'][] = "defendant_last";
-    } else {
-        $enteredNames[] = $defendantFullName;
-    }
-
-    if (in_array($_SESSION['defendant']['phone'], $enteredPhones)) {
-        $errors[] = "Duplicate phone number detected for Defendant.";
-        $_SESSION['error_fields'][] = "defendant_phone";
-    } else {
-        $enteredPhones[] = $_SESSION['defendant']['phone'];
-    }
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $_SESSION['confirmed'] = $_POST['confirmed'] ?? []; // Track confirmed fields
-    
-        // Process Mother's Details
-        $_SESSION['defendant']['parents']['mother'] = [
-            'name' => [
-                'first' => htmlspecialchars($_POST["address"]["defendant"]["parents"]["mother"]["name"]["first"] ?? ""),
-                'last'  => htmlspecialchars($_POST["address"]["defendant"]["parents"]["mother"]["name"]["last"] ?? "")
-            ],
-            'phone' => formatPhoneNumber($_POST["mother_phone"] ?? ""),
-            'city'  => htmlspecialchars($_POST["mother_city"] ?? ""),
-            'state' => htmlspecialchars($_POST["mother_state"] ?? ""),
-            'relation' => "Mother"
-        ];
-    
-        $motherFullName = strtolower(trim($_SESSION['defendant']['parents']['mother']['name']['first'] . ' ' . $_SESSION['defendant']['parents']['mother']['name']['last']));
-    
-        if (!empty($_SESSION['defendant']['parents']['mother']['name']['first']) && !empty($_SESSION['defendant']['parents']['mother']['name']['last'])) {
-            if (in_array($motherFullName, $enteredNames)) {
-                $errors[] = "Duplicate name detected for Mother.";
-                $errorFields['mother_name'] = true;
-            } else {
-                $enteredNames[] = $motherFullName;
-            }
-        }
-    
-        if (!empty($_SESSION['defendant']['parents']['mother']['phone']) && in_array($_SESSION['defendant']['parents']['mother']['phone'], $enteredPhones)) {
-            $errors[] = "Duplicate phone number detected for Mother.";
-            $errorFields['mother_phone'] = true;
-        } else {
-            $enteredPhones[] = $_SESSION['defendant']['parents']['mother']['phone'];
-        }
-    }
-    
-
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $_SESSION['confirmed'] = $_POST['confirmed'] ?? []; // Track confirmed fields
-    
-        // Process Father's Details
-        $_SESSION['defendant']['parents']['father'] = [
-            'name' => [
-                'first' => htmlspecialchars($_POST["address"]["defendant"]["parents"]["father"]["name"]["first"] ?? ""),
-                'last'  => htmlspecialchars($_POST["address"]["defendant"]["parents"]["father"]["name"]["last"] ?? "")
-            ],
-            'phone' => formatPhoneNumber($_POST["father_phone"] ?? ""),
-            'city'  => htmlspecialchars($_POST["father_city"] ?? ""),
-            'state' => htmlspecialchars($_POST["father_state"] ?? ""),
-            'relation' => "Father"
-        ];
-    
-        $fatherFullName = strtolower(trim($_SESSION['defendant']['parents']['father']['name']['first'] . ' ' . $_SESSION['defendant']['parents']['father']['name']['last']));
-    
-        if (!empty($_SESSION['defendant']['parents']['father']['name']['first']) && !empty($_SESSION['defendant']['parents']['father']['name']['last'])) {
-            if (in_array($fatherFullName, $enteredNames)) {
-                $errors[] = "Duplicate name detected for Father.";
-                $errorFields['father_name'] = true;
-            } else {
-                $enteredNames[] = $fatherFullName;
-            }
-        }
-    
-        if (!empty($_SESSION['defendant']['parents']['father']['phone']) && in_array($_SESSION['defendant']['parents']['father']['phone'], $enteredPhones)) {
-            $errors[] = "Duplicate phone number detected for Father.";
-            $errorFields['father_phone'] = true;
-        } else {
-            $enteredPhones[] = $_SESSION['defendant']['parents']['father']['phone'];
-        }
-    }
-    
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $_SESSION['confirmed'] = $_POST['confirmed'] ?? []; // Track confirmed fields
-    
-        // Process Mother's Details
-        $_SESSION['defendant']['parents']['mother'] = [
-            'name' => [
-                'first' => htmlspecialchars($_POST["address"]["defendant"]["parents"]["mother"]["name"]["first"] ?? ""),
-                'last'  => htmlspecialchars($_POST["address"]["defendant"]["parents"]["mother"]["name"]["last"] ?? "")
-            ],
-            'phone' => formatPhoneNumber($_POST["mother_phone"] ?? ""),
-            'city'  => htmlspecialchars($_POST["mother_city"] ?? ""),
-            'state' => htmlspecialchars($_POST["mother_state"] ?? ""),
-            'relation' => "Mother"
-        ];
-    
-        $motherFullName = strtolower(trim($_SESSION['defendant']['parents']['mother']['name']['first'] . ' ' . $_SESSION['defendant']['parents']['mother']['name']['last']));
-    
-        if (!empty($_SESSION['defendant']['parents']['mother']['name']['first']) && !empty($_SESSION['defendant']['parents']['mother']['name']['last'])) {
-            if (in_array($motherFullName, $enteredNames)) {
-                $errors[] = "Duplicate name detected for Mother.";
-                $errorFields['mother_name'] = true;
-            } else {
-                $enteredNames[] = $motherFullName;
-            }
-        }
-    
-        if (!empty($_SESSION['defendant']['parents']['mother']['phone']) && in_array($_SESSION['defendant']['parents']['mother']['phone'], $enteredPhones)) {
-            $errors[] = "Duplicate phone number detected for Mother.";
-            $errorFields['mother_phone'] = true;
-        } else {
-            $enteredPhones[] = $_SESSION['defendant']['parents']['mother']['phone'];
-        }
-    }
-    
-// Store Defendant's References Information
-$_SESSION['defendant']['references'] = [];
-for ($i = 1; $i <= 3; $i++) {
-    $firstName = htmlspecialchars($_POST["address"]["defendant"]["references"][$i]["name"]["first"] ?? "");
-    $lastName = htmlspecialchars($_POST["address"]["defendant"]["references"][$i]["name"]["last"] ?? "");
-    $fullName = trim("$firstName $lastName"); // Ensure the full name is trimmed
-
-    $_SESSION['defendant']['references'][$i] = [
+    // Process Mother
+    $_SESSION['defendant']['parents']['mother'] = [
         'name' => [
-            'first' => $firstName,
-            'last'  => $lastName
+            'first' => htmlspecialchars(trim($_POST["mother_first"] ?? "")),
+            'last' => htmlspecialchars(trim($_POST["mother_last"] ?? ""))
         ],
-        'phone' => formatPhoneNumber($_POST["ref{$i}_phone"] ?? ""),
-        'city'  => htmlspecialchars($_POST["ref{$i}_city"] ?? ""),
-        'state' => htmlspecialchars($_POST["ref{$i}_state"] ?? ""),
-        'relation' => htmlspecialchars($_POST["ref{$i}_relation"] ?? "")
+        'phone' => formatPhoneNumber($_POST["mother_phone"] ?? "")
     ];
 
-    // Ensure reference name is not empty before checking for duplicates
-    if (!empty($firstName) && !empty($lastName)) {
-        if (in_array($fullName, $enteredNames)) {
-            $errors[] = "Duplicate name detected for Reference $i.";
-            $errorFields["ref{$i}_name"] = true;
-        } else {
-            $enteredNames[] = $fullName;
-        }
+    validateAndStore(
+        "Mother",
+        $_SESSION['defendant']['parents']['mother']['name']['first'],
+        $_SESSION['defendant']['parents']['mother']['name']['last'],
+        $_SESSION['defendant']['parents']['mother']['phone'],
+        $enteredNames,
+        $enteredPhones,
+        $errors
+    );
+// Process father
+$_SESSION['defendant']['parents']['father'] = [
+    'name' => [
+        'first' => htmlspecialchars(trim($_POST["father_first"] ?? "")),
+        'last' => htmlspecialchars(trim($_POST["father_last"] ?? ""))
+    ],
+    'phone' => formatPhoneNumber($_POST["father_phone"] ?? "")
+];
+
+validateAndStore(
+    "father",
+    $_SESSION['defendant']['parents']['father']['name']['first'],
+    $_SESSION['defendant']['parents']['father']['name']['last'],
+    $_SESSION['defendant']['parents']['father']['phone'],
+    $enteredNames,
+    $enteredPhones,
+    $errors
+);
+
+    // Process References
+    for ($i = 1; $i <= 3; $i++) {
+        $_SESSION['defendant']['references'][$i] = [
+            'name' => [
+                'first' => htmlspecialchars(trim($_POST["ref{$i}_first"] ?? "")),
+                'last' => htmlspecialchars(trim($_POST["ref{$i}_last"] ?? ""))
+            ],
+            'phone' => formatPhoneNumber($_POST["ref{$i}_phone"] ?? "")
+        ];
+
+        validateAndStore(
+            "Reference $i",
+            $_SESSION['defendant']['references'][$i]['name']['first'],
+            $_SESSION['defendant']['references'][$i]['name']['last'],
+            $_SESSION['defendant']['references'][$i]['phone'],
+            $enteredNames,
+            $enteredPhones,
+            $errors
+        );
     }
 
-    if (!empty($_SESSION['defendant']['references'][$i]['phone']) && in_array($_SESSION['defendant']['references'][$i]['phone'], $enteredPhones)) {
-        $errors[] = "Duplicate phone number detected for Reference $i.";
-        $errorFields["ref{$i}_phone"] = true;
-    } else {
-        $enteredPhones[] = $_SESSION['defendant']['references'][$i]['phone'];
-    }
-}
-
-
-    // If errors found, redirect back with errors
+    // Handle Errors or Proceed
     if (!empty($errors)) {
         $_SESSION['errors'] = $errors;
         header("Location: index.php");
@@ -320,10 +170,8 @@ for ($i = 1; $i <= 3; $i++) {
         exit();
     }
 }
-$_SESSION['confirmed'] = $_POST['confirmed'] ?? []; // Track confirmed fields
-
-
 ?>
+
 
 
 <!DOCTYPE html>
@@ -340,381 +188,55 @@ $_SESSION['confirmed'] = $_POST['confirmed'] ?? []; // Track confirmed fields
 
 
 
+<h2>Validation Form</h2>
 <form action="index.php" method="post">
-<div class="container-wrapper">     
-        <?php if (!empty($_SESSION['errors'])): ?>
-                <div style="color: red;">
-                    <?php foreach ($_SESSION['errors'] as $error) {
-                        echo "<p>$error</p>";
-                    }
-                    unset($_SESSION['errors']); ?>
-                </div>
-            <?php endif; ?>           
-<div class="container">
-    <h1>DEFENDANT</h1>
-    <div class="card">
-        <div class="card-content">
-            <p>
-                <label for="defendantFirstName">FIRST NAME:</label>
-                <input type="text" id="defendantFirstName" name="address[defendant][name][first]" 
-                    value="<?php echo $_SESSION['defendant']['name']['first'] ?? ''; ?>" 
-                    class="name-field first mirror-source" data-target="defendantFirstNameCopy, defendantFirstNameReadOnly" required>
-            </p>
-            <p>
-                <label for="defendantMiddleName">MIDDLE NAME:</label>
-                <input type="text" id="defendantMiddleName" name="address[defendant][name][middle]" 
-                    value="<?php echo $_SESSION['defendant']['name']['middle'] ?? ''; ?>" 
-                    class="name-field last mirror-source" data-target="defendantmiddleNameCopy, defendantMiddleNameReadOnly" >
-            </p>
-            <p>
-                <label for="defendantLastName">LAST NAME:</label>
-                <input type="text" id="defendantLastName" name="address[defendant][name][last]" 
-                    value="<?php echo $_SESSION['defendant']['name']['last'] ?? ''; ?>" 
-                    class="name-field last mirror-source" data-target="defendantLastNameCopy, defendantLastNameReadOnly" required>
-            </p>
-            <p>
-                <label for="defendantPhone">PHONE NUMBER:</label>
-                <input type="text" id="defendantPhone" name="defendant_phone" 
-                    value="<?php echo $_SESSION['defendant']['phone'] ?? ''; ?>" 
-                    class="phone-field mirror-source" data-target="defendantPhoneCopy, defendantPhoneReadOnly" required>
-            </p> 
-        </div>
-    </div>
-</div>
-
-<div class="container">
-    <h1>MOTHER</h1>
-    <div class="card">
-        <div class="card-content">
-            <p>
-                <label for="motherFirstName">FIRST NAME:</label>
-                <input type="text" id="motherFirstName" name="address[defendant][parents][mother][name][first]" 
-                    value="<?php echo $_SESSION['defendant']['parents']['mother']['name']['first'] ?? ''; ?>" 
-                    class="name-field first mirror-source" data-target="motherFirstNameCopy, motherFirstNameReadOnly" required>
-            </p>
-            <p>
-                <label for="motherMiddleName">MIDDLE NAME:</label>
-                <input type="text" id="motherMiddleName" name="address[defendant][parents][mother][name][middle]" 
-                    value="<?php echo $_SESSION['defendant']['parents']['mother']['name']['middle'] ?? ''; ?>" 
-                    class="name-field middle mirror-source" data-target="motherMiddleNameCopy, mothermiddleNameReadOnly" >
-            </p>
-             <p>
-                <label for="motherLastName">LAST NAME:</label>
-                <input type="text" id="motherLastName" name="address[defendant][parents][mother][name][last]" 
-                    value="<?php echo $_SESSION['defendant']['parents']['mother']['name']['last'] ?? ''; ?>" 
-                    class="name-field last mirror-source" data-target="motherLastNameCopy, motherLastNameReadOnly" required>
-            </p>
-            <p>
-    <label for="motherCity">CITY:</label>
-    <input type="text" id="motherCity" name="address[defendant][parents][mother][city]" 
-        value="<?php echo $_SESSION['defendant']['parents']['mother']['city'] ?? ''; ?>" 
-        class="mirror-source" data-target="motherCityCopy, motherCityReadOnly" required>
-</p>
-            <p>
-                <label for="motherState">STATE:</label>
-                <input type="text" id="motherState" name="address[defendant][parents][mother][state]" 
-                    value="<?php echo $_SESSION['defendant']['parents']['mother']['state'] ?? ''; ?>" 
-                    class="mirror-source" data-target="motherStateCopy, motherStateReadOnly" required>
-            </p>
-            <p>               <label for="motherPhone">PHONE NUMBER:</label>
-                <input type="text" id="motherPhone" name="mother_phone" 
-                    value="<?php echo $_SESSION['defendant']['parents']['mother']['phone'] ?? ''; ?>" 
-                    class="phone-field mirror-source" data-target="motherPhoneCopy, motherPhoneReadOnly" required>
-            </p>
-        </div>
-    </div>
-</div>
-
-<div class="container">
-    <h1>FATHER</h1>
-    <div class="card">
-        <div class="card-content">
-            <p>
-            <label for="fatherFirstName">FIRST NAME:</label>
-<input type="text" id="fatherFirstName" name="address[defendant][parents][father][name][first]" 
-    value="<?php echo $_SESSION['defendant']['parents']['father']['name']['first'] ?? ''; ?>" 
-    class="name-field first mirror-source" data-target="fatherFirstNameCopy, fatherFirstNameReadOnly" required>
-</p>
-<p>
-<label for="fatherMiddleName">MIDDLE NAME:</label>
-<input type="text" id="fatherMiddleName" name="address[defendant][parents][father][name][middle]" 
-    value="<?php echo $_SESSION['defendant']['parents']['father']['name']['middle'] ?? ''; ?>" 
-    class="name-field middle mirror-source" data-target="fatherMiddleNameCopy, fathermiddleNameReadOnly" >
-</p>
-<p>
-<label for="fatherLastName">LAST NAME:</label>
-<input type="text" id="fatherLastName" name="address[defendant][parents][father][name][last]" 
-    value="<?php echo $_SESSION['defendant']['parents']['father']['name']['last'] ?? ''; ?>" 
-    class="name-field last mirror-source" data-target="fatherLastNameCopy, fatherLastNameReadOnly" required>
-</p>
-<p>
-<label for="fatherCity">CITY:</label>
-<input type="text" id="fatherCity" name="address[defendant][parents][father][city]" 
-value="<?php echo $_SESSION['defendant']['parents']['father']['city'] ?? ''; ?>" 
-class="mirror-source" data-target="fatherCityCopy, fatherCityReadOnly" required>
-</p>
-<p>
-<label for="fatherState">STATE:</label>
-<input type="text" id="fatherState" name="address[defendant][parents][father][state]" 
-    value="<?php echo $_SESSION['defendant']['parents']['father']['state'] ?? ''; ?>" 
-    class="mirror-source" data-target="fatherStateCopy, fatherStateReadOnly" required>
-</p>
-<p>               <label for="fatherPhone">PHONE NUMBER:</label>
-<input type="text" id="fatherPhone" name="father_phone" 
-    value="<?php echo $_SESSION['defendant']['parents']['father']['phone'] ?? ''; ?>" 
-    class="phone-field mirror-source" data-target="fatherPhoneCopy, fatherPhoneReadOnly" required>
-            </p>
-        </div>
-    </div>
-</div>
-
- 
-
-    <?php for ($i = 1; $i <= 3; $i++): ?>
-    <div class="container">
-    <h1>REFERENCE <?= $i ?></h1>
-        <div class="card">
-            <div class="card-content">
-              
-                <p>
-                    <label for="ref<?= $i ?>_first">FIRST NAME:</label>
-                    <input type="text" id="ref<?= $i ?>_first" name="address[defendant][references][<?= $i ?>][name][first]" 
-                        value="<?php echo $_SESSION['defendant']['references'][$i]['name']['first'] ?? ''; ?>" 
-                        class="name-field first mirror-source" data-target="ref<?= $i ?>_firstCopy, ref<?= $i ?>_firstReadOnly" required>
-                </p>
-                <p>
-                    <label for="ref<?= $i ?>_last">LAST NAME:</label>
-                    <input type="text" id="ref<?= $i ?>_last" name="address[defendant][references][<?= $i ?>][name][last]" 
-                        value="<?php echo $_SESSION['defendant']['references'][$i]['name']['last'] ?? ''; ?>" 
-                        class="name-field last mirror-source" data-target="ref<?= $i ?>_lastCopy, ref<?= $i ?>_lastReadOnly" required>
-                </p>
-                <p>
-                    <label for="ref<?= $i ?>_city">CITY:</label>
-                    <input type="text" id="ref<?= $i ?>_city" name="ref<?= $i ?>_city" 
-                        value="<?php echo $_SESSION['defendant']['references'][$i]['city'] ?? ''; ?>" 
-                        class="city-field mirror-source" data-target="ref<?= $i ?>_cityCopy, ref<?= $i ?>_cityReadOnly" required>
-                </p>
-                <p>
-                    <label for="ref<?= $i ?>_state">STATE:</label>
-                    <input type="text" id="ref<?= $i ?>_state" name="ref<?= $i ?>_state" 
-                        value="<?php echo $_SESSION['defendant']['references'][$i]['state'] ?? ''; ?>" 
-                        class="state-field mirror-source" data-target="ref<?= $i ?>_stateCopy, ref<?= $i ?>_stateReadOnly" required>
-                </p>
-                <p>
-                    <label for="ref<?= $i ?>_relation">RELATION:</label>
-                    <input type="text" id="ref<?= $i ?>_relation" name="ref<?= $i ?>_relation" 
-                        value="<?php echo $_SESSION['defendant']['references'][$i]['relation'] ?? ''; ?>" 
-                        class="relation-field mirror-source" data-target="ref<?= $i ?>_relationCopy, ref<?= $i ?>_relationReadOnly" required>
-                </p>
-                <p>
-                    <label for="ref<?= $i ?>_phone">PHONE NUMBER:</label>
-                    <input type="text" id="ref<?= $i ?>_phone" name="ref<?= $i ?>_phone" 
-                        value="<?php echo $_SESSION['defendant']['references'][$i]['phone'] ?? ''; ?>" 
-                        class="phone-field mirror-source" data-target="ref<?= $i ?>_phoneCopy, ref<?= $i ?>_phoneReadOnly" required>
-                </p>
-            </div>
-        </div>
-</div>
-<?php endfor; ?>
 
 
 
+<form id="validationForm">   
 
-<div class="container">
-<h1>DEFENDANT 2</h1>
-    <div class="card">
-        <div class="card-content">
-
-<p><strong>FIRST NAME:</strong> <input type="text" id="defendantFirstNameCopy" class="mirror-target"></p>
-<p><strong>MIDDLE NAME:</strong> <input type="text" id="defendantmiddleNameCopy" class="mirror-target"></p>
-<p><strong>LAST NAME:</strong> <input type="text" id="defendantLastNameCopy" class="mirror-target"></p>
-<p><strong>PHONE NUMBER:</strong> <input type="text" id="defendantPhoneCopy" class="mirror-target"></p>
-</div>
-</div>
-</div>
-
-
-<div class="container">
-<h1>MOTHER 2</h1>
-<div class="card">
-<div class="card-content">
-
+       <!-- Dynamic Fields Inserted Here -->
       
 
-<p><strong>FIRST NAME:</strong> <input type="text" id="motherFirstNameCopy" class="mirror-target"></p>
-<p><strong>MIDDLE NAME:</strong> <input type="text" id="motherMiddleNameCopy" class="mirror-target"></p>
-<p><strong>LAST NAME:</strong> <input type="text" id="motherLastNameCopy" class="mirror-target"></p>
-<p><strong>CITY:</strong> <input type="text" id="motherCityCopy" class="mirror-target"></p>
-<p><strong>STATE:</strong> <input type="text" id="motherStateCopy" class="mirror-target"></p>
-<p><strong>PHONE #:</strong> <input type="text" id="motherPhoneCopy" class="mirror-target"></p>
-</div>
-</div>
-</div>
 
-<div class="container">
-<h1>FATHER 2</h1>
-    <div class="card">
-        <div class="card-content">
-
-        
-<p><strong>FIRST NAME:</strong> <input type="text" id="fatherFirstNameCopy" class="mirror-target"></p>
-<p><strong>MIDDLE NAME:</strong> <input type="text" id="fatherMiddleNameCopy" class="mirror-target"></p>
-<p><strong>LAST NAME:</strong> <input type="text" id="fatherLastNameCopy" class="mirror-target"></p>
-<p><strong>CITY:</strong> <input type="text" id="fatherCityCopy" class="mirror-target"></p>
-<p><strong>STATE:</strong> <input type="text" id="fatherStateCopy" class="mirror-target"></p>
-<p><strong>PHONE #:</strong> <input type="text" id="fatherPhoneCopy" class="mirror-target"></p>
-
-</div>
-</div>
-</div>
-
-
-
-<?php for ($i = 1; $i <= 3; $i++): ?>        
-<div class="container">
-<h1>REFERENCE x<?= $i ?></h1>   
-<div class="card">
-        <div class="card-content">
-    
-        
        
-                <p><strong>First Name:</strong> <input type="text" id="ref<?= $i ?>_firstCopy" class="mirror-target"></p>
-                <p><strong>Last Name:</strong> <input type="text" id="ref<?= $i ?>_lastCopy" class="mirror-target"></p>
-                <p><strong>City:</strong> <input type="text" id="ref<?= $i ?>_cityCopy" class="mirror-target"></p>
-                <p><strong>State:</strong> <input type="text" id="ref<?= $i ?>_stateCopy" class="mirror-target"></p>
-                <p><strong>Relation:</strong> <input type="text" id="ref<?= $i ?>_relationCopy" class="mirror-target"></p>
-                <p><strong>Phone #:</strong> <input type="text" id="ref<?= $i ?>_phoneCopy" class="mirror-target"></p>
-          
-        </div>
+    
+        <!-- Buttons for Adding Entities -->
+        <div class="button-container">
+        <button type="button" id="addDefendant" class="add-btn">Add Defendant</button>
+        <button type="button" id="addDefendantSpouse" class="add-btn">Add Defendant’s Spouse</button>
+        <button type="button" id="addCosigner" class="add-btn">Add Co-Signer</button>
+        <button type="button" id="addCosignerSpouse" class="add-btn">Add Co-Signer’s Spouse</button>
+        <button type="button" id="removeDefendant" class="remove-btn">Remove Defendant</button>
+        <button type="button" id="removeDefendantSpouse" class="remove-btn">Remove Defendant’s Spouse</button>
+        <button type="button" id="removeCosigner" class="remove-btn">Remove Co-Signer</button>   
+       <button type="button" id="removeCosignerSpouse" class="remove-btn">Remove Co-Signer’s Spouse</button>
+       </div>
+        <!-- Buttons for Removing Entities -->
+        <div class="button-container">
+       <button type="button" class="edit-btn" onclick="unlockRow('row1')">Edit Name</button>
+       <button type="button" class="confirm-btn" onclick="lockRow('row1')">Confirm Name</button>
+       <button type="button" class="edit-btn" onclick="unlockRow('row2')">Edit Demo</button>
+       <button type="button" class="confirm-btn" onclick="lockRow('row2')">Confirm Demo</button>
+       <button type="button" class="edit-btn" onclick="unlockRow('row3')">Edit BI</button>
+       <button type="button" class="confirm-btn" onclick="lockRow('row3')">Confirm BI</button>
+       <button type="button" class="edit-btn" onclick="unlockRow('row4')">Edit Addr</button>
+       <button type="button" class="confirm-btn" onclick="lockRow('row4')">Confirm Addr</button>
+       <button type="submit">Preview</button>
     </div>
+    <div  class="container-wrapper" id="phoneContainer"></div>   
+
+             
+   
+    <div  class="container-wrapper">
+<div id="overlay" class="overlay">
+        <div class="overlay-content">
+            <p>Are you sure you want to remove this entry?</p>
+            <button id="confirmRemove">Yes, Remove</button>
+            <button id="cancelRemove">Cancel</button>
+        </div>
 </div>
-<?php endfor; ?>
-
-
-<div class="container">
-    <h1>DEFENDANT 3</h1>
-        <div class="card">
-            <div class="card-content">
-    
-    <p><strong>FIRST NAME:</strong> <input type="text" id="defendantFirstNameReadOnly" class="mirror-target"></p>
-    <p><strong>MIDDLE NAME:</strong> <input type="text" id="defendantmiddleNameReadOnly" class="mirror-target"></p>
-    <p><strong>LAST NAME:</strong> <input type="text" id="defendantLastNameReadOnly" class="mirror-target"></p>
-    <p><strong>PHONE NUMBER:</strong> <input type="text" id="defendantPhoneReadOnly" class="mirror-target"></p>
-    </div>
-    </div>
-    </div>
-    
-    
-    <div class="container">
-    <h1>MOTHER 3</h1>
-    <div class="card">
-    <div class="card-content"
-    
-          
-    
-    <p><strong>FIRST NAME:</strong> <input type="text" id="motherFirstNameReadOnly" class="mirror-target"></p>
-    <p><strong>MIDDLE NAME:</strong> <input type="text" id="motherMiddleNameReadOnly" class="mirror-target"></p>
-    <p><strong>LAST NAME:</strong> <input type="text" id="motherLastNameReadOnly" class="mirror-target"></p>
-    <p><strong>CITY:</strong> <input type="text" id="motherCityReadOnly" class="mirror-target"></p>
-    <p><strong>STATE:</strong> <input type="text" id="motherStateReadOnly" class="mirror-target"></p>
-    <p><strong>PHONE #:</strong> <input type="text" id="motherPhoneReadOnly" class="mirror-target"></p>
-    </div>
-    </div>
-    </div>
-    
-    <div class="container">
-    <h1>FATHER 3</h1>
-        <div class="card">
-            <div class="card-content">
-    
-            
-    <p><strong>FIRST NAME:</strong> <input type="text" id="fatherFirstNameReadOnly" class="mirror-target"></p>
-    <p><strong>MIDDLE NAME:</strong> <input type="text" id="fatherMiddleNameReadOnly" class="mirror-target"></p>
-    <p><strong>LAST NAME:</strong> <input type="text" id="fatherLastNameReadOnly" class="mirror-target"></p>
-    <p><strong>CITY:</strong> <input type="text" id="fatherCityReadOnly" class="mirror-target"></p>
-    <p><strong>STATE:</strong> <input type="text" id="fatherStateReadOnly" class="mirror-target"></p>
-    <p><strong>PHONE #:</strong> <input type="text" id="fatherPhoneReadOnly" class="mirror-target"></p>
-    
-    </div>
-    </div>
-    </div>
-    
-    
-    
-    <?php for ($i = 1; $i <= 3; $i++): ?>        
-    <div class="container">
-    <h1>REFERENCE xx<?= $i ?></h1>   
-    <div class="card">
-            <div class="card-content">
-        
-            
-           
-                    <p><strong>First Name:</strong> <input type="text" id="ref<?= $i ?>_firstReadOnly" class="mirror-target"></p>
-                    <p><strong>Last Name:</strong> <input type="text" id="ref<?= $i ?>_lastReadOnly" class="mirror-target"></p>
-                    <p><strong>Phone Number:</strong> <input type="text" id="ref<?= $i ?>_phoneReadOnly" class="mirror-target"></p>
-                    <p><strong>City:</strong> <input type="text" id="ref<?= $i ?>_cityReadOnly" class="mirror-target"></p>
-                    <p><strong>State:</strong> <input type="text" id="ref<?= $i ?>_stateReadOnly" class="mirror-target"></p>
-                    <p><strong>Relation:</strong> <input type="text" id="ref<?= $i ?>_relationReadOnly" class="mirror-target"></p>
-              
-            </div>
-        </div>
-    </div>
-    <?php endfor; ?>
-
-
-<script>
-
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".mirror-source").forEach(input => {
-        input.addEventListener("input", function () {
-            const targetIds = this.dataset.target.split(", "); // Split multiple target IDs
-            targetIds.forEach(targetId => {
-                const targetInput = document.getElementById(targetId);
-                if (targetInput) {
-                    targetInput.value = this.value; // Update all mirrored fields
-                }
-            });
-        });
-    });
-});
-
-        document.querySelectorAll(".phone-field").forEach(input => {
-            input.addEventListener("input", event => {
-                let digits = event.target.value.replace(/\D/g, "").slice(0, 10);
-                event.target.value = digits.length > 6 ? `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}` : digits;
-            });
-        });
-
-        document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll(".confirm-btn").forEach(button => {
-        button.addEventListener("click", function () {
-            const section = this.dataset.section;
-            const inputs = document.querySelectorAll(`[data-section='${section}'] input`);
-
-            inputs.forEach(input => input.disabled = true);
-            this.disabled = true;
-            document.querySelector(`.edit-btn[data-section='${section}']`).disabled = false;
-        });
-    });
-
-    document.querySelectorAll(".edit-btn").forEach(button => {
-        button.addEventListener("click", function () {
-            const section = this.dataset.section;
-            const inputs = document.querySelectorAll(`[data-section='${section}'] input`);
-
-            inputs.forEach(input => input.disabled = false);
-            this.disabled = true;
-            document.querySelector(`.confirm-btn[data-section='${section}']`).disabled = false;
-        });
-    });
-});
-
-
-    </script>
-
-
-
-
+ 
 
 
      <!-- ROW 1:BIOGRAPHY - NAME, DOB, AGE, DMV, SSN -->
@@ -770,8 +292,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         
-                <div class="card">
-                    <div class="card-content" id="row1">
+<div class="card">
+
+<div class="card-content" id="row1">
                         <label for="idMarks">ID MARKS:</label>
                         <input type="text" id="idMarks" name="idMarks" placeholder="Select Type" readonly
                             onclick="openIdMarksPopup()">
@@ -803,7 +326,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                 <option value="Foot">Foot</option>
                             </select>
 
-                            <div id="selectedLocations"></div> <!-- Tags Display Here -->
+                            <div id="selectedLocations"> <!-- Tags Display Here -->
 
                             <label for="idMarkQuantity">Quantity:</label>
                             <input type="number" id="idMarkQuantity" min="1" value="1">
@@ -812,8 +335,11 @@ document.addEventListener("DOMContentLoaded", function () {
                             <button type="button" onclick="closeIdMarksPopup()">Close</button>
                         </div>
                     </div>
-                </div>
- <input type="hidden" name="idMarksData" id="idMarksData">
+                    </div>
+                    
+                  
+ <input type="hidden" name="idMarksData" id="idMarksData"> 
+ </div>
 
 
 
@@ -822,14 +348,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 <div class="card">
                     <div class="card-content">
-                        <button type="button" class="confirm-btn" onclick="lockRow('row1')">Confirm Row</button>
-                        <button type="button" class="edit-btn" onclick="unlockRow('row1')">Edit</button>
-                        <button type="submit">Preview</button>
+                        <button type="button" class="confirm-btn" onclick="lockRow('row1')">Confirm Name</button>
+                        <button type="button" class="edit-btn" onclick="unlockRow('row1')">Edit Name</button>
                     </div>
                 </div>
-                </div>
+</div>
+
+              
+
+
+
                 <!--  5: Defendant Bio -->
-                <div class="container">
+<div class="container">
                 <h2>BIO</h2>
 
                 <div class="card">
@@ -875,10 +405,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="card-content">
                         <button type="button" class="confirm-btn" onclick="lockRow('row1')">Confirm Row</button>
                         <button type="button" class="edit-btn" onclick="unlockRow('row1')">Edit</button>
-                        <button type="submit">Preview</button>
+                  
                     </div>
                 </div>
-            </div>
+</div>
     
 
 
@@ -886,7 +416,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             <!-- Row 2:DEMOGRAPHICS - SEX, RACE, HGT, WGT, HAIR, EYES, ID MARKS: -->
 
-            <div class="container">
+<div class="container">
 
                 <h2>DEMOGRAPHICS</h2>
 
@@ -995,10 +525,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         <button type="button" class="confirm-btn" onclick="lockRow('row2')">Confirm Row</button>
                         <button type="button" class="edit-btn" onclick="unlockRow('row2')">Edit</button>
-                        <button type="submit">Preview</button>
+                     
                     </div>
                 </div>
-                </div>            
+</div>            
         
         
 
@@ -1008,7 +538,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-            <div class="container">
+<div class="container">
                 <h2>BOND INFO</h2>
 
 
@@ -1250,10 +780,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="card-content">
                         <button type="button" class="confirm-btn" onclick="lockRow('row3')">Confirm Row</button>
                         <button type="button" class="edit-btn" onclick="unlockRow('row3')">Edit</button>
-                        <button type="submit">Preview</button>
+                    
                     </div>
                 </div>
-            </div>
+</div>
 
 
 
@@ -1261,32 +791,33 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-            <!-- Row 4:ADDRESS & RESIDENCE INFO---STREET, APT#, STATE, CITY, ZIP, RESIDENCE/RESIDENT TYPE, DURATION, COHABITATION  -->
-            <div class="container">
+<!-- Row 4:ADDRESS & RESIDENCE INFO---STREET, APT#, STATE, CITY, ZIP, RESIDENCE/RESIDENT TYPE, DURATION, COHABITATION  -->
+<div class="container">
 
 
-                <h2>ADDRESS</h2>
+<h2>ADDRESS</h2>
 
 
 
-                <div class="card">
+<div class="card">
                     <div class="card-content" id="row4">
                         <p>
                             <label for="def_street">STREET:</label>
                             <input type="text" id="def_street" name="address[defendant][street]" required>
                         </p>
                     </div>
-                </div>
+</div>
 
-                <div class="card" id="defAptCard" style="display: none;">
+<div class="card" id="defAptCard" style="display: none;">
                     <div class="card-content" id="row4">
                         <p id="defApt" style="display: none;">
                             <label for="def_apt_input">APT:</label>
                             <input type="text" id="def_apt_input" name="address[defendant][apt]">
                         </p>
                     </div>
-                </div>
-                <div class="card">
+</div>
+
+<div class="card">
                     <div class="card-content" id="row4">
 
 
@@ -1299,9 +830,9 @@ document.addEventListener("DOMContentLoaded", function () {
                             </datalist>
                         </p>
                         </div>
-                        </div>
+</div>
                         
-                        <div class="card">
+<div class="card">
                         <div class="card-content" id="row4">
                         <p>
                             <label for="state">STATE:</label>
@@ -1363,18 +894,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
                       
                     </div>
-                </div>
+</div>
 
-                <div class="card">
+<div class="card">
                     <div class="card-content" id="row4">
                         <p>
                             <label for="def_zip">ZIP:</label>
                             <input type="text" id="def_zip" name="address[defendant][zipCode]" required>
                         </p>
                     </div>
-                </div>
-                </div>
-
+</div>
+</div> 
 
 
 
@@ -1383,7 +913,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 <!-- Row 8 : DEFENDANT RESIDENCE  -->
 
-                <div class="container">
+<div class="container">
                 <h2>RESIDENCE</h2>
                 <div class="card">
                     <div class="card-content" id="row4">
@@ -1485,14 +1015,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="card-content">
                         <button type="button" class="confirm-btn" onclick="lockRow('row4')">Confirm Row</button>
                         <button type="button" class="edit-btn" onclick="unlockRow('row4')">Edit</button>
-                        <button type="submit">Preview</button>
+                   
                     </div>
                 </div>
-            </div>
-            </div>
-            </div>
+</div>
+</div>
+</form>
 
-    <script>
+<script>
         document.addEventListener("DOMContentLoaded", function () {
             const citiesByState = {
                 "AL": ["Birmingham", "Montgomery", "Huntsville", "Mobile", "Tuscaloosa", "Hoover", "Dothan", "Auburn", "Decatur", "Madison",
@@ -2345,209 +1875,231 @@ function closeChargesPopup() {
             });
         });
 
-        document.addEventListener("DOMContentLoaded", function () {
-    let datalistInputs = document.querySelectorAll("input[list]");
 
-    datalistInputs.forEach(input => {
-        input.addEventListener("focus", function () {
-            this.setAttribute("autocomplete", "off"); // Disable browser autocomplete
-            this.value = ""; // Clears the input temporarily to show all options
-        });
+        document.addEventListener("DOMContentLoaded", () => {
+    const confirmedEntries = new Set();
+    let defendantCount = 1;
+    let cosignerCount = 1;
+    let defSpouseAdded = false;
+    let cosSpouseAdded = false;
+    let entryToRemove = null;
 
-        input.addEventListener("click", function () {
-            this.setAttribute("autocomplete", "off"); // Ensure autocomplete is off
-            this.value = this.value; // Force re-render to trigger dropdown
-        });
-
-        input.addEventListener("blur", function () {
-            if (!this.value.trim()) {
-                this.value = sessionStorage.getItem(this.id) || ""; // Restore previous value if empty
-            }
-        });
-
-        input.addEventListener("input", function () {
-            sessionStorage.setItem(this.id, this.value); // Auto-save input value
-        });
-    });
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-    const confirmedEntries = new Set(); // Set to track unique name & phone entries
-
+    // Format phone numbers
     function formatPhoneNumber(value) {
         let digits = value.replace(/\D/g, "").slice(0, 10);
-        if (digits.length <= 3) {
-            return digits;
-        } else if (digits.length <= 6) {
-            return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
-        } else {
-            return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
-        }
+        if (digits.length <= 3) return digits;
+        if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+        return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
     }
 
+    // Handle phone number input
     function handlePhoneInput(event) {
-        const inputField = event.target;
-        inputField.value = formatPhoneNumber(inputField.value);
-        inputField.classList.remove("error"); // Remove error highlight on input change
+        event.target.value = formatPhoneNumber(event.target.value);
     }
 
-    function highlightError(inputField) {
-        inputField.classList.add("error"); // Add error class to highlight the field
-    }
-
+    // Confirm Entry
     function confirmEntry(event) {
         event.preventDefault();
         const button = event.target;
-        const entryGroup = button.closest(".entry-group"); // Select the parent entry container
+        const entryGroup = button.closest(".card");
+
         if (!entryGroup) return;
 
-        const firstNameInput = entryGroup.querySelector(".name-field.first");
-        const middleNameInput = entryGroup.querySelector(".name-field.middle");
-        const lastNameInput = entryGroup.querySelector(".name-field.last");
-        const phoneInput = entryGroup.querySelector(".phone-field");
+        const firstNameInput = entryGroup.querySelector("input[name='firstName']");
+        const lastNameInput = entryGroup.querySelector("input[name='lastName']");
+        const phoneInput = entryGroup.querySelector("input[name='phone']");
 
-        if (!firstNameInput || !lastNameInput || !phoneInput) return;
-
-        const fullName = `${firstNameInput.value.trim()} ${middleNameInput?.value.trim() ?? ""} ${lastNameInput.value.trim()}`.trim();
+        const fullName = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
         const formattedNumber = phoneInput.value;
 
         if (confirmedEntries.has(fullName) || confirmedEntries.has(formattedNumber)) {
-            alert("This name or phone number has already been used.");
-            highlightError(firstNameInput);
-            highlightError(lastNameInput);
-            highlightError(phoneInput);
+            alert("This name or phone number has already been confirmed.");
         } else if (formattedNumber.length === 14 && firstNameInput.value.trim() && lastNameInput.value.trim()) {
             confirmedEntries.add(fullName);
             confirmedEntries.add(formattedNumber);
 
             firstNameInput.disabled = true;
-            if (middleNameInput) middleNameInput.disabled = true;
             lastNameInput.disabled = true;
             phoneInput.disabled = true;
             button.disabled = true;
-
-            const editButton = entryGroup.querySelector(".edit-btn");
-            if (editButton) editButton.disabled = false;
+            entryGroup.querySelector(".edit-btn").disabled = false;
 
             alert("Entry confirmed successfully!");
         } else {
             alert("Please enter a valid name and 10-digit US phone number.");
-            highlightError(firstNameInput);
-            highlightError(lastNameInput);
-            highlightError(phoneInput);
         }
     }
 
+    // Edit Entry
     function editEntry(event) {
         event.preventDefault();
         const button = event.target;
-        const entryGroup = button.closest(".entry-group");
+        const entryGroup = button.closest(".card-content");
+
         if (!entryGroup) return;
 
-        const firstNameInput = entryGroup.querySelector(".name-field.first");
-        const middleNameInput = entryGroup.querySelector(".name-field.middle");
-        const lastNameInput = entryGroup.querySelector(".name-field.last");
-        const phoneInput = entryGroup.querySelector(".phone-field");
+        const firstNameInput = entryGroup.querySelector("input[name='firstName']");
+        const lastNameInput = entryGroup.querySelector("input[name='lastName']");
+        const phoneInput = entryGroup.querySelector("input[name='phone']");
         const confirmButton = entryGroup.querySelector(".confirm-btn");
 
-        if (!firstNameInput || !lastNameInput || !phoneInput || !confirmButton) return;
-
-        const fullName = `${firstNameInput.value.trim()} ${middleNameInput?.value.trim() ?? ""} ${lastNameInput.value.trim()}`.trim();
+        const fullName = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
         const formattedNumber = phoneInput.value;
 
         confirmedEntries.delete(fullName);
         confirmedEntries.delete(formattedNumber);
 
         firstNameInput.disabled = false;
-        if (middleNameInput) middleNameInput.disabled = false;
         lastNameInput.disabled = false;
         phoneInput.disabled = false;
         confirmButton.disabled = false;
         button.disabled = true;
-
-        firstNameInput.classList.remove("error");
-        lastNameInput.classList.remove("error");
-        phoneInput.classList.remove("error");
     }
 
-    // Apply formatting to all phone fields
-    document.querySelectorAll(".phone-field").forEach(input => {
-        input.addEventListener("input", handlePhoneInput);
-    });
+    // Create Entry
+    function createEntry(label, includeExtraFields = false) {
+        const containerDiv = document.createElement("div");
+        containerDiv.classList.add("container");
 
-    // Attach confirm button event listeners
-    document.querySelectorAll(".confirm-btn").forEach(button => {
-        button.addEventListener("click", confirmEntry);
-    });
+        const cardDiv = document.createElement("div");
+        cardDiv.classList.add("card");
 
-    // Attach edit button event listeners
-    document.querySelectorAll(".edit-btn").forEach(button => {
-        button.addEventListener("click", editEntry);
-    });
+        const cardContentDiv = document.createElement("div");
+        cardContentDiv.classList.add("card-content");
 
-    // Attach validation on form submit
-    const form = document.getElementById("contractForm");
-    if (form) {
-        form.addEventListener("submit", function(event) {
-            let duplicatesFound = false;
-            const phoneNumbers = new Set();
-            const fullNames = new Set();
+        const title = document.createElement("h3");
+        title.textContent = label;
+        cardContentDiv.appendChild(title);
 
-            document.querySelectorAll(".phone-field").forEach(input => {
-                const phoneValue = input.value;
-                if (phoneNumbers.has(phoneValue)) {
-                    duplicatesFound = true;
-                    highlightError(input);
-                } else {
-                    phoneNumbers.add(phoneValue);
-                    input.classList.remove("error");
-                }
-            });
+        const firstNameInput = document.createElement("input");
+        firstNameInput.type = "text";
+        firstNameInput.name = "firstName";
+        firstNameInput.placeholder = "First Name";
 
-            document.querySelectorAll(".name-field.first").forEach((firstNameInput, index) => {
-                const lastNameInput = document.querySelectorAll(".name-field.last")[index];
-                const middleNameInput = document.querySelectorAll(".name-field.middle")[index];
+        const lastNameInput = document.createElement("input");
+        lastNameInput.type = "text";
+        lastNameInput.name = "lastName";
+        lastNameInput.placeholder = "Last Name";
 
-                const fullName = `${firstNameInput.value.trim()} ${middleNameInput?.value.trim() ?? ""} ${lastNameInput.value.trim()}`.trim();
+        cardContentDiv.appendChild(firstNameInput);
+        cardContentDiv.appendChild(lastNameInput);
 
-                if (fullNames.has(fullName)) {
-                    duplicatesFound = true;
-                    highlightError(firstNameInput);
-                    highlightError(lastNameInput);
-                } else {
-                    fullNames.add(fullName);
-                    firstNameInput.classList.remove("error");
-                    lastNameInput.classList.remove("error");
-                }
-            });
+        if (includeExtraFields) {
+            const cityInput = document.createElement("input");
+            cityInput.type = "text";
+            cityInput.name = "city";
+            cityInput.placeholder = "City";
 
-            if (duplicatesFound) {
-                alert("Duplicate name or phone number found. Please ensure each entry is unique.");
-                event.preventDefault();
-            }
+            const stateInput = document.createElement("input");
+            stateInput.type = "text";
+            stateInput.name = "state";
+            stateInput.placeholder = "State";
+
+            const relationInput = document.createElement("input");
+            relationInput.type = "text";
+            relationInput.name = "relation";
+            relationInput.placeholder = "Relation";
+
+            cardContentDiv.appendChild(cityInput);
+            cardContentDiv.appendChild(stateInput);
+            cardContentDiv.appendChild(relationInput);
+        }
+
+        const phoneInput = document.createElement("input");
+        phoneInput.type = "text";
+        phoneInput.name = "phone";
+        phoneInput.placeholder = "(123) 456-7890";
+        phoneInput.addEventListener("input", handlePhoneInput);
+
+        cardContentDiv.appendChild(phoneInput);
+
+        const confirmButton = document.createElement("button");
+        confirmButton.textContent = "Confirm";
+        confirmButton.classList.add("confirm-btn");
+        confirmButton.addEventListener("click", confirmEntry);
+
+        const editButton = document.createElement("button");
+        editButton.textContent = "Edit";
+        editButton.classList.add("edit-btn");
+        editButton.disabled = true;
+        editButton.addEventListener("click", editEntry);
+
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "Remove";
+        removeButton.classList.add("remove-btn");
+        removeButton.addEventListener("click", () => {
+            entryToRemove = containerDiv;
+            document.getElementById("overlay").style.display = "flex";
         });
+
+        cardContentDiv.appendChild(confirmButton);
+        cardContentDiv.appendChild(editButton);
+        cardContentDiv.appendChild(removeButton);
+
+        cardDiv.appendChild(cardContentDiv);
+        containerDiv.appendChild(cardDiv);
+
+        return containerDiv;
     }
-});
 
-document.addEventListener("DOMContentLoaded", function () {
-    // Select all inputs that should mirror values
-    document.querySelectorAll(".mirror-source").forEach(input => {
-        input.addEventListener("input", function () {
-            // Find the target input field using the data-target attribute
-            const targetId = this.dataset.target;
-            const targetInput = document.getElementById(targetId);
+    // Overlay Controls
+    document.getElementById("confirmRemove").addEventListener("click", () => {
+        if (entryToRemove) entryToRemove.remove();
+        document.getElementById("overlay").style.display = "none";
+    });
 
-            if (targetInput) {
-                targetInput.value = this.value; // Update the mirrored field
+    document.getElementById("cancelRemove").addEventListener("click", () => {
+        entryToRemove = null;
+        document.getElementById("overlay").style.display = "none";
+    });
+
+    // Add Buttons Logic
+    const container = document.getElementById("phoneContainer");
+    container.appendChild(createEntry("Defendant"));
+            container.appendChild(createEntry("Defendant’s Mother", true));
+            container.appendChild(createEntry("Defendant’s Father", true));
+
+            for (let i = 1; i <= 3; i++) {
+                container.appendChild(createEntry(`Reference ${i}`, true));
             }
-        });
+
+            container.appendChild(createEntry("Co-Signer 1", true));
+            container.appendChild(createEntry("Co-Signer 1 - Reference 1", true));
+            container.appendChild(createEntry("Co-Signer 1 - Reference 2", true));
+
+    document.getElementById("addDefendant").addEventListener("click", () => {
+        defendantCount++;
+        container.appendChild(createEntry(`Defendant ${defendantCount}`, true));
+    });
+
+    document.getElementById("addDefendantSpouse").addEventListener("click", () => {
+        if (!defSpouseAdded) {
+            container.appendChild(createEntry("Defendant’s Spouse", true));
+            defSpouseAdded = true;
+        } else {
+            alert("Defendant’s Spouse already added.");
+        }
+    });
+
+    document.getElementById("addCosigner").addEventListener("click", () => {
+        cosignerCount++;
+        container.appendChild(createEntry(`Co-Signer ${cosignerCount}`, true));
+        container.appendChild(createEntry(`Co-Signer ${cosignerCount} - Reference 1`, true));
+        container.appendChild(createEntry(`Co-Signer ${cosignerCount} - Reference 2`, true));
+    });
+
+    document.getElementById("addCosignerSpouse").addEventListener("click", () => {
+        if (!cosSpouseAdded) {
+            container.appendChild(createEntry("Co-Signer’s Spouse", true));
+            cosSpouseAdded = true;
+        } else {
+            alert("Co-Signer’s Spouse already added.");
+        }
     });
 });
 
-    </script>
-        </div>
-    </form>
-    
+
+</script>
 
 </body>
 

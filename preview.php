@@ -301,44 +301,48 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 
 
-<div class="page-wrapper">
-
-                                                                                                                                                                                <!-- Row xxx: THE FINAL ROW -->
- 
-    <h2>Agreement for Bail Bond</h2>
-
-    <!-- Row 1: Sex, Race, Today's Date, Court Date -->
+<div class="container-wrapper">
+<button
+class="back-btn"
+onclick="window.location.href='index.php'">Go
+Back</button>   <!-- Row 1: Sex, Race, Today's Date, Court Date -->
     <div class="container">
         <div class="card">
             <div class="card-content">
                 <p><strong>SEX:</strong> <span
                         class="contract-field"><?php echo formatUnderline($_SESSION['sex'] ?? '', 10); ?></span></p>
-            </div>
         </div>
+    </div>
+ </div>
 
-
+    <div class="container">
         <div class="card">
             <div class="card-content">
                 <p><strong>RACE</strong> <span
                         class="contract-field"><?php echo formatUnderline($_SESSION['race'] ?? '', 15); ?></span></p>
             </div>
-        </div>
-
-        <div class="card">
+                  </div>
+                        </div>
+       
+        <div class="container">
+          <div class="card">
             <div class="card-content">
                 <p><strong>TODAY'S DATE:</strong> <span
                         class="contract-field"><?php echo formatUnderline($_SESSION['todayDate'] ?? '', 15); ?></span>
                 </p>
             </div>
         </div>
+     </div>
 
-        <div class="card">
+        <div class="container">
+         <div class="card">
             <div class="card-content">
                 <p><strong>CRT/DATE/TIME:</strong> <span
                         class="contract-field"><?php echo formatDate($_SESSION['courtDate'] ?? ''); ?></span></p>
             </div>
         </div>
     </div>
+</div>
 
     <!-- Row 2: HGT, WGT, BOND AMOUNT, COUNTY -->
     <div class="container">
@@ -349,30 +353,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </p>
             </div>
         </div>
-
-
+    </div>
+    <div class="container">
         <div class="card">
             <div class="card-content">
                 <p><strong>WGT:</strong> <span
                         class="contract-field"><?php echo formatUnderline($_SESSION['weight'] ?? '', 10); ?></span></p>
-            </div>
         </div>
-
+    </div>
+ </div>
+        
+        <div class="container">
         <div class="card">
             <div class="card-content">
                 <p><strong>BOND AMOUNT:</strong> <span
                         class="contract-field"><?php echo formatBondAmount($_SESSION['bondAmount'] ?? ''); ?></span></p>
-            </div>
-        </div>
-
+         </div>
+    </div>
+ </div>
+        
+ <div class="container">
         <div class="card">
             <div class="card-content">
                 <p><strong>COUNTY:</strong> <span
                         class="contract-field"><?php echo formatUnderline($_SESSION['county'] ?? '', 15); ?></span></p>
             </div>
         </div>
-
     </div>
+
 
 
 
@@ -384,27 +392,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <p><strong>HAIR:</strong> <span class="contract-field"><?php echo $_SESSION['hair'] ?? ''; ?></span></p>
             </div>
         </div>
-
+    </div>
+    
+    <div class="container">
         <div class="card">
             <div class="card-content">
                 <p><strong>EYES:</strong> <span class="contract-field"><?php echo $_SESSION['eyes'] ?? ''; ?></span></p>
             </div>
         </div>
+    </div>
 
+    <div class="container">
         <div class="card">
             <div class="card-content">
                 <p><strong>WARRANT #:</strong> <span
                         class="contract-field"><?php echo $_SESSION['warrantNumber'] ?? ''; ?></span></p>
             </div>
         </div>
-
-        <div class="card">
-            <div class="card-content">
+    </div>
+        <div class="container">
+            <div class="card">
+                 <div class="card-content">
                 <p><strong>CASE #:</strong> <span
                         class="contract-field"><?php echo $_SESSION['caseNumber'] ?? ''; ?></span></p>
             </div>
         </div>
+    </div>
 
+
+
+        <div class="container">
         <div class="card">
             <div class="card-content">
                 <p><strong>COURT:</strong> <span
@@ -412,6 +429,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
     </div>
+</div>
 
     <!-- Row 4: ID MARK, HOLDS, ALIAS -->
     <div class="container">
@@ -422,22 +440,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         class="contract-field"><?php echo formatIdMarks($_SESSION['idMarks']); ?></span></p>
             </div>
         </div>
-
+        </div>
+        <div class="container">
         <div class="card">
             <div class="card-content">
                 <p><strong>HOLDS:</strong> <span class="contract-field"><?php echo $_SESSION['holds'] ?: ''; ?></span>
                 </p>
             </div>
         </div>
-
+        </div>
+        <div class="container">
         <div class="card">
             <div class="card-content">
                 <p><strong>ALIAS:</strong> <span class="contract-field"><?php echo $_SESSION['alias'] ?: ''; ?></span>
                 </p>
             </div>
         </div>
-
     </div>
+
 
     <!-- Row 5-6-7:- 3 LEFT - 1 RIGHT -->
     <div class="container">
@@ -482,7 +502,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-    <div class="container">
+<div class="container">
         <h2>Defendant Information</h2>
         <div class="card">
             <div class="card-content">
@@ -490,24 +510,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <p><strong>Phone:</strong> <?= $_SESSION['defendant']['phone'] ?? '' ?></p>
             </div>
         </div>
+     </div>
 
+    <div class="container">
         <h2>Defendant's Parents</h2>
-        <div class="card">
+         <div class="card">
             <div class="card-content">
                 <p><strong>Mother:</strong> <?= $_SESSION['defendant']['parents']['mother']['name'] ?? 'N/A' ?> | <strong>Phone:</strong> <?= $_SESSION['defendant']['parents']['mother']['phone'] ?? 'N/A' ?></p>
                 <p><strong>Father:</strong> <?= $_SESSION['defendant']['parents']['father']['name'] ?? 'N/A' ?> | <strong>Phone:</strong> <?= $_SESSION['defendant']['parents']['father']['phone'] ?? 'N/A' ?></p>
             </div>
         </div>
+     </div>
 
+        <div class="container">
         <h2>Defendant References</h2>
         <?php for ($i = 1; $i <= 3; $i++): ?>
             <div class="card">
                 <div class="card-content">
                     <p><strong>Reference <?= $i ?>:</strong> <?= $_SESSION['defendant']['references'][$i]['name'] ?? 'N/A' ?> | <strong>Phone:</strong> <?= $_SESSION['defendant']['references'][$i]['phone'] ?? 'N/A' ?></p>
                 </div>
+                </div>
             </div>
         <?php endfor; ?>
 
+        <div class="container">
         <h2>Actions</h2>
         <div class="card">
             <div class="card-content actions">
@@ -520,7 +546,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
     </div>
-</div>
 
 
 
@@ -528,13 +553,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-
-    <div class="container" id="defendantSection">
+    <div class="container-wrapper">
    
         
         <!-- Row 1: Name & Address -->
+        <div class="container">
         <div class="card">
-        <div class="card-content" id="defendantSection">
+        <div class="card-content">
                 <label for="name">Name:</label>
                 <input type="text" id="name" name="address[defendant][name]" required>
                 <label for="address">Add:</label>
@@ -543,8 +568,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="text" id="zip" name="address[defendant][zip]" required>
             </div>
         </div>
+        </div>
+
 
         <!-- Row 2: Residence Type -->
+        <div class="container">
         <div class="card">
         <div class="card-content" id="defendantSection">
                 <label for="residenceType">APT/HOUSE/OTHER:</label>
@@ -566,10 +594,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="text" id="length" name="address[defendant][length]" required>
             </div>
         </div>
+     </div>
+
 
         <!-- Row 3: Contact Info -->
+        <div class="container">
         <div class="card">
-        <div class="card-content" id="defendantSection">
+        <div class="card-content">
                 <label for="cell">CELL:</label>
                 <input type="text" id="cell" name="address[defendant][cell]">
                 <label for="home">HOME/OTHER:</label>
@@ -579,21 +610,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
     </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -624,6 +640,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 </div>
 </div>
+
 <div class="container">
    
         <div class="card">
@@ -668,199 +685,6 @@ Back</button>
 </div>
 </div>
 </div>
-
-
-
-
-
-<div class="container" id="defedantSection">
-        <div class="card">
-            <div class="card-content">
-                <p><strong>CELL #:</strong>
-                </p>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-content">
-                <p><strong>EMAIL:</strong>
-                </p>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-content">
-                <p><strong>VEHICLE YEAR:</strong>
-                </p>
-            </div>
-        </div>
-
-
-        <div class="card">
-            <div class="card-content">
-                <p><strong>MAKE:</strong>
-                </p>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-content">
-                <p><strong>MODEL:</strong>
-                </p>
-            </div>
-        </div>
-
-
-        <div class="card">
-            <div class="card-content">
-                <p><strong>COLOR:</strong>
-                </p>
-            </div>
-        </div>
-
-
-        <div class="card">
-            <div class="card-content">
-                <p><strong>TAG#:</strong>
-                </p>
-            </div>
-        </div>
-
-
-        <div class="card">
-            <div class="card-content">
-                <p><strong>EMPLOYER:</strong>
-                </p>
-            </div>
-        </div>
-
-
-
-        <div class="card">
-            <div class="card-content">
-                <p><strong>PHONE:</strong>
-                </p>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-content">
-                <p><strong>CITY:</strong>
-                </p>
-            </div>
-        </div>
-
-
-        <div class="card">
-            <div class="card-content">
-                <p><strong>STATE:</strong>
-                </p>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-content">
-                <p><strong>PHONE:</strong>
-                </p>
-            </div>
-        </div>
-
-
-
-        <div class="card">
-            <div class="card-content">
-                <p><strong>PREVIOUS EMPLOYER:</strong>
-                </p>
-            </div>
-        </div>
-
-
-        <div class="card">
-            <div class="card-content">
-                <p><strong>CITY</strong>
-                </p>
-            </div>
-        </div>
-
-
-        <div class="card">
-            <div class="card-content">
-                <p><strong>STATE:</strong>
-                </p>
-            </div>
-        </div>
-
-
-        <div class="card">
-            <div class="card-content">
-                <p><strong>WHEN:</strong>
-                </p>
-            </div>
-        </div>
-
-
-        <div class="card">
-            <div class="card-content">
-                <p><strong>PREVIOUS ARREST</strong>
-                </p>
-            </div>
-        </div>
-
-
-        <div class="card">
-            <div class="card-content">
-                <p><strong>PREVIOUS ARREST</strong>
-                </p>
-            </div>
-        </div>
-
-
-        <div class="card">
-            <div class="card-content">
-                <p><strong>PREVIOUS ARREST</strong>
-                </p>
-            </div>
-        </div>
-
-
-        <div class="card">
-            <div class="card-content">
-                <p><strong>PREVIOUS ARREST</strong>
-                </p>
-            </div>
-        </div>
-
-
-        <div class="card">
-            <div class="card-content">
-                <p><strong>PREVIOUS ARREST</strong>
-                </p>
-            </div>
-        </div>
-
-
-        <div class="card">
-            <div class="card-content">
-                <p><strong>PREVIOUS ARREST</strong>
-                </p>
-            </div>
-        </div>
-
-
-        <div class="card">
-            <div class="card-content">
-                <p><strong>PREVIOUS ARREST</strong>
-                </p>
-            </div>
-        </div>
-
-
-        <div class="card">
-            <div class="card-content">
-                <p><strong>PREVIOUS ARREST</strong>
-                </p>
-            </div>
-        </div>
-    </div>
-    </div>
+</div>
+</div>
 </html>
