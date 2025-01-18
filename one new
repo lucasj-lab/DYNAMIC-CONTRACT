@@ -1,5 +1,0 @@
-
-const middleNameInput = document.createElement("input");
-middleNameInput.type = "text";
-middleNameInput.name = "middleName";
-middleNameInput.placeholder = "middle Name";
