@@ -188,8 +188,8 @@ validateAndStore(
 
 
 
-<h2>Validation Form</h2>
 <form action="index.php" method="post">
+
 
 
 
@@ -211,9 +211,9 @@ validateAndStore(
         <button type="button" id="removeDefendantSpouse" class="remove-btn">Remove Defendant’s Spouse</button>
         <button type="button" id="removeCosigner" class="remove-btn">Remove Co-Signer</button>   
        <button type="button" id="removeCosignerSpouse" class="remove-btn">Remove Co-Signer’s Spouse</button>
-       </div>
+    
         <!-- Buttons for Removing Entities -->
-        <div class="button-container">
+  
        <button type="button" class="edit-btn" onclick="unlockRow('row1')">Edit Name</button>
        <button type="button" class="confirm-btn" onclick="lockRow('row1')">Confirm Name</button>
        <button type="button" class="edit-btn" onclick="unlockRow('row2')">Edit Demo</button>
@@ -224,7 +224,7 @@ validateAndStore(
        <button type="button" class="confirm-btn" onclick="lockRow('row4')">Confirm Addr</button>
        <button type="submit">Preview</button>
     </div>
-    <div  class="container-wrapper" id="phoneContainer"></div>   
+    <div  class="container-wrapper" id="containerWrapper"></div>   
 
              
    
@@ -1874,8 +1874,7 @@ function closeChargesPopup() {
                 }
             });
         });
-
-
+     
         document.addEventListener("DOMContentLoaded", () => {
     const confirmedEntries = new Set();
     let defendantCount = 1;
@@ -1886,78 +1885,18 @@ function closeChargesPopup() {
 
     // Format phone numbers
     function formatPhoneNumber(value) {
-        let digits = value.replace(/\D/g, "").slice(0, 10);
+        const digits = value.replace(/\D/g, "").slice(0, 10);
         if (digits.length <= 3) return digits;
         if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
         return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
     }
 
-    // Handle phone number input
     function handlePhoneInput(event) {
         event.target.value = formatPhoneNumber(event.target.value);
     }
 
-    // Confirm Entry
-    function confirmEntry(event) {
-        event.preventDefault();
-        const button = event.target;
-        const entryGroup = button.closest(".card");
-
-        if (!entryGroup) return;
-
-        const firstNameInput = entryGroup.querySelector("input[name='firstName']");
-        const lastNameInput = entryGroup.querySelector("input[name='lastName']");
-        const phoneInput = entryGroup.querySelector("input[name='phone']");
-
-        const fullName = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
-        const formattedNumber = phoneInput.value;
-
-        if (confirmedEntries.has(fullName) || confirmedEntries.has(formattedNumber)) {
-            alert("This name or phone number has already been confirmed.");
-        } else if (formattedNumber.length === 14 && firstNameInput.value.trim() && lastNameInput.value.trim()) {
-            confirmedEntries.add(fullName);
-            confirmedEntries.add(formattedNumber);
-
-            firstNameInput.disabled = true;
-            lastNameInput.disabled = true;
-            phoneInput.disabled = true;
-            button.disabled = true;
-            entryGroup.querySelector(".edit-btn").disabled = false;
-
-            alert("Entry confirmed successfully!");
-        } else {
-            alert("Please enter a valid name and 10-digit US phone number.");
-        }
-    }
-
-    // Edit Entry
-    function editEntry(event) {
-        event.preventDefault();
-        const button = event.target;
-        const entryGroup = button.closest(".card-content");
-
-        if (!entryGroup) return;
-
-        const firstNameInput = entryGroup.querySelector("input[name='firstName']");
-        const lastNameInput = entryGroup.querySelector("input[name='lastName']");
-        const phoneInput = entryGroup.querySelector("input[name='phone']");
-        const confirmButton = entryGroup.querySelector(".confirm-btn");
-
-        const fullName = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
-        const formattedNumber = phoneInput.value;
-
-        confirmedEntries.delete(fullName);
-        confirmedEntries.delete(formattedNumber);
-
-        firstNameInput.disabled = false;
-        lastNameInput.disabled = false;
-        phoneInput.disabled = false;
-        confirmButton.disabled = false;
-        button.disabled = true;
-    }
-
-    // Create Entry
-    function createEntry(label, includeExtraFields = false) {
+    // Create Entry Function
+    function createEntry(label, includeExtraFields = false, relationOverride = null) {
         const containerDiv = document.createElement("div");
         containerDiv.classList.add("container");
 
@@ -1976,13 +1915,17 @@ function closeChargesPopup() {
         firstNameInput.name = "firstName";
         firstNameInput.placeholder = "First Name";
 
+        const middleNameInput = document.createElement("input");
+        middleNameInput.type = "text";
+        middleNameInput.name = "middleName";
+        middleNameInput.placeholder = "Middle Name";
+
         const lastNameInput = document.createElement("input");
         lastNameInput.type = "text";
         lastNameInput.name = "lastName";
         lastNameInput.placeholder = "Last Name";
 
-        cardContentDiv.appendChild(firstNameInput);
-        cardContentDiv.appendChild(lastNameInput);
+        cardContentDiv.append(firstNameInput, middleNameInput, lastNameInput);
 
         if (includeExtraFields) {
             const cityInput = document.createElement("input");
@@ -1995,34 +1938,118 @@ function closeChargesPopup() {
             stateInput.name = "state";
             stateInput.placeholder = "State";
 
-            const relationInput = document.createElement("input");
-            relationInput.type = "text";
-            relationInput.name = "relation";
-            relationInput.placeholder = "Relation";
+            const phoneInput = document.createElement("input");
+            phoneInput.type = "text";
+            phoneInput.name = "phone";
+            phoneInput.placeholder = "(123) 456-7890";
+            phoneInput.addEventListener("input", handlePhoneInput);
 
-            cardContentDiv.appendChild(cityInput);
-            cardContentDiv.appendChild(stateInput);
-            cardContentDiv.appendChild(relationInput);
+            cardContentDiv.append(cityInput, stateInput, phoneInput);
+
+            // Add Relation Input if applicable
+            if (relationOverride || (!label.includes("Mom") && !label.includes("Dad") && !label.startsWith("Defendant"))) {
+                const relationInput = document.createElement("input");
+                relationInput.type = "text";
+                relationInput.name = "relation";
+                relationInput.placeholder = "Relation";
+                relationInput.setAttribute("list", `relationOptions-${label}`);
+
+                const relationDatalist = document.createElement("datalist");
+                relationDatalist.id = `relationOptions-${label}`;
+
+                const defaultRelationOptions = [
+                    "---Select---",
+                    "Agent",
+                    "Attorney",
+                    "Aunt",
+                    "Boyfriend",
+                    "Brother",
+                    "Brother in law",
+                    "Child's Father",
+                    "Child's Mother",
+                    "Co-Worker",
+                    "Cousin",
+                    "Daughter",
+                    "Daughter in law",
+                    "Employee",
+                    "Employer",
+                    "Ex-Husband",
+                    "Ex-Partner",
+                    "Ex-Wife",
+                    "Father",
+                    "Father in law",
+                    "Fiance`",
+                    "Friend",
+                    "Girlfriend",
+                    "God Father",
+                    "God Mother",
+                    "Grand Daughter",
+                    "Grand Father",
+                    "Grand Mother",
+                    "Grand Son",
+                    "Great Aunt",
+                    "Great Granddaughter",
+                    "Great Grandfather",
+                    "Great Grandmother",
+                    "Great Grandson",
+                    "Great Uncle",
+                    "Half Brother",
+                    "Half Sister",
+                    "Husband",
+                    "Manager",
+                    "Manager Business",
+                    "Mother",
+                    "Mother in law",
+                    "Neice",
+                    "Neighbor",
+                    "Nephew",
+                    "Partner",
+                    "Pastor",
+                    "Priest",
+                    "Probation officer",
+                    "Rabbi",
+                    "Roomate",
+                    "Self",
+                    "Sister",
+                    "Sister in law",
+                    "Son",
+                    "Son in law",
+                    "Sponsor to name a few",
+                    "Step-Brother",
+                    "Step-Daughter",
+                    "Step-Father",
+                    "Step-Mother",
+                    "Step-Sister",
+                    "Step-Son",
+                    "Teacher",
+                    "Uncle",
+                    "Wife"
+                ];
+                const defendantReferenceOverride = ["Friend", "Brother", "Sister", "Colleague"];
+                const relationOptions =
+                    relationOverride ||
+                    (label.includes("Reference") && label.startsWith("Defendant")
+                        ? defendantReferenceOverride
+                        : defaultRelationOptions);
+
+                relationOptions.forEach(optionValue => {
+                    const option = document.createElement("option");
+                    option.value = optionValue;
+                    relationDatalist.appendChild(option);
+                });
+
+                cardContentDiv.append(relationInput, relationDatalist);
+            }
         }
-
-        const phoneInput = document.createElement("input");
-        phoneInput.type = "text";
-        phoneInput.name = "phone";
-        phoneInput.placeholder = "(123) 456-7890";
-        phoneInput.addEventListener("input", handlePhoneInput);
-
-        cardContentDiv.appendChild(phoneInput);
 
         const confirmButton = document.createElement("button");
         confirmButton.textContent = "Confirm";
         confirmButton.classList.add("confirm-btn");
-        confirmButton.addEventListener("click", confirmEntry);
 
         const editButton = document.createElement("button");
         editButton.textContent = "Edit";
         editButton.classList.add("edit-btn");
         editButton.disabled = true;
-        editButton.addEventListener("click", editEntry);
 
         const removeButton = document.createElement("button");
         removeButton.textContent = "Remove";
@@ -2032,10 +2059,7 @@ function closeChargesPopup() {
             document.getElementById("overlay").style.display = "flex";
         });
 
-        cardContentDiv.appendChild(confirmButton);
-        cardContentDiv.appendChild(editButton);
-        cardContentDiv.appendChild(removeButton);
-
+        cardContentDiv.append(confirmButton, editButton, removeButton);
         cardDiv.appendChild(cardContentDiv);
         containerDiv.appendChild(cardDiv);
 
@@ -2054,49 +2078,50 @@ function closeChargesPopup() {
     });
 
     // Add Buttons Logic
-    const container = document.getElementById("phoneContainer");
-    container.appendChild(createEntry("Defendant"));
-            container.appendChild(createEntry("Defendant’s Mother", true));
-            container.appendChild(createEntry("Defendant’s Father", true));
+    const containerWrapper = document.getElementById("containerWrapper");
 
-            for (let i = 1; i <= 3; i++) {
-                container.appendChild(createEntry(`Reference ${i}`, true));
-            }
+    // Add Default Entries
+    containerWrapper.appendChild(createEntry("Defendant", true));
+    containerWrapper.appendChild(createEntry("Def-Mom", true));
+    containerWrapper.appendChild(createEntry("Def-Dad", true));
 
-            container.appendChild(createEntry("Co-Signer 1", true));
-            container.appendChild(createEntry("Co-Signer 1 - Reference 1", true));
-            container.appendChild(createEntry("Co-Signer 1 - Reference 2", true));
+    for (let i = 1; i <= 3; i++) {
+        containerWrapper.appendChild(createEntry(`Reference ${i}`, true));
+    }
 
+    containerWrapper.appendChild(createEntry("Co-Signer 1", true));
+    containerWrapper.appendChild(createEntry("Co-Signer 1 - Reference 1", true));
+    containerWrapper.appendChild(createEntry("Co-Signer 1 - Reference 2", true));
+
+    // Add Defendant Button
     document.getElementById("addDefendant").addEventListener("click", () => {
         defendantCount++;
-        container.appendChild(createEntry(`Defendant ${defendantCount}`, true));
-    });
+        containerWrapper.appendChild(createEntry(`Defendant ${defendantCount}`, true));
+        containerWrapper.appendChild(createEntry(`Def-${defendantCount}’s Mom`, true));
+        containerWrapper.appendChild(createEntry(`Def-${defendantCount}’s Dad`, true));
 
-    document.getElementById("addDefendantSpouse").addEventListener("click", () => {
-        if (!defSpouseAdded) {
-            container.appendChild(createEntry("Defendant’s Spouse", true));
-            defSpouseAdded = true;
-        } else {
-            alert("Defendant’s Spouse already added.");
+        for (let i = 1; i <= 3; i++) {
+            containerWrapper.appendChild(createEntry(`Def-${defendantCount} Reference ${i}`, true));
         }
     });
 
+    // Add Cosigner Button
     document.getElementById("addCosigner").addEventListener("click", () => {
         cosignerCount++;
-        container.appendChild(createEntry(`Co-Signer ${cosignerCount}`, true));
-        container.appendChild(createEntry(`Co-Signer ${cosignerCount} - Reference 1`, true));
-        container.appendChild(createEntry(`Co-Signer ${cosignerCount} - Reference 2`, true));
+        containerWrapper.appendChild(createEntry(`Co-Signer ${cosignerCount}`, true));
+        containerWrapper.appendChild(createEntry(`Co-Signer ${cosignerCount} - Reference 1`, true));
+        containerWrapper.appendChild(createEntry(`Co-Signer ${cosignerCount} - Reference 2`, true));
     });
+});
 
     document.getElementById("addCosignerSpouse").addEventListener("click", () => {
         if (!cosSpouseAdded) {
-            container.appendChild(createEntry("Co-Signer’s Spouse", true));
+            containerWrapper.appendChild(createEntry("Co-Signer’s Spouse", true));
             cosSpouseAdded = true;
         } else {
             alert("Co-Signer’s Spouse already added.");
         }
     });
-});
 
 
 </script>
