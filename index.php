@@ -1874,7 +1874,6 @@ function closeChargesPopup() {
                 }
             });
         });
-     
         document.addEventListener("DOMContentLoaded", () => {
     const confirmedEntries = new Set();
     let defendantCount = 1;
@@ -1946,8 +1945,9 @@ function closeChargesPopup() {
 
             cardContentDiv.append(cityInput, stateInput, phoneInput);
 
-            // Add Relation Input if applicable
-            if (relationOverride || (!label.includes("Mom") && !label.includes("Dad") && !label.startsWith("Defendant"))) {
+            // Add Relation Input for Spouses
+            const isSpouse = label === "Defendant’s Spouse" || label === "Co-Signer’s Spouse";
+            if (relationOverride || isSpouse || (!label.includes("Mom") && !label.includes("Dad") && !label.startsWith("Defendant"))) {
                 const relationInput = document.createElement("input");
                 relationInput.type = "text";
                 relationInput.name = "relation";
@@ -2025,12 +2025,9 @@ function closeChargesPopup() {
                     "Uncle",
                     "Wife"
                 ];
-                const defendantReferenceOverride = ["Friend", "Brother", "Sister", "Colleague"];
-                const relationOptions =
-                    relationOverride ||
-                    (label.includes("Reference") && label.startsWith("Defendant")
-                        ? defendantReferenceOverride
-                        : defaultRelationOptions);
+
+                const spouseRelationOptions = ["Husband", "Wife"];
+                const relationOptions = relationOverride || (isSpouse ? spouseRelationOptions : defaultRelationOptions);
 
                 relationOptions.forEach(optionValue => {
                     const option = document.createElement("option");
@@ -2105,6 +2102,16 @@ function closeChargesPopup() {
         }
     });
 
+    // Add Defendant Spouse Button
+    document.getElementById("addDefendantSpouse").addEventListener("click", () => {
+        if (!defSpouseAdded) {
+            containerWrapper.appendChild(createEntry("Defendant’s Spouse", true));
+            defSpouseAdded = true;
+        } else {
+            alert("Defendant’s Spouse already added.");
+        }
+    });
+
     // Add Cosigner Button
     document.getElementById("addCosigner").addEventListener("click", () => {
         cosignerCount++;
@@ -2112,8 +2119,8 @@ function closeChargesPopup() {
         containerWrapper.appendChild(createEntry(`Co-Signer ${cosignerCount} - Reference 1`, true));
         containerWrapper.appendChild(createEntry(`Co-Signer ${cosignerCount} - Reference 2`, true));
     });
-});
 
+    // Add Cosigner Spouse Button
     document.getElementById("addCosignerSpouse").addEventListener("click", () => {
         if (!cosSpouseAdded) {
             containerWrapper.appendChild(createEntry("Co-Signer’s Spouse", true));
@@ -2122,6 +2129,8 @@ function closeChargesPopup() {
             alert("Co-Signer’s Spouse already added.");
         }
     });
+});
+
 
 
 </script>
