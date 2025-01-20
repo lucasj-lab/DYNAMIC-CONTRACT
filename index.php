@@ -1,175 +1,6 @@
 <?php
 session_start();
 
-// Function to format phone numbers
-function formatPhoneNumber($phone) {
-    $digits = preg_replace("/\D/", "", $phone);
-    return strlen($digits) === 10 ? "(".substr($digits, 0, 3).") ".substr($digits, 3, 3)."-".substr($digits, 6) : $phone;
-}
-
-// Store values in `$_SESSION` if they are submitted
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $_SESSION['form_data'] = $_POST; // Store the entire form data
-}
-
-
-// Store values in `$_SESSION` if they are submitted
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    if (isset($_POST['fill_form'])) {
-        // Sample test data
-        $_SESSION['form_data'] = [
-            "address[defendant][name][first]" => "John",
-            "address[defendant][name][last]" => "Doe",
-            "defendant_phone" => formatPhoneNumber("1234567890"),
-            "mother_first" => "Mary",
-            "mother_last" => "Doe",
-            "mother_phone" => formatPhoneNumber("9876543210"),
-            "father_first" => "Robert",
-            "father_last" => "Doe",
-            "father_phone" => formatPhoneNumber("8765432109"),
-            "ref1_first" => "Alice",
-            "ref1_last" => "Smith",
-            "ref1_phone" => formatPhoneNumber("5551234567"),
-            "ref2_first" => "Bob",
-            "ref2_last" => "Johnson",
-            "ref2_phone" => formatPhoneNumber("5557654321"),
-            "ref3_first" => "Charlie",
-            "ref3_last" => "Brown",
-            "ref3_phone" => formatPhoneNumber("5559876543"),
-        ];
-    } else {
-        $_SESSION['form_data'] = $_POST; // Store user-submitted data
-    }
-}
-
-// Retrieve stored values
-function getValue($name, $default = '') {
-    return htmlspecialchars($_SESSION['form_data'][$name] ?? $default);
-}
-
-// Normalize name
-function normalizeName($first, $last) {
-    return strtolower(trim($first) . ' ' . trim($last));
-}
-
-// Normalize phone
-function normalizePhone($phone) {
-    return preg_replace("/\D/", "", $phone); // Remove non-numeric characters
-}
-
-// Validate and store names/phones
-function validateAndStore($role, $first, $last, $phone, &$enteredNames, &$enteredPhones, &$errors) {
-    $fullName = normalizeName($first, $last);
-    $normalizedPhone = normalizePhone($phone);
-
-    // Check duplicates for names
-    if (!empty($first) && !empty($last) && in_array($fullName, $enteredNames)) {
-        $errors[] = "Duplicate name detected for $role.";
-    } else {
-        $enteredNames[] = $fullName;
-    }
-
-    // Check duplicates for phones
-    if (!empty($normalizedPhone) && in_array($normalizedPhone, $enteredPhones)) {
-        $errors[] = "Duplicate phone number detected for $role.";
-    } else {
-        $enteredPhones[] = $normalizedPhone;
-    }
-}
-
-// Process form submission
-$errors = [];
-$enteredNames = [];
-$enteredPhones = [];
-
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // Process Defendant
-    $_SESSION['defendant'] = [
-        'name' => [
-            'first' => htmlspecialchars(trim($_POST["address"]["defendant"]["name"]["first"] ?? "")),
-            'last' => htmlspecialchars(trim($_POST["address"]["defendant"]["name"]["last"] ?? ""))
-        ],
-        'phone' => formatPhoneNumber($_POST["defendant_phone"] ?? "")
-    ];
-
-    validateAndStore(
-        "Defendant",
-        $_SESSION['defendant']['name']['first'],
-        $_SESSION['defendant']['name']['last'],
-        $_SESSION['defendant']['phone'],
-        $enteredNames,
-        $enteredPhones,
-        $errors
-    );
-
-    // Process Mother
-    $_SESSION['defendant']['parents']['mother'] = [
-        'name' => [
-            'first' => htmlspecialchars(trim($_POST["mother_first"] ?? "")),
-            'last' => htmlspecialchars(trim($_POST["mother_last"] ?? ""))
-        ],
-        'phone' => formatPhoneNumber($_POST["mother_phone"] ?? "")
-    ];
-
-    validateAndStore(
-        "Mother",
-        $_SESSION['defendant']['parents']['mother']['name']['first'],
-        $_SESSION['defendant']['parents']['mother']['name']['last'],
-        $_SESSION['defendant']['parents']['mother']['phone'],
-        $enteredNames,
-        $enteredPhones,
-        $errors
-    );
-// Process father
-$_SESSION['defendant']['parents']['father'] = [
-    'name' => [
-        'first' => htmlspecialchars(trim($_POST["father_first"] ?? "")),
-        'last' => htmlspecialchars(trim($_POST["father_last"] ?? ""))
-    ],
-    'phone' => formatPhoneNumber($_POST["father_phone"] ?? "")
-];
-
-validateAndStore(
-    "father",
-    $_SESSION['defendant']['parents']['father']['name']['first'],
-    $_SESSION['defendant']['parents']['father']['name']['last'],
-    $_SESSION['defendant']['parents']['father']['phone'],
-    $enteredNames,
-    $enteredPhones,
-    $errors
-);
-
-    // Process References
-    for ($i = 1; $i <= 3; $i++) {
-        $_SESSION['defendant']['references'][$i] = [
-            'name' => [
-                'first' => htmlspecialchars(trim($_POST["ref{$i}_first"] ?? "")),
-                'last' => htmlspecialchars(trim($_POST["ref{$i}_last"] ?? ""))
-            ],
-            'phone' => formatPhoneNumber($_POST["ref{$i}_phone"] ?? "")
-        ];
-
-        validateAndStore(
-            "Reference $i",
-            $_SESSION['defendant']['references'][$i]['name']['first'],
-            $_SESSION['defendant']['references'][$i]['name']['last'],
-            $_SESSION['defendant']['references'][$i]['phone'],
-            $enteredNames,
-            $enteredPhones,
-            $errors
-        );
-    }
-
-    // Handle Errors or Proceed
-    if (!empty($errors)) {
-        $_SESSION['errors'] = $errors;
-        header("Location: index.php");
-        exit();
-    } else {
-        header("Location: preview.php");
-        exit();
-    }
-}
 ?>
 
 
@@ -183,47 +14,13 @@ validateAndStore(
     <title>Bond Builder</title>
 </head>
 <body>
+<?php require 'header.php'; ?>
 
 
 
+<form id="validationForm" action="index.php" method="post">
 
 
-<form action="index.php" method="post">
-
-
-
-
-<form id="validationForm">   
-
-       <!-- Dynamic Fields Inserted Here -->
-      
-
-
-       
-    
-        <!-- Buttons for Adding Entities -->
-        <div class="button-container">
-        <button type="button" id="addDefendant" class="add-btn">Add Defendant</button>
-        <button type="button" id="addDefendantSpouse" class="add-btn">Add Defendant’s Spouse</button>
-        <button type="button" id="addCosigner" class="add-btn">Add Co-Signer</button>
-        <button type="button" id="addCosignerSpouse" class="add-btn">Add Co-Signer’s Spouse</button>
-        <button type="button" id="removeDefendant" class="remove-btn">Remove Defendant</button>
-        <button type="button" id="removeDefendantSpouse" class="remove-btn">Remove Defendant’s Spouse</button>
-        <button type="button" id="removeCosigner" class="remove-btn">Remove Co-Signer</button>   
-       <button type="button" id="removeCosignerSpouse" class="remove-btn">Remove Co-Signer’s Spouse</button>
-    
-        <!-- Buttons for Removing Entities -->
-  
-       <button type="button" class="edit-btn" onclick="unlockRow('row1')">Edit Name</button>
-       <button type="button" class="confirm-btn" onclick="lockRow('row1')">Confirm Name</button>
-       <button type="button" class="edit-btn" onclick="unlockRow('row2')">Edit Demo</button>
-       <button type="button" class="confirm-btn" onclick="lockRow('row2')">Confirm Demo</button>
-       <button type="button" class="edit-btn" onclick="unlockRow('row3')">Edit BI</button>
-       <button type="button" class="confirm-btn" onclick="lockRow('row3')">Confirm BI</button>
-       <button type="button" class="edit-btn" onclick="unlockRow('row4')">Edit Addr</button>
-       <button type="button" class="confirm-btn" onclick="lockRow('row4')">Confirm Addr</button>
-       <button type="submit">Preview</button>
-    </div>
     <div  class="container-wrapper" id="containerWrapper"></div>   
 
              
@@ -290,7 +87,7 @@ validateAndStore(
                 </div>
 
 
-
+                </form>
         
 <div class="card">
 
@@ -1020,9 +817,82 @@ validateAndStore(
                 </div>
 </div>
 </div>
-</form>
 
 <script>
+
+
+       
+
+
+
+function openHeaderOverlay() {
+            document.getElementById("headerOverlay").style.width = "30%";
+        }
+
+        function closeHeaderOverlay() {
+            document.getElementById("headerOverlay").style.width = "0";
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+    function openHeaderOverlay() {
+        document.getElementById("headerOverlay").style.width = "100%";
+    }
+
+    function closeHeaderOverlay() {
+        document.getElementById("headerOverlay").style.width = "0";
+    }
+
+    // Close the overlay automatically when the screen is resized to desktop view
+    window.addEventListener("resize", () => {
+        if (window.innerWidth > 768) {
+            closeHeaderOverlay();
+        }
+    });
+
+    // Overlay Button Event Listeners
+    document.getElementById("addDefendant-overlay").addEventListener("click", () => {
+        console.log("Add Defendant button in overlay clicked");
+        // Add Defendant functionality here
+    });
+
+    document.getElementById("addDefendantSpouse-overlay").addEventListener("click", () => {
+        console.log("Add Defendant’s Spouse button in overlay clicked");
+        // Add Defendant’s Spouse functionality here
+    });
+
+    document.getElementById("addCosigner-overlay").addEventListener("click", () => {
+        console.log("Add Co-Signer button in overlay clicked");
+        // Add Co-Signer functionality here
+    });
+
+    document.getElementById("addCosignerSpouse-overlay").addEventListener("click", () => {
+        console.log("Add Co-Signer’s Spouse button in overlay clicked");
+        // Add Co-Signer’s Spouse functionality here
+    });
+
+    document.getElementById("removeDefendant-overlay").addEventListener("click", () => {
+        console.log("Remove Defendant button in overlay clicked");
+        // Remove Defendant functionality here
+    });
+
+    document.getElementById("removeDefendantSpouse-overlay").addEventListener("click", () => {
+        console.log("Remove Defendant’s Spouse button in overlay clicked");
+        // Remove Defendant’s Spouse functionality here
+    });
+
+    document.getElementById("removeCosigner-overlay").addEventListener("click", () => {
+        console.log("Remove Co-Signer button in overlay clicked");
+        // Remove Co-Signer functionality here
+    });
+
+    document.getElementById("removeCosignerSpouse-overlay").addEventListener("click", () => {
+        console.log("Remove Co-Signer’s Spouse button in overlay clicked");
+        // Remove Co-Signer’s Spouse functionality here
+    });
+});
+
+
+
         document.addEventListener("DOMContentLoaded", function () {
             const citiesByState = {
                 "AL": ["Birmingham", "Montgomery", "Huntsville", "Mobile", "Tuscaloosa", "Hoover", "Dothan", "Auburn", "Decatur", "Madison",
@@ -1874,6 +1744,7 @@ function closeChargesPopup() {
                 }
             });
         });
+
         document.addEventListener("DOMContentLoaded", () => {
     const confirmedEntries = new Set();
     let defendantCount = 1;
@@ -1890,24 +1761,107 @@ function closeChargesPopup() {
         return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
     }
 
+
     function handlePhoneInput(event) {
-        event.target.value = formatPhoneNumber(event.target.value);
+      const inputField = event.target;
+      inputField.value = formatPhoneNumber(inputField.value);
+  }
+
+  
+  function confirmEntry(event) {
+    event.preventDefault();
+    const button = event.target;
+    const phoneInput = button.previousElementSibling;
+    const lastNameInput = phoneInput.previousElementSibling;
+    const firstNameInput = lastNameInput.previousElementSibling;
+
+    const fullName = `${firstNameInput.value.trim().toLowerCase()} ${lastNameInput.value.trim().toLowerCase()}`;
+    const formattedNumber = phoneInput.value;
+    const nameKey = `${fullName}`;
+    const numberKey = `${formattedNumber}`;
+
+    const messageContainer = document.createElement("div");
+    messageContainer.style.marginTop = "10px";
+
+    const duplicateMessage = document.createElement("p");
+    duplicateMessage.style.color = "red";
+    duplicateMessage.style.fontWeight = "bold";
+
+    const successMessage = document.createElement("p");
+    successMessage.style.color = "green";
+    successMessage.style.fontWeight = "bold";
+
+    if (confirmedEntries.has(nameKey)) {
+        const existingEntity = Array.from(confirmedEntries).find(entry => entry === nameKey);
+
+        duplicateMessage.textContent = `The name "${fullName}" is already confirmed as the ${existingEntity.split(':')[0]}.`;
+
+        const editButton = document.createElement("button");
+        editButton.textContent = `Edit [${existingEntity.split(':')[0]}]`;
+        editButton.style.marginRight = "10px";
+        editButton.classList.add("action-button");
+        editButton.addEventListener("click", () => {
+            console.log(`Editing ${existingEntity}`);
+        });
+
+        const confirmButton = document.createElement("button");
+        confirmButton.textContent = `Confirm ${label}`;
+        confirmButton.classList.add("action-button");
+        confirmButton.addEventListener("click", () => {
+            console.log(`Confirming as ${label}`);
+        });
+
+        messageContainer.appendChild(duplicateMessage);
+        messageContainer.appendChild(editButton);
+        messageContainer.appendChild(confirmButton);
+        button.parentElement.appendChild(messageContainer);
+
+    } else if (confirmedEntries.has(numberKey)) {
+        duplicateMessage.textContent = `The phone number "${formattedNumber}" has already been confirmed.`;
+        messageContainer.appendChild(duplicateMessage);
+        button.parentElement.appendChild(messageContainer);
+    } else if (formattedNumber.length === 14 && firstNameInput.value.trim().length > 0 && lastNameInput.value.trim().length > 0) {
+        confirmedEntries.add(`${label}:${nameKey}`); // Store with entity label
+        confirmedEntries.add(numberKey);
+
+        firstNameInput.disabled = true;
+        lastNameInput.disabled = true;
+        phoneInput.disabled = true;
+        button.disabled = true;
+        button.nextElementSibling.disabled = false;
+
+        successMessage.textContent = "✅ Entry confirmed successfully!";
+        messageContainer.appendChild(successMessage);
+        button.parentElement.appendChild(messageContainer);
+    } else {
+        duplicateMessage.textContent = "❌ Please enter a valid name and 10-digit US phone number.";
+        messageContainer.appendChild(duplicateMessage);
+        button.parentElement.appendChild(messageContainer);
     }
+}
+
 
     // Create Entry Function
     function createEntry(label, includeExtraFields = false, relationOverride = null) {
+       
+        const containerWrapperDiv = document.createElement("div");
+        containerWrapperDiv.classList.add("container-wrapper");
+
         const containerDiv = document.createElement("div");
         containerDiv.classList.add("container");
+
+        const title = document.createElement("h2");
+        title.textContent = label;
+        containerDiv.appendChild(title);
 
         const cardDiv = document.createElement("div");
         cardDiv.classList.add("card");
 
+       
+
+
         const cardContentDiv = document.createElement("div");
         cardContentDiv.classList.add("card-content");
-
-        const title = document.createElement("h3");
-        title.textContent = label;
-        cardContentDiv.appendChild(title);
 
         const firstNameInput = document.createElement("input");
         firstNameInput.type = "text";
@@ -1924,7 +1878,12 @@ function closeChargesPopup() {
         lastNameInput.name = "lastName";
         lastNameInput.placeholder = "Last Name";
 
-        cardContentDiv.append(firstNameInput, middleNameInput, lastNameInput);
+        const phoneInput = document.createElement("input");
+            phoneInput.type = "text";
+            phoneInput.name = "phone";
+            phoneInput.placeholder = "(123) 456-7890";
+            phoneInput.addEventListener("input", handlePhoneInput);
+        cardContentDiv.append(firstNameInput, middleNameInput, lastNameInput, phoneInput);
 
         if (includeExtraFields) {
             const cityInput = document.createElement("input");
@@ -1937,11 +1896,6 @@ function closeChargesPopup() {
             stateInput.name = "state";
             stateInput.placeholder = "State";
 
-            const phoneInput = document.createElement("input");
-            phoneInput.type = "text";
-            phoneInput.name = "phone";
-            phoneInput.placeholder = "(123) 456-7890";
-            phoneInput.addEventListener("input", handlePhoneInput);
 
             cardContentDiv.append(cityInput, stateInput, phoneInput);
 
@@ -2039,29 +1993,98 @@ function closeChargesPopup() {
             }
         }
 
-        const confirmButton = document.createElement("button");
-        confirmButton.textContent = "Confirm";
-        confirmButton.classList.add("confirm-btn");
+    // Confirm Button
+    const confirmButton = document.createElement("button");
+    confirmButton.textContent = "Confirm";
+    confirmButton.classList.add("confirm-btn");
+    
+    let lastConfirmedState = {};
 
-        const editButton = document.createElement("button");
-        editButton.textContent = "Edit";
-        editButton.classList.add("edit-btn");
+    confirmButton.addEventListener("click", () => {
+        const nameKey = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
+        const numberKey = phoneInput ? phoneInput.value.trim() : null;
+
+          const currentState = {
+            name: nameKey,
+            phone: numberKey
+        };
+
+     
+        // Check if entity has experienced changes since last confirmation
+        const hasChanged =
+            currentState.name !== lastConfirmedState.name ||
+            currentState.phone !== lastConfirmedState.phone;
+
+        if (!hasChanged) {
+            // Highlight fields and make them read-only
+            firstNameInput.style.backgroundColor = "lightgreen";
+            lastNameInput.style.backgroundColor = "lightgreen";
+            if (phoneInput) phoneInput.style.backgroundColor = "lightgreen";
+
+            firstNameInput.disabled = true;
+            lastNameInput.disabled = true;
+            if (phoneInput) phoneInput.disabled = true;
+            confirmButton.disabled = true;
+            editButton.disabled = false;
+            return;
+        }
+
+        // If changes detected or first confirmation
+        if (
+            (!phoneInput || phoneInput.value.length === 14) &&
+            firstNameInput.value.trim().length > 0 &&
+            lastNameInput.value.trim().length > 0
+        ) {
+            confirmedEntries.add(nameKey);
+            if (numberKey) confirmedEntries.add(numberKey);
+
+            lastConfirmedState = { ...currentState };
+
+            firstNameInput.style.backgroundColor = "lightgreen";
+            lastNameInput.style.backgroundColor = "lightgreen";
+            if (phoneInput) phoneInput.style.backgroundColor = "lightgreen";
+
+            firstNameInput.disabled = true;
+            lastNameInput.disabled = true;
+            if (phoneInput) phoneInput.disabled = true;
+            confirmButton.disabled = true;
+            editButton.disabled = false;
+
+            // Display a success message dynamically
+const successMessage = document.createElement('p');
+successMessage.textContent = 'Entry confirmed successfully!';
+successMessage.style.color = 'green';
+successMessage.style.fontWeight = 'bold';
+cardContentDiv.appendChild(successMessage);
+        } else {
+            alert("Please enter a valid name and phone number.");
+        }
+    });
+
+    
+    // Edit Button
+    const editButton = document.createElement("button");
+    editButton.textContent = "Edit";
+    editButton.classList.add("edit-btn");
+    editButton.disabled = true;
+
+    editButton.addEventListener("click", () => {
+        firstNameInput.disabled = false;
+        lastNameInput.disabled = false;
+        if (phoneInput) phoneInput.disabled = false;
+
+        confirmButton.disabled = false;
         editButton.disabled = true;
+    });
 
-        const removeButton = document.createElement("button");
-        removeButton.textContent = "Remove";
-        removeButton.classList.add("remove-btn");
-        removeButton.addEventListener("click", () => {
-            entryToRemove = containerDiv;
-            document.getElementById("overlay").style.display = "flex";
-        });
+    
+    // Append Buttons
+    cardContentDiv.append(confirmButton, editButton);
+    cardDiv.appendChild(cardContentDiv);
+    containerDiv.appendChild(cardDiv);
 
-        cardContentDiv.append(confirmButton, editButton, removeButton);
-        cardDiv.appendChild(cardContentDiv);
-        containerDiv.appendChild(cardDiv);
-
-        return containerDiv;
-    }
+    return containerDiv;
+}
 
     // Overlay Controls
     document.getElementById("confirmRemove").addEventListener("click", () => {
@@ -2128,6 +2151,10 @@ function closeChargesPopup() {
         } else {
             alert("Co-Signer’s Spouse already added.");
         }
+
+        console.log({ fullName, formattedNumber, confirmedEntries });
+
+    
     });
 });
 

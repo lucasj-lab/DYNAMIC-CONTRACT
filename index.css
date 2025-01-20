@@ -13,33 +13,122 @@ body {
     font-family: arial, sans-serif;
     overflow-x: hidden;
 }
-.header-wrapper {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1000;
-    width: 100vw;
-    background-color: #353b51;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+
+
+.header .menu {
     display: flex;
-    align-items: center;
+    gap: 10px;
+}
+
+.header .menu button {
+    background-color: #09a56d;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.header .menu button:hover {
+    background-color: #067a50;
+}
+.header {
+    display: flex;
     justify-content: space-between;
-    padding: 10px;
+    align-items: center;
+    background-color: #353b51;
+    color: white;
+
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header .menu {
+    display: flex;
+    gap: 10px;
+}
+
+.header .menu button {
+    background-color: #09a56d;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.header .menu button:hover {
+    background-color: #067a50;
 }
 
 .hamburger {
-    cursor: pointer;
-    display: flex;
+    display: none;
     flex-direction: column;
     gap: 5px;
-    margin-left: 10px;
+    cursor: pointer;
 }
 
 .hamburger span {
-    width: 30px;
+    width: 25px;
     height: 3px;
-    background-color: #fff;
-    border-radius: 2px;
+    background-color: white;
+}
+
+.header-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    overflow-x: hidden;
+    transition: width 0.3s;
+    z-index: 1500;
+    padding-top: 60px;
+}
+
+.header-overlay-content {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-left: 25px;
+    margin-top: 30px;
+}
+
+.header-overlay-content button {
+    background-color: #09a56d;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.header-overlay-content button:hover {
+    background-color: #067a50;
+}
+
+.header-overlay .close-btn {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    font-size: 30px;
+    color: white;
+    cursor: pointer;
+}
+
+@media (max-width: 1400px) {
+    .header .menu {
+        display: none;
+    }
+
+    .hamburger {
+        display: flex;
+    }
 }
 .button-container {
     position: sticky; /* Sticks the button bar to the top of the viewport */
@@ -119,7 +208,7 @@ body {
 .container-wrapper {
     display: grid;
     grid-auto-flow: row; /* Ensures items move from right to left */
-    grid-template-rows: repeat repeat(3, minmax(250px, 1fr)); /* Defines rows dynamically */
+    grid-template-rows: repeat repeat(4, minmax(250px, 1fr)); /* Defines rows dynamically */
     gap: 20px;
     width: 100%;
     max-width: 1200px;
@@ -144,6 +233,7 @@ body {
     color: #353b51;
     border: 1px solid #ccc;
     margin-bottom: 20px;
+    margin-top: 10px;
     flex-direction: column;
 }
 
@@ -193,52 +283,110 @@ label {
 input {
     padding: 5px;
     margin-top: 5px;
-    border-radius: 30px;
+    border-radius: 0px;
     border: 1px solid #ccc;
     width: 90%;
     max-width: 250px;
     text-align: center;
 }
 
-/* Button Styling */
+
+/* General Button Styling */
 button {
-    color: white;
-    display: block;
-    margin: 10px auto;
-    padding: 10px 20px;
+    display: inline-block;
+    padding:5px; /* Balanced padding for a modern feel */
+    font-size:10px; /* Slightly larger text for better readability */
+    font-weight: normal;
+    text-align: center;
+    color: #ffffff;
+    background-color: #007bff;
     border: none;
+    border-radius: 2px; /* Fully rounded buttons */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow for a floating effect */
     cursor: pointer;
-    border-radius: 5px;
-    background-color: #0c8ce9;
-    width: 100%;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effects */
+    width: 100px; /* Adjusts to the button content size */
+    min-width: 90px-webkit-fill-available; /* Ensures consistent button size */
+    margin-top: 13px;
 }
-
-/* Confirm and Edit Buttons */
+/* Confirm Button */
 .confirm-btn {
-    background-color: #09a56d;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-    width: 100%;
+    background-color: #f0f0f0; /* Green color */
+    border: none;
+    color: #000000;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* Edit Button */
 .edit-btn {
-    background-color: #8e313a;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-    width: 100%;
+    background-color: #f0f0f0; /* Amber color */
+    color: #000000;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* Remove Button */
+.remove-btn {
+    background-color: #dc3545; /* Red color */
+    color: #ffffff;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Add Button */
+.add-btn {
+    background-color: #17a2b8; /* Teal color */
+    color: #ffffff;
+    border-radius: 25px;
+    padding: 12px 24px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hover States */
+button:hover {
+    background-color: #0056b3; /* Darker blue for default buttons */
+    box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2); /* Increased shadow on hover */
+}
+
+.confirm-btn:hover {
+    background-color: #218838; /* Darker green */
+    color: #fff;
+}
+
+.edit-btn:hover {
+    background-color: #e0a800; /* Darker amber */
+}
+
+.remove-btn:hover {
+    background-color: #c82333; /* Darker red */
+}
+
+.add-btn:hover {
+    background-color: #138496; /* Darker teal */
+}
+
+/* Disabled Buttons */
+button:disabled {
+    background-color: #e0e0e0;
+    color: #a0a0a0;
+   
+    box-shadow: none;
+}
+
+/* Adjust Button Alignment in Groups */
+.button-container {
+    display: flex;
+    justify-content: center; /* Centers buttons horizontally */
+    flex-wrap: wrap; /* Wraps buttons to the next line if needed */
+    gap: 15px; /* Consistent spacing between buttons */
+    padding: 10px;
+    background-color: #353b51; /* Matches the header background */
+}
 
 /* Responsive Grid Layout */
 @media (min-width: 1200px) {
     .container-wrapper {
-        grid-template-columns: repeat(3, minmax(250px, 1fr));
+        grid-template-columns: repeat(4, minmax(250px, 1fr));
         grid-auto-flow: row;
     }
 }
@@ -304,7 +452,7 @@ input[disabled] {
     background-color: #09a56d;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 30px;
     padding: 10px 20px;
     cursor: pointer;
     margin: 5px;
@@ -314,11 +462,8 @@ input[disabled] {
 .remove-btn {
     background-color: #ff4d4d;
     color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    cursor: pointer;
 
+    cursor: pointer;
 }
 
 
