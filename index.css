@@ -15,194 +15,6 @@ body {
 }
 
 
-.header .menu {
-    display: flex;
-    gap: 10px;
-}
-
-.header .menu button {
-    background-color: #09a56d;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.header .menu button:hover {
-    background-color: #067a50;
-}
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #353b51;
-    color: white;
-
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
-.header .menu {
-    display: flex;
-    gap: 10px;
-}
-
-.header .menu button {
-    background-color: #09a56d;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.header .menu button:hover {
-    background-color: #067a50;
-}
-
-.hamburger {
-    display: none;
-    flex-direction: column;
-    gap: 5px;
-    cursor: pointer;
-}
-
-.hamburger span {
-    width: 25px;
-    height: 3px;
-    background-color: white;
-}
-
-.header-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 0;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.9);
-    overflow-x: hidden;
-    transition: width 0.3s;
-    z-index: 1500;
-    padding-top: 60px;
-}
-
-.header-overlay-content {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-left: 25px;
-    margin-top: 30px;
-}
-
-.header-overlay-content button {
-    background-color: #09a56d;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.header-overlay-content button:hover {
-    background-color: #067a50;
-}
-
-.header-overlay .close-btn {
-    position: absolute;
-    top: 20px;
-    right: 25px;
-    font-size: 30px;
-    color: white;
-    cursor: pointer;
-}
-
-@media (max-width: 1400px) {
-    .header .menu {
-        display: none;
-    }
-
-    .hamburger {
-        display: flex;
-    }
-}
-.button-container {
-    position: sticky; /* Sticks the button bar to the top of the viewport */
-    top: 0;
-    z-index: 1000;
-    background-color: #353b51;
-    padding: 10px;
-    display: flex;
-    gap: 10px;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
-    align-items: center;
-    width: 100%;
-    overflow: auto;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-}
-
-.overlay-menu {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 0;
-    background-color: rgba(0, 0, 0, 0.9);
-    overflow-x: hidden;
-    transition: 0.3s;
-    z-index: 1500;
-    padding-top: 60px;
-}
-
-.overlay-menu nav {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    margin-top: 50px;
-}
-
-.overlay-menu nav a {
-    color: white;
-    text-decoration: none;
-    font-size: 1.5rem;
-    transition: 0.3s;
-}
-
-.overlay-menu nav a:hover {
-    color: #09a56d;
-}
-
-.close-btn {
-    position: absolute;
-    top: 15px;
-    right: 25px;
-    font-size: 36px;
-    color: white;
-    cursor: pointer;
-}
-
-@media (max-width: 768px) {
-    .button-container {
-        display: none; /* Hide buttons in smaller screens */
-    }
-}
-/* Responsive Header */
-@media (max-width: 768px) {
-    .hamburger {
-        display: flex;
-    }
-    .nav-menu {
-        display: none;
-    }
-}
-
-
 
 
 .container-wrapper {
@@ -210,36 +22,18 @@ body {
     grid-auto-flow: row; /* Ensures items move from right to left */
     grid-template-rows: repeat repeat(4, minmax(250px, 1fr)); /* Defines rows dynamically */
     gap: 20px;
-    width: 100%;
+    /* width: 80%; */
     max-width: 1200px;
     margin: auto;
     text-align: center;
     justify-content: center;
     justify-items: center;
-    align-items: start;
 }
 
-/* Individual Containers */
-.container {
-    display: flex;
-    width: 100%;
-    max-width: 250px;
-    gap: 10px;
-    padding: 15px;
-    border-radius: 10px;
-    background: #889ada63;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    color: #353b51;
-    border: 1px solid #ccc;
-    margin-bottom: 20px;
-    margin-top: 10px;
-    flex-direction: column;
-}
 
 /* Card Styling */
 .card {
-    background: #ffffff;
+    background: #043a55;
     min-height: 25px;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -285,11 +79,22 @@ input {
     margin-top: 5px;
     border-radius: 0px;
     border: 1px solid #ccc;
-    width: 90%;
+    width: 100%;
     max-width: 250px;
     text-align: center;
 }
+/* General styling for input fields with datalists */
+input[list] {
+    text-align: center; /* Ensures text starts from the left */
+    box-sizing: border-box; /* Ensures padding doesn't affect width */
+    padding-left: 16px;
+}
 
+/* Placeholder styling for better alignment */
+input[list]::placeholder {
+    text-align: center; /* Align placeholder text to match input text */
+    opacity: 0.6; /* Optional: Makes the placeholder text less prominent */
+}
 
 /* General Button Styling */
 button {
@@ -416,7 +221,23 @@ button:disabled {
 input[disabled] {
     background-color: #f0f0f0;
     color: #a0a0a0;
-    cursor: not-allowed;
+ 
+}
+
+input.error {
+    border: 2px solid red;
+    outline: none;
+}
+
+.error-message {
+    font-size: 0.9em;
+    color: red;
+    margin-top: 5px;
+}
+
+.message-container {
+    margin-top: 10px;
+    padding: 5px;
 }
 
 /* Ensure popups are hidden by default */
@@ -446,18 +267,17 @@ input[disabled] {
     border-radius: 5px;
     text-align: center;
 }
-
-/* Styling for Add Buttons */
+/* Add Button */
 .add-btn {
-    background-color: #09a56d;
-    color: white;
-    border: none;
-    border-radius: 30px;
-    padding: 10px 20px;
-    cursor: pointer;
-    margin: 5px;
+    background-color: #17b87d; /* Teal color */
+    color: #ffffff;
+    border-radius: 5px;
+    padding: 12px 24px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 10px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    margin: 10px;
 }
-
 /* Styling for Remove Buttons */
 .remove-btn {
     background-color: #ff4d4d;
@@ -467,13 +287,10 @@ input[disabled] {
 }
 
 
-  html {
-    font-family: "Lucida Sans", sans-serif;
-  }
 
 /* Individual Sections */
-.defendant-container,
-.cosigner-container {
+.defendant-section,
+.cosigner-section {
     border: 1px solid #ccc;
     border-radius: 5px;
     padding: 15px;
@@ -487,3 +304,71 @@ input[disabled] {
     color: #333;
     margin-bottom: 10px;
 }
+
+.container-wrapper {
+    display: none;
+}
+
+.container-wrapper.active {
+    display:grid;
+}
+
+
+
+/* Base Grid Layout for the Wrapper */
+.defendant-wrapper {
+    display: grid;
+    gap: 15px; /* Space between grid items */
+    padding: 20px; /* Padding inside the grid */
+    margin: auto; /* Center align the grid */
+}
+
+/* Responsive Grid Layout */
+@media (min-width: 1200px) {
+    .defendant-wrapper {
+        grid-template-columns: repeat(4, minmax(250px, 1fr));
+        grid-auto-flow: row;
+    }
+}
+
+@media (max-width: 1199px) and (min-width: 900px) {
+    .defendant-wrapper {
+        grid-template-columns: repeat(3, minmax(250px, 1fr));
+        grid-auto-flow: row;
+    }
+}
+
+@media (max-width: 899px) and (min-width: 600px) {
+    .defendant-wrapper {
+        grid-template-columns: repeat(2, minmax(250px, 1fr));
+        grid-auto-flow: row;
+    }
+}
+
+@media (max-width: 599px) {
+    .defendant-wrapper {
+        grid-template-columns: repeat(1, minmax(250px, 1fr));
+        grid-auto-flow: row;
+    }
+}
+
+/* Styling for Containers Inside the Grid */
+.container {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    row-gap: 13px;
+}
+
+/* Styling for Titles Inside Containers */
+.container > h2 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+
