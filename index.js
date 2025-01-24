@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
  
+
+  
   /**
    * 1) Dynamically load the Google Maps JS with your two different keys.
    *    Typically you'd only use one key, but you asked to include both.
@@ -509,7 +511,7 @@ defendantWrapper.appendChild(residentialInfoCard);
         type: "text"
       }
     ]);
-
+    defendantWrapper.appendChild(addressCard);
   
       const residentialInfoContainer = document.createElement("div");
       residentialInfoContainer.className = "container";
@@ -520,8 +522,9 @@ defendantWrapper.appendChild(residentialInfoCard);
       residentialInfoContainer.appendChild(containerTitle);
   
       // Append "addressCard" and "residentialInfoCard" to container
-      residentialInfoContainer.appendChild(addressCard);
       residentialInfoContainer.appendChild(residentialInfoCard);
+      residentialInfoContainer.appendChild(addressCard);
+  
   
       // Append container to defendant wrapper
       defendantWrapper.appendChild(residentialInfoContainer);
@@ -567,6 +570,31 @@ defendantWrapper.appendChild(residentialInfoCard);
       }
     }
   
+ 
+  
+    // If you want phone number formatting:
+    const employerPhoneInput = document.getElementById("employerPhone");
+    if (employerPhoneInput) {
+        employerPhoneInput.addEventListener("input", function (e) {
+            formatPhoneNumber(e.target);  // reuse your existing phone logic
+        });
+    }
+
+    // If you want to parse out month/year from the “lastEmployedDate”
+    //   (the code below simply ensures the user enters MM/YYYY format)
+    const lastEmployedDateInput = document.getElementById("lastEmployedDate");
+    if (lastEmployedDateInput) {
+        lastEmployedDateInput.addEventListener("blur", function () {
+            let val = lastEmployedDateInput.value.trim();
+            // Very naive check for something like MM/YYYY
+            const match = val.match(/^(\d{1,2})\/(\d{4})$/);
+            if (!match) {
+                alert("Please enter month/year in MM/YYYY format.");
+                lastEmployedDateInput.value = "";
+            }
+        });
+    }
+
     /**
      * 4) The function that sets up Google Places Autocomplete for the "street" input
      *    Called automatically by "initPlacesAutocomplete" once the script loads.
@@ -633,7 +661,7 @@ defendantWrapper.appendChild(residentialInfoCard);
     }
   
 
-
+ 
             // Call the function to populate the Defendant section
             populateDefendantSection();
                           // Height Formatting Logic
@@ -714,7 +742,7 @@ document.getElementById('ssnInput').addEventListener('input', function(e) {
 
 
   // Append the Residential Info Card
-                    defendantWrapper.appendChild(addressCard); // Append the Address Card
+                    // defendantWrapper.appendChild(addressCard); // Append the Address Card
                 }
     
 
