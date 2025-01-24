@@ -1,5 +1,5 @@
 <?php
-// Start the session or include any necessary session management here
+
 
 ?>
 
@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Section Toggle</title>
+    <title>James Bond</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -39,6 +39,9 @@
         .section-buttons button:hover {
             background-color: #0056b3;
         }
+        .container {
+            
+        }
         .container-wrapper {
             display: none;
             padding: 20px;
@@ -48,7 +51,6 @@
         .container-wrapper.active {
             display: grid;
             justify-content: space-between;
-            justify-content: center;
             align-items: start;
         }
     </style>
@@ -57,7 +59,7 @@
 
 
 <body>
-<div id="header">Select a Section</div>
+<div id="header">Agreement for Bail Bond</div>
 
 <div class="section-buttons">
     <button data-target="defendant-section">Defendant</button>
@@ -68,7 +70,25 @@
     <button data-target="release-section">Release</button>
 </div>
 
+<script>
+        // Select the header element
+        const header = document.getElementById('header');
+        
+        // Select all the buttons
+        const buttons = document.querySelectorAll('.section-buttons button');
+        
+        // Add a click event listener to each button
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Get the label of the clicked button
+                const sectionLabel = button.textContent;
 
+                // Update the header text
+                header.textContent = sectionLabel;
+            });
+        });
+    </script>
+    
 <!-- Section containers -->
 <div id="defendant-section" class="container-wrapper active">
 <h2>Defendant Information</h2>
