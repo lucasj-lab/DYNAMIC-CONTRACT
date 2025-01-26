@@ -75,6 +75,7 @@ if (isset($_GET['section'])) {
             color: white;
             border-radius: 5px;
             border: 1px solid #ccc;
+            margin: 2px;
         }
 
         .desktop-menu ul li a:hover {
@@ -181,10 +182,40 @@ if (isset($_GET['section'])) {
             .hamburger {
                 display: block; /* Show the hamburger */
             }
+        }        /* We add these at the bottom so they override any normal styles */
+        body.dark-mode {
+            background-color: #121212; /* a typical dark background */
+            color: #ccc;
         }
+        body.dark-mode header {
+            background-color: #222; 
+            border-bottom-color: #555; 
+        }
+        body.dark-mode .desktop-menu ul li a {
+            background-color: #444; 
+            color: #fff;
+        }
+        body.dark-mode .desktop-menu ul li a:hover {
+            background-color: #222; 
+        }
+        body.dark-mode #sectionHeader {
+            background-color: #2a2a2a;
+            color: #ccc;
+        }
+        body.dark-mode .container-wrapper {
+            border-color: #444; 
+            color: #ddd;
+        }
+        body.dark-mode .card {
+            background: rgba(50, 50, 50, 0.7);
+        }
+        /* Etc. Adjust as desired for your design */
+
+
     </style>
 </head>
 <body>
+
 
 <header>
     <!-- Logo or title from our PHP variable -->
@@ -203,6 +234,11 @@ if (isset($_GET['section'])) {
             <li><a href="#" data-target="release-section">Release</a></li>
         </ul>
     </nav>
+
+    <!-- Add a "Dark Mode" toggle button -->
+    <button id="darkModeToggle" style="background-color:#666;color:#fff;padding:5px 10px;border:none;cursor:pointer;">
+      Dark Mode
+    </button>
 
     <!-- Hamburger icon for mobile -->
     <button class="hamburger" onclick="toggleMobileMenu()">☰</button>
@@ -289,12 +325,14 @@ if (isset($_GET['section'])) {
 
             // On mobile, close the menu after clicking
             document.getElementById("mobileMenu").classList.remove("active");
-
-
         });
     });
-    
-</script>
 
+    // 3) Dark Mode toggle
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    darkModeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+    });
+</script>
 </body>
 </html>
