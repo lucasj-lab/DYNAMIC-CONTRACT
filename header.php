@@ -60,7 +60,7 @@ if (isset($_GET['section'])) {
             margin: 0;
             padding: 0;
             display: flex;
-            gap: 15px;
+ 
         }
 
         .desktop-menu ul li {
@@ -108,8 +108,9 @@ if (isset($_GET['section'])) {
             padding: 20px;
             border: 1px solid #ccc;
             margin: 10px auto;
-            border-radius: 3px;
+            border-radius: 10px;
             max-width: 100%;
+            color: #ffffff;
         }
 
         .container-wrapper.active {
@@ -127,8 +128,9 @@ if (isset($_GET['section'])) {
             display: none; /* Hide by default, shown on smaller screens */
             cursor: pointer;
             font-size: 16px;
-            background: #333c4df2;
+            background: #333c4d;
             border: none;
+            width: 30px;
         }
 
         /* Mobile Menu (hidden by default) */
@@ -161,7 +163,7 @@ if (isset($_GET['section'])) {
             text-decoration: none;
             display: block;
             padding: 8px 12px;
-            background-color: #333c4df2;
+            background-color: #333c4d;
             color: #ffffff;
             border-radius: 5px;
             border: 1px solid #ccc;
@@ -287,8 +289,11 @@ if (isset($_GET['section'])) {
 
             // On mobile, close the menu after clicking
             document.getElementById("mobileMenu").classList.remove("active");
+
+
         });
     });
+    
 </script>
 
 </body>

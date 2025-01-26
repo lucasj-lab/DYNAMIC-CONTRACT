@@ -22,7 +22,35 @@ document.addEventListener("DOMContentLoaded", () => {
   scriptPlaces.defer = true;
   document.head.appendChild(scriptPlaces);
 
-
+  const YES_NO_OPTIONS = ["Yes", "No"];
+  const MONTH_OPTIONS = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+  /**
+   * Create an array of years from 1990 to 2030 (adjust as needed).
+   */
+  function createYearOptions(start, end) {
+    const years = [];
+    for (let y = end; y >= start; y--) {
+      years.push(String(y));
+    }
+    return years;
+  }
+  const YEAR_OPTIONS = createYearOptions(1990, 2030);
+  
+  /**
+   * Shortened list of states for brevity. 
+   * Replace or expand as needed:
+   */
+  const STATE_OPTIONS = [
+    "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
+    "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
+    "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
+    "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
+    "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"
+  ];
+  
 
     function getStateDriverLicenseFormat(state) {
       if (!state) {
@@ -571,9 +599,17 @@ const vehicleInputs =
 
 const vehicleSection = createContainer("Vehicle Information", "vehicle-section", vehicleInputs);
 defendantWrapper.appendChild(vehicleSection);
+
+
+
+
+
+
+
 }
 
-    
+
+
 
     /**
      * 4) The function that sets up Google Places Autocomplete for the "street" input
