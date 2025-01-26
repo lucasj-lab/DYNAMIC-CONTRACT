@@ -7,7 +7,7 @@ body {
     flex-direction: column;
     padding: 0;
     margin: 0;
-    background-color: rgb(232, 237, 255);
+    background-color: #083b55;
     text-align: center;
     justify-content: center;
     font-family: arial, sans-serif;
@@ -39,7 +39,7 @@ body {
     padding: 10px;
     font-size: 12px;
     font-weight: bold;
-    background-color: #353b51;
+   
     overflow: hidden;
     white-space: normal;
 }
@@ -370,3 +370,81 @@ input.error {
     color: #333;
 }
 
+.mobile-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: var(#b4d0f4);
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0.2rem 0.2rem 0.5rem var(--shadow-color);
+}
+
+.mobile-menu.active {
+    display: block;
+}
+
+.mobile-menu ul {
+    list-style: none;
+}
+
+.mobile-menu ul li {
+    margin-bottom: 1rem;
+}
+
+.mobile-menu ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+
+/* Mobile Menu */
+.mobile-menu {
+    display: none;
+    position: absolute;
+    top: 60px;
+    /* Adjust based on header height */
+    right: 0;
+    background-color: #ffffff;
+    width: 100%;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+.mobile-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-end;
+}
+
+.mobile-menu ul li a {
+    color: #1a73e8;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Show hamburger menu on smaller screens */
+@media (max-width: 768px) {
+    nav ul {
+        display: none;
+        /* Hide desktop menu */
+    }
+}
+    .hamburger {
+        display: block;
+        /* Show hamburger */
+    }
+
+    /* Hamburger Menu for Mobile */
+.hamburger {
+    display: none;
+    font-size: 1.8rem;
+    color: #fff;
+    cursor: pointer;
+}

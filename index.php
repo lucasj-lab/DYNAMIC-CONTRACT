@@ -10,7 +10,7 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dynamic Form</title>
-    <link rel="stylesheet" href="index.css"> <!-- Optional: Link your styles -->
+    <link rel="stylesheet" href="index.css">
     
 </head>
 <body>

@@ -233,367 +233,347 @@ function createContainer(title, containerId, inputs) {
 
   return container;
 }
+function populateDefendantSection() {
+  const defendantWrapper = document.getElementById("defendant-section");
+  if (!defendantWrapper) {
+    console.error("Defendant section not found!");
+    return;
+  }
+  defendantWrapper.innerHTML = ""; // Clear existing content
 
-    function populateDefendantSection() {
-        const defendantWrapper = document.getElementById("defendant-section");
+  /**************************************
+   * 1) PERSONAL INFO + ADDITIONAL INFO
+   **************************************/
+  const personalInfoContainer = createContainer("Personal Info", "defendant-personal", [
+    { label: "NAME", id: "firstName", name: "defendant[firstName]", placeholder: "FIRST", type: "text" },
+    { label: "",      id: "middleName", name: "defendant[middleName]", placeholder: "MIDDLE", type: "text" },
+    { label: "",      id: "lastName",   name: "defendant[lastName]",   placeholder: "LAST",   type: "text" },
+  ]);
 
-        if (!defendantWrapper) {
-            console.error("Defendant section not found!");
-            return;
-        }
+  // A sub-card for DOB, SSN, etc.
+  const additionalInfoCard = document.createElement("div");
+  additionalInfoCard.className = "card";
 
-        defendantWrapper.innerHTML = ""; // Clear existing content
+  const additionalInfoCardContent = document.createElement("div");
+  additionalInfoCardContent.className = "card-content";
 
-        // Add Personal Info
-        const personalInfoContainer = createContainer("Personal Info", "defendant-personal", [
-            { label: "NAME", id: "firstName", name: "defendant[firstName]", placeholder:"FIRST", type: "text" },
-            { label: "", id: "middleName", name: "defendant[middleName]", placeholder:"MIDDLE", type: "text" },
-            { label: "", id: "lastName", name: "defendant[lastName]", placeholder:"LAST", type: "text" },
-            
-        ]);
-        
+  // Fields for DOB, SSN
+  const additionalInfoInputs = [
+    { label: "DOB:",   id: "dob",      name: "defendant[dob]", placeholder: "MM/DD/YYYY", type: "date" },
+    { label: "SSN#:",  id: "ssnInput", name: "defendant[ssn]", placeholder: "XXX-XX-XXXX",
+      type: "text", pattern: "\\d{3}-\\d{2}-\\d{4}", title: "SSN format: XXX-XX-XXXX" },
+  ];
+  additionalInfoInputs.forEach((inputConfig) => {
+    const inputGroup = createInputGroup(inputConfig.label, inputConfig);
+    additionalInfoCardContent.appendChild(inputGroup);
+  });
 
-// Add a new card for additional details
-const additionalInfoCard = document.createElement("div");
-additionalInfoCard.className = "card"; // Use the same styling class for a consistent appearance
+  // State-based Driver's License
+  const stateInputGroup = createInputGroup("", {
+    id: "state-dropdown",
+    name: "defendant[state]",
+    placeholder: "Select State",
+    type: "datalist",
+    options: [
+      "Alabama (AL)", "Alaska (AK)", "Arizona (AZ)", "Arkansas (AR)", "California (CA)", "Colorado (CO)",
+      "Connecticut (CT)", "Delaware (DE)", "Florida (FL)", "Georgia (GA)", "Hawaii (HI)", "Idaho (ID)",
+      "Illinois (IL)", "Indiana (IN)", "Iowa (IA)", "Kansas (KS)", "Kentucky (KY)", "Louisiana (LA)",
+      "Maine (ME)", "Maryland (MD)", "Massachusetts (MA)", "Michigan (MI)", "Minnesota (MN)", "Mississippi (MS)",
+      "Missouri (MO)", "Montana (MT)", "Nebraska (NE)", "Nevada (NV)", "New Hampshire (NH)", "New Jersey (NJ)",
+      "New Mexico (NM)", "New York (NY)", "North Carolina (NC)", "North Dakota (ND)", "Ohio (OH)", "Oklahoma (OK)",
+      "Oregon (OR)", "Pennsylvania (PA)", "Rhode Island (RI)", "South Carolina (SC)", "South Dakota (SD)", "Tennessee (TN)",
+      "Texas (TX)", "Utah (UT)", "Vermont (VT)", "Virginia (VA)", "Washington (WA)", "West Virginia (WV)",
+      "Wisconsin (WI)", "Wyoming (WY)"
+    ],
+  });
+  additionalInfoCardContent.appendChild(stateInputGroup);
 
-const additionalInfoCardContent = document.createElement("div");
-additionalInfoCardContent.className = "card-content";
+  // Driver's License # input
+  const dlInputGroup = createInputGroup("DMV#:", {
+    id: "dlInputConfig",
+    name: "defendant[dlNumber]",
+    placeholder: "DMV#",
+    type: "text",
+    title: "Enter a valid driver's license based on the selected state",
+  });
+  additionalInfoCardContent.appendChild(dlInputGroup);
 
-                                    // Add input fields for Date of Birth, Social Security Number, and Driver's License
-                                    const additionalInfoInputs = [
-                                    { label: "DOB:", id: "dob", name: "defendant[dob]", placeholder: "MM/DD/YYYY", type: "date" },
-                                    { label: "SSN#:", id: "ssnInput", name: "defendant[ssn]", placeholder: "XXX-XX-XXXX", type: "text",  pattern: "\d{3}-\d{2}-\d{4}", title: "SSN format: XXX-XX-XXXX"},
-                                    ];
-                                    additionalInfoInputs.forEach((inputConfig) => {
-                                        const inputGroup = createInputGroup(inputConfig.label, inputConfig);
-                                        additionalInfoCardContent.appendChild(inputGroup);
-                                    });
-                            // Dynamic State Dropdown and Driver's License Input
-                            const stateInputGroup = createInputGroup("", {
-                                id: "state-dropdown", // Correct ID here
-                                name: "defendant[state]",
-                                placeholder: "Select State",
-                                type: "datalist",
-                                options: [
-                                    "Alabama (AL)", "Alaska (AK)", "Arizona (AZ)", "Arkansas (AR)", "California (CA)", "Colorado (CO)",
-                                    "Connecticut (CT)", "Delaware (DE)", "Florida (FL)", "Georgia (GA)", "Hawaii (HI)", "Idaho (ID)",
-                                    "Illinois (IL)", "Indiana (IN)", "Iowa (IA)", "Kansas (KS)", "Kentucky (KY)", "Louisiana (LA)",
-                                    "Maine (ME)", "Maryland (MD)", "Massachusetts (MA)", "Michigan (MI)", "Minnesota (MN)", "Mississippi (MS)",
-                                    "Missouri (MO)", "Montana (MT)", "Nebraska (NE)", "Nevada (NV)", "New Hampshire (NH)", "New Jersey (NJ)",
-                                    "New Mexico (NM)", "New York (NY)", "North Carolina (NC)", "North Dakota (ND)", "Ohio (OH)", "Oklahoma (OK)",
-                                    "Oregon (OR)", "Pennsylvania (PA)", "Rhode Island (RI)", "South Carolina (SC)", "South Dakota (SD)", "Tennessee (TN)",
-                                    "Texas (TX)", "Utah (UT)", "Vermont (VT)", "Virginia (VA)", "Washington (WA)", "West Virginia (WV)", "Wisconsin (WI)", "Wyoming (WY)",
-                                ],
-                                defaulValue:"Georgia (GA)"
-                            });
-                            additionalInfoCardContent.appendChild(stateInputGroup);
-                            
-                            // Create the Driver's License Input Group
-                            const dlInputGroup = createInputGroup("DMV#:", {
-                                id: "dlInputConfig",
-                                name: "defendant[dlNumber]",
-                                placeholder: "DMV#",
-                                type: "text",
-                                title: "Enter a valid driver's license based on the selected state",
-                            });
-                            additionalInfoCardContent.appendChild(dlInputGroup);
-                            
-                            // Append the Card Content to the Card
-                            additionalInfoCard.appendChild(additionalInfoCardContent);
-                            personalInfoContainer.appendChild(additionalInfoCard);
-                            
-                            // Append Personal Info Container to the Wrapper
-                            defendantWrapper.appendChild(personalInfoContainer);
-                            
-                            // Add Event Listeners for State Dropdown and Driver's License Input
-                            const stateDropdown = document.getElementById("state-dropdown");
-                            const dlInput = document.getElementById("dlInputConfig");
-                            
-                            if (stateDropdown && dlInput) {
-                                stateDropdown.addEventListener("change", () => {
-                                    const selectedState = stateDropdown.value.split(" (")[0]; // Extract the state name
-                                    const stateFormat = getStateDriverLicenseFormat(selectedState) || { placeholder: "DRIVER'S LICENSE #", pattern: ".*" };
-                            
-                                    // Update the Driver's License Input based on State
-                                    dlInput.placeholder = stateFormat.placeholder;
-                                    dlInput.setAttribute("pattern", stateFormat.pattern);
-                                    dlInput.title = stateFormat.title || "Enter a valid driver's license based on the selected state";
-                                });
-                            
-                                dlInput.addEventListener("input", (event) => {
-                                    const selectedState = stateDropdown.value.split(" (")[0];
-                                    const stateFormat = getStateDriverLicenseFormat(selectedState);
-                            
-                                    if (stateFormat && stateFormat.formatFunction) {
-                                        event.target.value = stateFormat.formatFunction(event.target.value);
-                                    }
-                                });
-                            }
+  // Finalize additionalInfoCard
+  additionalInfoCard.appendChild(additionalInfoCardContent);
+  personalInfoContainer.appendChild(additionalInfoCard);
 
-                     
-                            
-                       
+  // Append to the wrapper
+  defendantWrapper.appendChild(personalInfoContainer);
 
-        // Add Demographics
-        const demographicsContainer = createContainer("Demographics", "defendant-demographics", [
-            { label: "SEX:", id: "sex", name: "defendant[sex]", placeholder:"SEX", type: "datalist", options: ["Male", "Female"] },
-            { label:  "RACE:", id: "race", name: "defendant[race]", placeholder:"RACE", type: "datalist", options: ["White", "Black", "Asian", "Hispanic", "Native American", "Other"] },
-            { label: "HGT:", id: "height", name: "defendant[height]", placeholder: "HGT", type:  "datalist", options: [
-                "5'0\"", "5'1\"", "5'2\"", "5'3\"", "5'4\"", "5'5\"", "5'6\"", "5'7\"", "5'8\"", "5'9\"", "5'10\"", "5'11\"",
-                "6'0\"", "6'1\"", "6'2\"", "6'3\"", "6'4\"", "6'5\"", "6'6\"", "6'7\"", "6'8\"", "6'9\"", "6'10\"", "6'11\"", "7'0\""
-            ] },
-            { label: "WGT:", id: "weight", name: "defendant[weight]", placeholder: "WGT", type: "datalist", options: Array.from({ length: 601 }, (_, i) => (i === 600? "" : `${i} lbs`)) },
-            { label: "HAIR:", id: "hair", name: "defendant[hair]", placeholder:"HAIR", type: "datalist", options: ["Black", "Brown", "Blonde", "Red", "Gray", "Bald", "Other"] },
-            { label: "EYES:", id: "eyes", name: "defendant[eyes]", placeholder:"EYES", type: "datalist", options: ["Brown", "Blue", "Green", "Hazel", "Gray", "Other"] }
-        ]);
+  // Attach state format logic
+  const stateDropdown = document.getElementById("state-dropdown");
+  const dlInput = document.getElementById("dlInputConfig");
+  if (stateDropdown && dlInput) {
+    stateDropdown.addEventListener("change", () => {
+      const selectedState = stateDropdown.value.split(" (")[0];
+      const stateFormat = getStateDriverLicenseFormat(selectedState) ||
+        { placeholder: "DRIVER'S LICENSE #", pattern: ".*" };
 
-// Append the Contact Info Container
-defendantWrapper.appendChild(demographicsContainer);
+      dlInput.placeholder = stateFormat.placeholder;
+      dlInput.setAttribute("pattern", stateFormat.pattern);
+      dlInput.title = stateFormat.title || "Enter a valid driver's license based on the selected state";
+    });
 
-const contactInfoContainer = createContainer("Contact Info", "contact-info", [
-    {
-        label: "PHONE #:",
-        id: "phoneInput",
-        name: "defendant[phone]",
-        placeholder: "(XXX) XXX-XXXX",
-        type: "text",
-        pattern: "\\(\\d{3}\\) \\d{3}-\\d{4}",
-        title: "Phone number format: (XXX) XXX-XXXX",
+    dlInput.addEventListener("input", (e) => {
+      const selectedState = stateDropdown.value.split(" (")[0];
+      const stateFormat = getStateDriverLicenseFormat(selectedState);
+      if (stateFormat && stateFormat.formatFunction) {
+        e.target.value = stateFormat.formatFunction(e.target.value);
+      }
+    });
+  }
+
+  /**************************************
+   * 2) DEMOGRAPHICS
+   **************************************/
+  const demographicsContainer = createContainer("Demographics", "defendant-demographics", [
+    { label: "SEX:",  id: "sex",   name: "defendant[sex]",  placeholder: "SEX",  type: "datalist", options: ["Male", "Female"] },
+    { label: "RACE:", id: "race",  name: "defendant[race]", placeholder: "RACE", type: "datalist", options: ["White", "Black", "Asian", "Hispanic", "Native American", "Other"] },
+    { label: "HGT:",  id: "height",name: "defendant[height]",placeholder: "HGT", type: "datalist",
+      options: [
+        "5'0\"", "5'1\"", "5'2\"", "5'3\"", "5'4\"", "5'5\"", "5'6\"", "5'7\"", "5'8\"", "5'9\"", "5'10\"", "5'11\"",
+        "6'0\"", "6'1\"", "6'2\"", "6'3\"", "6'4\"", "6'5\"", "6'6\"", "6'7\"", "6'8\"", "6'9\"", "6'10\"", "6'11\"", "7'0\""
+      ]
     },
-    {
-        label: "",
-        id: "deviceTypeDefault",
-        name: "contact[deviceType]",
-        placeholder: "DEVICE TYPE",
-        type: "datalist",
-        options: ["Mobile", "Home", "Other"],
+    { label: "WGT:",  id: "weight", name: "defendant[weight]", placeholder: "WGT", type: "datalist",
+      options: Array.from({ length: 301}, (_, i) => (i === 0 ? "" : `${i} lbs`)) // 1-600 lbs, or adapt
     },
-    {
-        label: "EMAIL:",
-        id: "emailUser",
-        name: "contact[emailUser]",
-        placeholder: "USER",
-        type: "text",
+    { label: "HAIR:", id: "hair",   name: "defendant[hair]", placeholder: "HAIR", type: "datalist",
+      options: ["Black", "Brown", "Blonde", "Red", "Gray", "Bald", "Other"]
     },
-    {
-        label: "@",
-        id: "emailDomain",
-        name: "contact[emailDomain]",
-        type: "datalist",
-        placeholder: "EMAIL",
-        options: ["GMAIL.COM", "YAHOO.COM", "OUTLOOK.COM", "HOTMAIL.COM", "ICLOUD.COM"],
-    },
-    {
-        label: "",
-        id: "fullEmailOutput",
-        name: "contact[fullEmail]",
-        placeholder: "EMAIL ADDRESS",
-        readonly: true,
-    },
-]);
-
-// Append the container to the Defendant Wrapper
-defendantWrapper.appendChild(contactInfoContainer);
-
-// Add Event Listeners for Email Assistance
-const emailUserInput = document.getElementById("emailUser");
-const emailDomainInput = document.getElementById("emailDomain");
-const fullEmailOutput = document.getElementById("fullEmailOutput");
-
-if (emailUserInput && emailDomainInput && fullEmailOutput) {
-    function updateCombinedEmail() {
-        const username = emailUserInput.value.trim();
-        const domain = emailDomainInput.value.trim();
-        fullEmailOutput.value = username && domain ? `${username}@${domain}` : "";
+    { label: "EYES:", id: "eyes",   name: "defendant[eyes]", placeholder: "EYES", type: "datalist",
+      options: ["Brown", "Blue", "Green", "Hazel", "Gray", "Other"]
     }
+  ]);
+  defendantWrapper.appendChild(demographicsContainer);
 
-    // Attach event listeners
+  /**************************************
+   * 3) CONTACT INFO
+   **************************************/
+  const contactInfoContainer = createContainer("Contact Info", "contact-info", [
+    {
+      label: "PHONE #:",
+      id: "phoneInput",
+      name: "defendant[phone]",
+      placeholder: "(XXX) XXX-XXXX",
+      type: "text",
+      pattern: "\\(\\d{3}\\) \\d{3}-\\d{4}",
+      title: "Phone number format: (XXX) XXX-XXXX"
+    },
+    {
+      label: "",
+      id: "deviceTypeDefault",
+      name: "contact[deviceType]",
+      placeholder: "DEVICE TYPE",
+      type: "datalist",
+      options: ["Mobile", "Home", "Other"]
+    },
+    {
+      label: "EMAIL:",
+      id: "emailUser",
+      name: "contact[emailUser]",
+      placeholder: "USER",
+      type: "text"
+    },
+    {
+      label: "@",
+      id: "emailDomain",
+      name: "contact[emailDomain]",
+      type: "datalist",
+      placeholder: "EMAIL",
+      options: ["GMAIL.COM", "YAHOO.COM", "OUTLOOK.COM", "HOTMAIL.COM", "ICLOUD.COM"]
+    },
+    {
+      label: "",
+      id: "fullEmailOutput",
+      name: "contact[fullEmail]",
+      placeholder: "EMAIL ADDRESS",
+      readonly: true
+    }
+  ]);
+  defendantWrapper.appendChild(contactInfoContainer);
+
+  // Email combination logic
+  const emailUserInput = document.getElementById("emailUser");
+  const emailDomainInput = document.getElementById("emailDomain");
+  const fullEmailOutput = document.getElementById("fullEmailOutput");
+  if (emailUserInput && emailDomainInput && fullEmailOutput) {
+    function updateCombinedEmail() {
+      const username = emailUserInput.value.trim();
+      const domain   = emailDomainInput.value.trim();
+      fullEmailOutput.value = (username && domain) ? `${username}@${domain}` : "";
+    }
     emailUserInput.addEventListener("input", updateCombinedEmail);
     emailDomainInput.addEventListener("change", updateCombinedEmail);
-}
+  }
 
+  /**************************************
+   * 4) RESIDENTIAL Info (2 cards: residentialInfoCard + addressCard)
+   **************************************/
+  const residentialInfoCard = createCard("", [
+    {
+      label: "RESIDENCE:",
+      id: "residenceType",
+      name: "residential[type]",
+      placeholder: "TYPE",
+      type: "datalist",
+      options: ["APT","HOUSE","CONDO","MOBILE HOME","TOWNHOUSE","DUPLEX","TRAILER","OTHER"]
+    },
+    {
+      label: "RESIDENT:",
+      id: "residentType",
+      name: "residential[residentType]",
+      placeholder: "TYPE",
+      type: "datalist",
+      options: ["OWN","RENT","W/PARENTS"]
+    },
+    {
+      label: "LENGTH:",
+      id: "years",
+      name: "residential[years]",
+      placeholder: "YEARS",
+      type: "datalist",
+      options: Array.from({ length: 26 }, (_, i) => (i === 25 ? "25 +" : `${i} YRS`))
+    },
+    {
+      label: "LIVES WITH:",
+      id: "defendantLivesWith",
+      name: "residential[livesWith]",
+      placeholder: "SELF",
+      type: "datalist",
+      options: [
+        "Self","Roommate","Husband","Wife","Son","Daughter","Children","Girlfriend","Boyfriend",
+        "Sibling","Grandparent","Grandchild","Aunt","Uncle","Cousin","Friends","Parents","Other"
+      ]
+    }
+  ]);
 
-// Append the container to the Defendant Wrapper
-defendantWrapper.appendChild(contactInfoContainer);
+  // Address card
+  const addressCard = createCard("", [
+    {
+      label: "ADDRESS",
+      id: "street",
+      name: "address[street]",
+      placeholder: "STREET",
+      type: "text"
+    },
+    {
+      label: "",
+      id: "apt",
+      name: "residential[apt]",
+      placeholder: "APT #",
+      type: "text",
+      hidden: true
+    },
+    {
+      label: "",
+      id: "city",
+      name: "address[city]",
+      placeholder: "CITY",
+      type: "datalist",
+      options: []
+    },
+    {
+      label: "",
+      id: "state",
+      name: "address[state]",
+      placeholder: "STATE",
+      type: "datalist",
+      options: [
+        "AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID",
+        "IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS",
+        "MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK",
+        "OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"
+      ]
+    },
+    {
+      label: "",
+      id: "zipCode",
+      name: "address[zipCode]",
+      placeholder: "ZIP CODE",
+      type: "text"
+    }
+  ]);
 
+  // Wrap them in a container with a heading
+  const residentialInfoContainer = document.createElement("div");
+  residentialInfoContainer.className = "container";
+  residentialInfoContainer.id = "residential-info";
 
-   
-      // Create "Residential Info Card"
-      const residentialInfoCard = createCard("", [
-        {
-          label: "RESIDENCE:",
-          id: "residenceType",
-          name: "residential[type]",
-          placeholder: "TYPE",
-          type: "datalist",
-          options: [
-            "APT", "HOUSE", "CONDO", "MOBILE HOME", "TOWNHOUSE", "DUPLEX", "TRAILER", "OTHER"
-          ]
-        },
-        {
-          label: "RESIDENT:",
-          id: "residentType",
-          name: "residential[residentType]",
-          placeholder: "TYPE",
-          type: "datalist",
-          options: [
-            "OWN", "RENT" , "W/PARENTS"
-          ]
-        },
-        {
-          label: "LENGTH:",
-          id: "years",
-          name: "residential[years]",
-          placeholder: "YEARS",
-          type: "datalist",
-          options: Array.from({ length: 26 }, (_, i) => (i === 25 ? "25 +" : `${i} YRS`))
-        },
-        {
-          label: "LIVES WITH:",
-          id: "defendantLivesWith",
-          name: "residential[livesWith]",
-          placeholder: "SELF",
-          type: "datalist",
-          options: [
-            "Self", "Roommate", "Husband", "Wife", "Son", "Daughter", "Children", "Girlfriend", "Boyfriend",
-            "Sibling", "Grandparent", "Grandchild", "Aunt", "Uncle", "Cousin", "Friends", "Parents", "Other"
-          ]
-        }
-      ]);
+  const containerTitle = document.createElement("h2");
+  containerTitle.textContent = "Residential";
+  residentialInfoContainer.appendChild(containerTitle);
 
-      
-defendantWrapper.appendChild(residentialInfoCard);
-       // Create "Address Card"
-    const addressCard = createCard("", [
-      {
-        label: "ADDRESS",
-        id: "street",
-        name: "address[street]",
-        placeholder: "STREET",
-        type: "text"
-      },
-      {
-        label: "",
-        id: "apt",
-        name: "residential[apt]",
-        placeholder: "APT #",
-        type: "text",
-        hidden: true
-      },
-      {
-        label: "",
-        id: "city",
-        name: "address[city]",
-        placeholder: "CITY",
-        type: "datalist",
-        options: []
-      },
-      {
-        label: "",
-        id: "state",
-        name: "address[state]",
-        placeholder: "STATE",
-        type: "datalist",
-        options: [
-          "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID",
-          "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS",
-          "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK",
-          "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV",
-          "WI", "WY"
-        ]
-      },
-      {
-        label: "",
-        id: "zipCode",
-        name: "address[zipCode]",
-        placeholder: "ZIP CODE",
-        type: "text"
-      }
-    ]);
-    defendantWrapper.appendChild(addressCard);
-  
-      const residentialInfoContainer = document.createElement("div");
-      residentialInfoContainer.className = "container";
-      residentialInfoContainer.id = "residential-info";
-  
-      const containerTitle = document.createElement("h2");
-      containerTitle.textContent = "Residential";
-      residentialInfoContainer.appendChild(containerTitle);
-  
-      // Append "addressCard" and "residentialInfoCard" to container
-      residentialInfoContainer.appendChild(residentialInfoCard);
-      residentialInfoContainer.appendChild(addressCard);
-  
-  
-      // Append container to defendant wrapper
-      defendantWrapper.appendChild(residentialInfoContainer);
-  
-      // Hook up a zip code => city/state lookup if you want (using Google's Geocoding):
-      const zipInput = document.getElementById("zipCode");
-      if (zipInput) {
-        zipInput.addEventListener("blur", () => {
-          const zip = zipInput.value.trim();
-          if (!zip) return;
-  
-          // We'll use Google's Geocoder with the second key—BUT we've loaded a second script
-          // You can just do new google.maps.Geocoder() if the library is loaded.
-          const geocoder = new google.maps.Geocoder();
-          geocoder.geocode({ address: zip }, (results, status) => {
-            if (status === "OK" && results && results.length > 0) {
-              // Typically the first result is best
-              const place = results[0];
-              // Parse out city/state from the address_components if present
-              let cityVal = "";
-              let stateVal = "";
-  
-              place.address_components.forEach(component => {
-                const types = component.types;
-                if (types.includes("locality")) {
-                  cityVal = component.long_name;
-                }
-                if (types.includes("administrative_area_level_1")) {
-                  stateVal = component.short_name; // e.g. "CA"
-                }
-              });
-  
-              // Fill in city & state if found
-              const cityField = document.getElementById("city");
-              const stateField = document.getElementById("state");
-              if (cityField) cityField.value = cityVal;
-              if (stateField) stateField.value = stateVal;
-            } else {
-              console.warn("Geocoding for ZIP failed or returned no results:", status);
+  // Append the 2 cards
+  residentialInfoContainer.appendChild(residentialInfoCard);
+  residentialInfoContainer.appendChild(addressCard);
+
+  // Finally, append to the wrapper
+  defendantWrapper.appendChild(residentialInfoContainer);
+
+  // Optional Zip → City/State lookup (Google Geocoder)
+  const zipInput = document.getElementById("zipCode");
+  if (zipInput) {
+    zipInput.addEventListener("blur", () => {
+      const zip = zipInput.value.trim();
+      if (!zip) return;
+
+      // If you have the google.maps.Geocoder loaded:
+      const geocoder = new google.maps.Geocoder();
+      geocoder.geocode({ address: zip }, (results, status) => {
+        if (status === "OK" && results && results.length > 0) {
+          const place = results[0];
+          let cityVal = "";
+          let stateVal = "";
+          place.address_components.forEach(component => {
+            const types = component.types;
+            if (types.includes("locality")) {
+              cityVal = component.long_name;
+            }
+            if (types.includes("administrative_area_level_1")) {
+              stateVal = component.short_name; // e.g., "CA"
             }
           });
-        });
-      }
-    }
-  
- 
-  
-    // If you want phone number formatting:
-    const employerPhoneInput = document.getElementById("employerPhone");
-    if (employerPhoneInput) {
-        employerPhoneInput.addEventListener("input", function (e) {
-            formatPhoneNumber(e.target);  // reuse your existing phone logic
-        });
-    }
+          const cityField  = document.getElementById("city");
+          const stateField = document.getElementById("state");
+          if (cityField)  cityField.value  = cityVal;
+          if (stateField) stateField.value = stateVal;
+        } else {
+          console.warn("Geocoding for ZIP failed or no results:", status);
+        }
+      });
+    });
+  }
+// Example usage for the vehicle section
+const vehicleInputs = 
+[
+  {
+    label: "Vehicle Year",
+    id: "vehicle-year",
+    type: "datalist",
+    placeholder: "Enter vehicle year",
+    options: Array.from({ length: new Date().getFullYear() - 2000 }, (_, i) => `${2010 + i}`)
+  },  
 
-    // If you want to parse out month/year from the “lastEmployedDate”
-    //   (the code below simply ensures the user enters MM/YYYY format)
-    const lastEmployedDateInput = document.getElementById("lastEmployedDate");
-    if (lastEmployedDateInput) {
-        lastEmployedDateInput.addEventListener("blur", function () {
-            let val = lastEmployedDateInput.value.trim();
-            // Very naive check for something like MM/YYYY
-            const match = val.match(/^(\d{1,2})\/(\d{4})$/);
-            if (!match) {
-                alert("Please enter month/year in MM/YYYY format.");
-                lastEmployedDateInput.value = "";
-            }
-        });
-    }
+  { label: "Make", id: "vehicle-make", type: "text", placeholder: "Enter vehicle make" },
+  { label: "Model", id: "vehicle-model", type: "text", placeholder: "Enter vehicle model" },
+  { label: "Color", id: "vehicle-color", type: "text", placeholder: "Enter vehicle color" },
+  { label: "Tag #", id: "vehicle-tag", type: "text", placeholder: "Enter vehicle tag number" }
+];
+
+
+
+
+const vehicleSection = createContainer("Vehicle Information", "vehicle-section", vehicleInputs);
+defendantWrapper.appendChild(vehicleSection);
+}
+
+    
 
     /**
      * 4) The function that sets up Google Places Autocomplete for the "street" input
@@ -660,10 +640,91 @@ defendantWrapper.appendChild(residentialInfoCard);
       });
     }
   
+/**
+ * Creates a toggle (checkbox + label) and the "Defendant Vehicle Section"
+ * as a <div> with all inputs/datalists. The container starts hidden.
+ * When the user checks the toggle, we remove the "hidden" class.
+ */
+
+
 
  
             // Call the function to populate the Defendant section
             populateDefendantSection();
+            const carData = {
+              "Ford": ["Focus", "Mustang", "F-150", "Explorer", "Escape"],
+              "Chevrolet": ["Malibu", "Camaro", "Silverado", "Tahoe", "Suburban"],
+              "Tesla": ["Model S", "Model 3", "Model X", "Model Y", "Cybertruck"],
+              "BMW": ["3 Series", "5 Series", "7 Series", "X5", "i8"],
+              "Toyota": ["Corolla", "Camry", "RAV4", "Highlander", "Tacoma"],
+              "Honda": ["Civic", "Accord", "CR-V", "Pilot", "Fit"],
+              "Nissan": ["Altima", "Sentra", "Rogue", "Murano", "Frontier"],
+              "Hyundai": ["Elantra", "Sonata", "Tucson", "Santa Fe", "Kona"],
+              "Mercedes-Benz": ["C-Class", "E-Class", "S-Class", "GLC", "GLE"],
+              "Audi": ["A3", "A4", "A6", "Q5", "Q7"],
+              "Volkswagen": ["Jetta", "Passat", "Tiguan", "Atlas", "Golf"],
+              "Kia": ["Soul", "Sportage", "Sorento", "Telluride", "Optima"],
+              "Subaru": ["Impreza", "Outback", "Forester", "Crosstrek", "Legacy"],
+              "Mazda": ["Mazda3", "Mazda6", "CX-5", "CX-9", "MX-5 Miata"],
+              "Jeep": ["Wrangler", "Grand Cherokee", "Cherokee", "Renegade", "Compass"],
+              "Dodge": ["Charger", "Challenger", "Durango", "Ram 1500", "Journey"],
+              "Lexus": ["IS", "ES", "RX", "NX", "GX"],
+              "Acura": ["ILX", "TLX", "RDX", "MDX", "NSX"],
+              "Volvo": ["S60", "S90", "XC60", "XC90", "V60"],
+              "Porsche": ["911", "Cayenne", "Macan", "Panamera", "Taycan"],
+              "Jaguar": ["XE", "XF", "XJ", "F-Pace", "I-Pace"],
+              "Land Rover": ["Range Rover", "Discovery", "Defender", "Evoque", "Velar"],
+              "Ferrari": ["488", "Portofino", "Roma", "F8 Tributo", "SF90 Stradale"],
+              "Lamborghini": ["Huracán", "Aventador", "Urus", "Sian", "Gallardo"],
+              "Maserati": ["Ghibli", "Quattroporte", "Levante", "GranTurismo", "MC20"],
+              "Bentley": ["Continental GT", "Flying Spur", "Bentayga", "Mulsanne", "Azure"],
+              "Rolls-Royce": ["Phantom", "Ghost", "Wraith", "Dawn", "Cullinan"],
+              "Aston Martin": ["Vantage", "DB11", "DBS", "Rapide", "Valhalla"],
+              "Alfa Romeo": ["Giulia", "Stelvio", "4C", "Tonale", "GTV"],
+              "Infiniti": ["Q50", "Q60", "QX50", "QX60", "QX80"],
+              "Genesis": ["G70", "G80", "G90", "GV70", "GV80"],
+              "Cadillac": ["CT4", "CT5", "XT5", "XT6", "Escalade"],
+              "Buick": ["Encore", "Enclave", "Envision", "Regal", "LaCrosse"],
+              "Chrysler": ["300", "Pacifica", "Voyager", "Aspen", "Sebring"],
+              "Lincoln": ["MKZ", "Nautilus", "Aviator", "Navigator", "Corsair"],
+              "Fiat": ["500", "500X", "500L", "Panda", "Tipo"],
+              "Peugeot": ["208", "308", "3008", "5008", "508"],
+              "Citroën": ["C3", "C4", "C5 Aircross", "Berlingo", "DS3"],
+              "Renault": ["Clio", "Megane", "Captur", "Kadjar", "Talisman"],
+              "Skoda": ["Fabia", "Octavia", "Superb", "Kodiaq", "Karoq"],
+              "SEAT": ["Ibiza", "Leon", "Ateca", "Arona", "Tarraco"],
+              "Mini": ["Cooper", "Countryman", "Clubman", "Paceman", "Convertible"],
+              "Mitsubishi": ["Lancer", "Outlander", "Eclipse Cross", "Pajero", "Mirage"],
+              "Suzuki": ["Swift", "Vitara", "Baleno", "Jimny", "S-Cross"],
+              "Saab": ["9-3", "9-5", "900", "9000", "9-4X"],
+              "Isuzu": ["D-Max", "MU-X", "Trooper", "Rodeo", "Axiom"],
+              "GMC": ["Sierra", "Yukon", "Acadia", "Canyon", "Terrain"],
+              "Ram": ["1500", "2500", "3500", "ProMaster", "ProMaster City"],
+              "Bugatti": ["Veyron", "Chiron", "Divo", "Centodieci", "Bolide"],
+              "McLaren": ["570S", "720S", "GT", "Senna", "Artura"],
+              "Pagani": ["Zonda", "Huayra", "Imola", "Utopia", "C10"],
+              "Koenigsegg": ["Agera", "Regera", "Jesko", "Gemera", "CCX"],
+              "Rivian": ["R1T", "R1S"],
+            };
+            
+
+            document.getElementById("vehicle-make").addEventListener("input", function () {
+              const make = this.value;
+              const modelDatalist = document.getElementById("vehicle-model-datalist");
+            
+              // Clear existing options
+              modelDatalist.innerHTML = "";
+            
+              // Populate datalist with models for the selected make
+              if (carData[make]) {
+                carData[make].forEach(model => {
+                  const option = document.createElement("option");
+                  option.value = model;
+                  modelDatalist.appendChild(option);
+                });
+              }
+            });
+            
                           // Height Formatting Logic
         const heightInput = document.getElementById("height");
         if (heightInput) {
@@ -758,14 +819,7 @@ stateSelectInput.addEventListener("input", function () {
         }`
     );
 });
-// Ensure proper event attachment after elements are in the DOM
-stateSelectInput.addEventListener("change", function () {
-    if (!states.includes(stateSelectInput.value)) {
-        stateSelectInput.setCustomValidity("Please select a valid state.");
-    } else {
-        stateSelectInput.setCustomValidity("");
-    }
-});
+
 
 
 
