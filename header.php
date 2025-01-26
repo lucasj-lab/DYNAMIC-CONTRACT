@@ -1,12 +1,27 @@
 <?php
-// Basic page title logic (adjust for your filenames)
-$currentPage = basename($_SERVER['SCRIPT_NAME'], '.php');
-$pageTitles = [
-    'index'    => 'James Bond',
-    'bailbond' => 'Bail Bond', 
-    // Add more page -> title mappings if needed
-];
-$logoTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : 'James Bond';
+// Initialize the logo title with a default value
+$logoTitle = "James Bond"; // Default logo title
+
+// Check if a section is active via a query parameter
+if (isset($_GET['section'])) {
+    // Sanitize the section name to prevent XSS or other vulnerabilities
+    $activeSection = htmlspecialchars($_GET['section']);
+
+    // Map the section names to their corresponding titles
+    $sectionTitles = [
+        'defendant-section' => 'Defendant',
+        'cosigner-section' => 'Cosigner',
+        'conditions-section' => 'Conditions',
+        'terms-section' => 'Terms',
+        'promissory-section' => 'Promissory',
+        'release-section' => 'Release'
+    ];
+
+    // Update the logo title if the section exists in the map
+    if (array_key_exists($activeSection, $sectionTitles)) {
+        $logoTitle = $sectionTitles[$activeSection];
+    }
+}
 ?>
 
 <!DOCTYPE html>
