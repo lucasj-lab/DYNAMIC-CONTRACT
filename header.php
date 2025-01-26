@@ -42,7 +42,7 @@ if (isset($_GET['section'])) {
             position: relative;
             background-color: #f4f4f4;
             border-bottom: 2px solid #ccc;
-            padding: 10px 15px;
+            padding: 10px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -71,14 +71,18 @@ if (isset($_GET['section'])) {
         .desktop-menu ul li a {
             text-decoration: none;
             padding: 8px 12px;
-            background-color: #607d8b;
+            background-color:#444d5c;
             color: white;
             border-radius: 5px;
             border: 1px solid #ccc;
         }
 
         .desktop-menu ul li a:hover {
-            background-color: #607d8b;
+            background-color:#161920;
+        }
+
+        .desktop-menu ul li a:hover {
+            background-color:#161920;
         }
 
         /* The text area that changes when a nav item is clicked */
@@ -87,7 +91,16 @@ if (isset($_GET['section'])) {
             margin: 10px 0;
             font-size: 1.2rem;
             font-weight: bold;
+            background-color: #f9f9f917;
+            color: #fff;
+            max-width: 30%;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-evenly;
+            align-self: center;
+            min-width: 240px;
         }
+
 
         /* Container area for the sections */
         .container-wrapper {
@@ -95,23 +108,26 @@ if (isset($_GET['section'])) {
             padding: 20px;
             border: 1px solid #ccc;
             margin: 10px auto;
+            border-radius: 3px;
+            max-width: 100%;
         }
 
         .container-wrapper.active {
             display: grid;
-            justify-content: space-between;
+            /* justify-content: space-between; */
             align-items: start;
             padding: 20px;
             border: 1px solid #ccc;
             margin: 10px auto;
+            max-width: 100%;
         }
 
         /* Hamburger for mobile */
         .hamburger {
             display: none; /* Hide by default, shown on smaller screens */
             cursor: pointer;
-            font-size: 24px;
-            background: none;
+            font-size: 16px;
+            background: #333c4df2;
             border: none;
         }
 
@@ -122,7 +138,7 @@ if (isset($_GET['section'])) {
             top: 60px; /* Below header */
           
             width: 25%;
-            background-color: #607d8b;
+            background-color:#333c4d;
             border-bottom: 2px solid #ccc;
         }
 
@@ -145,18 +161,18 @@ if (isset($_GET['section'])) {
             text-decoration: none;
             display: block;
             padding: 8px 12px;
-            background-color: #607d8b;
+            background-color: #333c4df2;
             color: #ffffff;
             border-radius: 5px;
             border: 1px solid #ccc;
         }
 
         .mobile-menu ul li a:hover {
-            background-color: #607d8b;
+            background-color: #161920;
         }
 
         /* Media Query for mobile responsiveness */
-        @media (max-width: 768px) {
+        @media (max-width: 599px) {
             .desktop-menu {
                 display: none; /* Hide the desktop menu */
             }
