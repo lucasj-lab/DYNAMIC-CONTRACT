@@ -31,7 +31,7 @@ if (isset($_GET['section'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($logoTitle); ?></title>
     <style>
-        body {
+       body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
@@ -71,14 +71,14 @@ if (isset($_GET['section'])) {
         .desktop-menu ul li a {
             text-decoration: none;
             padding: 8px 12px;
-            background-color: #007BFF;
+            background-color: #607d8b;
             color: white;
             border-radius: 5px;
             border: 1px solid #ccc;
         }
 
         .desktop-menu ul li a:hover {
-            background-color: #0056b3;
+            background-color: #607d8b;
         }
 
         /* The text area that changes when a nav item is clicked */
@@ -120,9 +120,9 @@ if (isset($_GET['section'])) {
             display: none;
             position: absolute;
             top: 60px; /* Below header */
-            left: 0;
-            width: 100%;
-            background-color: #f4f4f4;
+          
+            width: 25%;
+            background-color: #607d8b;
             border-bottom: 2px solid #ccc;
         }
 
@@ -134,6 +134,7 @@ if (isset($_GET['section'])) {
             list-style-type: none;
             margin: 0;
             padding: 10px;
+            align-items: stretch;
         }
 
         .mobile-menu ul li {
@@ -144,14 +145,14 @@ if (isset($_GET['section'])) {
             text-decoration: none;
             display: block;
             padding: 8px 12px;
-            background-color: #007BFF;
-            color: white;
+            background-color: #607d8b;
+            color: #ffffff;
             border-radius: 5px;
             border: 1px solid #ccc;
         }
 
         .mobile-menu ul li a:hover {
-            background-color: #0056b3;
+            background-color: #607d8b;
         }
 
         /* Media Query for mobile responsiveness */
