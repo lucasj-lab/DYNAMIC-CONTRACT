@@ -22,35 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   scriptPlaces.defer = true;
   document.head.appendChild(scriptPlaces);
 
-  const YES_NO_OPTIONS = ["Yes", "No"];
-  const MONTH_OPTIONS = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
-  /**
-   * Create an array of years from 1990 to 2030 (adjust as needed).
-   */
-  function createYearOptions(start, end) {
-    const years = [];
-    for (let y = end; y >= start; y--) {
-      years.push(String(y));
-    }
-    return years;
-  }
-  const YEAR_OPTIONS = createYearOptions(1990, 2030);
-  
-  /**
-   * Shortened list of states for brevity. 
-   * Replace or expand as needed:
-   */
-  const STATE_OPTIONS = [
-    "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
-    "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
-    "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
-    "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
-    "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"
-  ];
-  
+
 
     function getStateDriverLicenseFormat(state) {
       if (!state) {
@@ -359,7 +331,7 @@ function populateDefendantSection() {
   /**************************************
    * 2) DEMOGRAPHICS
    **************************************/
-  const demographicsContainer = createContainer("Demographics", "defendant-demographics", [
+  const descriptionContainer = createContainer("Defendant Description", "defendant-description", [
     { label: "SEX:",  id: "sex",   name: "defendant[sex]",  placeholder: "SEX",  type: "datalist", options: ["Male", "Female"] },
     { label: "RACE:", id: "race",  name: "defendant[race]", placeholder: "RACE", type: "datalist", options: ["White", "Black", "Asian", "Hispanic", "Native American", "Other"] },
     { label: "HGT:",  id: "height",name: "defendant[height]",placeholder: "HGT", type: "datalist",
@@ -378,7 +350,7 @@ function populateDefendantSection() {
       options: ["Brown", "Blue", "Green", "Hazel", "Gray", "Other"]
     }
   ]);
-  defendantWrapper.appendChild(demographicsContainer);
+  defendantWrapper.appendChild(descriptionContainer);
 
   /**************************************
    * 3) CONTACT INFO
@@ -577,39 +549,230 @@ function populateDefendantSection() {
       });
     });
   }
-// Example usage for the vehicle section
-const vehicleInputs = 
-[
-  {
-    label: "Vehicle Year",
-    id: "vehicle-year",
-    type: "datalist",
-    placeholder: "Enter vehicle year",
-    options: Array.from({ length: new Date().getFullYear() - 2000 }, (_, i) => `${2010 + i}`)
-  },  
+  const vehicleInputs = [
+    {
+      label: "Vehicle Year",
+      id: "vehicle-year",
+      type: "datalist",
+      placeholder: "Enter vehicle year",
+      options: Array.from({ length: 15 }, (_, i) => String(2010 + i)) // 2010-2024
+    },
+    {
+      label: "Make",
+      id: "vehicle-make",
+      type: "datalist",
+      placeholder: "Enter vehicle make",
+      options: [
+        "Ford",
+        "Chevrolet",
+        "Tesla",
+        "BMW",
+        "Toyota",
+        "Honda",
+        "Nissan",
+        "Hyundai",
+        "Mercedes-Benz",
+        "Audi",
+        "Volkswagen",
+        "Kia",
+        "Subaru",
+        "Mazda",
+        "Jeep",
+        "Dodge",
+        "Lexus",
+        "Acura",
+        "Volvo",
+        "Porsche",
+        "Jaguar",
+        "Land Rover",
+        "Ferrari",
+        "Lamborghini",
+        "Maserati",
+        "Bentley",
+        "Rolls-Royce",
+        "Aston Martin",
+        "Alfa Romeo",
+        "Infiniti",
+        "Genesis",
+        "Cadillac",
+        "Buick",
+        "Chrysler",
+        "Lincoln",
+        "Fiat",
+        "Peugeot",
+        "Citroën",
+        "Renault",
+        "Skoda",
+        "SEAT",
+        "Mini",
+        "Mitsubishi",
+        "Suzuki",
+        "Saab",
+        "Isuzu",
+        "GMC",
+        "Ram",
+        "Bugatti",
+        "McLaren",
+        "Pagani",
+        "Koenigsegg",
+        "Rivian"
+      ]
+    },
+    {
+      label: "Model",
+      id: "vehicle-model",
+      type: "datalist",
+      placeholder: "Enter vehicle model",
+      options: [] // dynamically populated
+    },
+    {
+      label: "Color",
+      id: "vehicle-color",
+      type: "datalist",
+      placeholder: "Enter vehicle color",
+      options: [
+        "White",
+        "Black",
+        "Silver",
+        "Gray",
+        "Red",
+        "Blue",
+        "Green",
+        "Yellow",
+        "Orange",
+        "Brown",
+        "Beige",
+        "Gold",
+        "Cream",
+        "Navy",
+        "Maroon",
+        "Wine",
+        "Burgundy",
+        "Magenta",
+        "Pink",
+        "Turquoise",
+        "Teal",
+        "Lavender",
+        "Plum",
+        "Purple",
+        "Sand",
+        "Bronze",
+        "Copper",
+        "Charcoal",
+        "Gunmetal",
+        "Lime",
+        "Mint",
+        "Pastel Blue",
+        "Pastel Green",
+        "Pastel Yellow",
+        "Ivory",
+        "Pearl",
+        "Khaki",
+        "Champagne",
+        "Chocolate",
+        "Cobalt",
+        "Crimson",
+        "Midnight Blue",
+        "Forest Green",
+        "Army Green",
+        "Brick Red",
+        "Desert Sand",
+        "Graphite",
+        "Titanium",
+        "Azure",
+        "Indigo"
+      ]
+    },
+    {
+      label: "Tag #",
+      id: "vehicle-tag",
+      type: "text",
+      placeholder: "License plate"
+    }
+  ];
+    const vehicleInfo = createContainer("Vehicle Information", "vehicle-section", vehicleInputs);
+    defendantWrapper.appendChild(vehicleInfo);
 
-  { label: "Make", id: "vehicle-make", type: "text", placeholder: "Enter vehicle make" },
-  { label: "Model", id: "vehicle-model", type: "text", placeholder: "Enter vehicle model" },
-  { label: "Color", id: "vehicle-color", type: "text", placeholder: "Enter vehicle color" },
-  { label: "Tag #", id: "vehicle-tag", type: "text", placeholder: "Enter vehicle tag number" }
-];
+    const carData = {
+      "Ford": ["Focus", "Mustang", "F-150", "Explorer", "Escape"],
+      "Chevrolet": ["Malibu", "Camaro", "Silverado", "Tahoe", "Suburban"],
+      "Tesla": ["Model S", "Model 3", "Model X", "Model Y", "Cybertruck"],
+      "BMW": ["3 Series", "5 Series", "7 Series", "X5", "i8"],
+      "Toyota": ["Corolla", "Camry", "RAV4", "Highlander", "Tacoma"],
+      "Honda": ["Civic", "Accord", "CR-V", "Pilot", "Fit"],
+      "Nissan": ["Altima", "Sentra", "Rogue", "Murano", "Frontier"],
+      "Hyundai": ["Elantra", "Sonata", "Tucson", "Santa Fe", "Kona"],
+      "Mercedes-Benz": ["C-Class", "E-Class", "S-Class", "GLC", "GLE"],
+      "Audi": ["A3", "A4", "A6", "Q5", "Q7"],
+      "Volkswagen": ["Jetta", "Passat", "Tiguan", "Atlas", "Golf"],
+      "Kia": ["Soul", "Sportage", "Sorento", "Telluride", "Optima"],
+      "Subaru": ["Impreza", "Outback", "Forester", "Crosstrek", "Legacy"],
+      "Mazda": ["Mazda3", "Mazda6", "CX-5", "CX-9", "MX-5 Miata"],
+      "Jeep": ["Wrangler", "Grand Cherokee", "Cherokee", "Renegade", "Compass"],
+      "Dodge": ["Charger", "Challenger", "Durango", "Ram 1500", "Journey"],
+      "Lexus": ["IS", "ES", "RX", "NX", "GX"],
+      "Acura": ["ILX", "TLX", "RDX", "MDX", "NSX"],
+      "Volvo": ["S60", "S90", "XC60", "XC90", "V60"],
+      "Porsche": ["911", "Cayenne", "Macan", "Panamera", "Taycan"],
+      "Jaguar": ["XE", "XF", "XJ", "F-Pace", "I-Pace"],
+      "Land Rover": ["Range Rover", "Discovery", "Defender", "Evoque", "Velar"],
+      "Ferrari": ["488", "Portofino", "Roma", "F8 Tributo", "SF90 Stradale"],
+      "Lamborghini": ["Huracán", "Aventador", "Urus", "Sian", "Gallardo"],
+      "Maserati": ["Ghibli", "Quattroporte", "Levante", "GranTurismo", "MC20"],
+      "Bentley": ["Continental GT", "Flying Spur", "Bentayga", "Mulsanne", "Azure"],
+      "Rolls-Royce": ["Phantom", "Ghost", "Wraith", "Dawn", "Cullinan"],
+      "Aston Martin": ["Vantage", "DB11", "DBS", "Rapide", "Valhalla"],
+      "Alfa Romeo": ["Giulia", "Stelvio", "4C", "Tonale", "GTV"],
+      "Infiniti": ["Q50", "Q60", "QX50", "QX60", "QX80"],
+      "Genesis": ["G70", "G80", "G90", "GV70", "GV80"],
+      "Cadillac": ["CT4", "CT5", "XT5", "XT6", "Escalade"],
+      "Buick": ["Encore", "Enclave", "Envision", "Regal", "LaCrosse"],
+      "Chrysler": ["300", "Pacifica", "Voyager", "Aspen", "Sebring"],
+      "Lincoln": ["MKZ", "Nautilus", "Aviator", "Navigator", "Corsair"],
+      "Fiat": ["500", "500X", "500L", "Panda", "Tipo"],
+      "Peugeot": ["208", "308", "3008", "5008", "508"],
+      "Citroën": ["C3", "C4", "C5 Aircross", "Berlingo", "DS3"],
+      "Renault": ["Clio", "Megane", "Captur", "Kadjar", "Talisman"],
+      "Skoda": ["Fabia", "Octavia", "Superb", "Kodiaq", "Karoq"],
+      "SEAT": ["Ibiza", "Leon", "Ateca", "Arona", "Tarraco"],
+      "Mini": ["Cooper", "Countryman", "Clubman", "Paceman", "Convertible"],
+      "Mitsubishi": ["Lancer", "Outlander", "Eclipse Cross", "Pajero", "Mirage"],
+      "Suzuki": ["Swift", "Vitara", "Baleno", "Jimny", "S-Cross"],
+      "Saab": ["9-3", "9-5", "900", "9000", "9-4X"],
+      "Isuzu": ["D-Max", "MU-X", "Trooper", "Rodeo", "Axiom"],
+      "GMC": ["Sierra", "Yukon", "Acadia", "Canyon", "Terrain"],
+      "Ram": ["1500", "2500", "3500", "ProMaster", "ProMaster City"],
+      "Bugatti": ["Veyron", "Chiron", "Divo", "Centodieci", "Bolide"],
+      "McLaren": ["570S", "720S", "GT", "Senna", "Artura"],
+      "Pagani": ["Zonda", "Huayra", "Imola", "Utopia", "C10"],
+      "Koenigsegg": ["Agera", "Regera", "Jesko", "Gemera", "CCX"],
+      "Rivian": ["R1T", "R1S"],
+    };
 
+ // Listen for changes in "vehicle-make"
+ const vehicleMakeInput = document.getElementById("vehicle-make");
+ if (vehicleMakeInput) {
+   vehicleMakeInput.addEventListener("input", () => {
+     const make = vehicleMakeInput.value.trim();
+     // The datalist for "vehicle-model" is "vehicle-model-options"
+     const modelDatalist = document.getElementById("vehicle-model-options");
+     if (!modelDatalist) return;
 
+     modelDatalist.innerHTML = "";
 
+     if (carData[make]) {
+       carData[make].forEach(m => {
+         const option = document.createElement("option");
+         option.value = m;
+         modelDatalist.appendChild(option);
+       });
+     }
+   });
+ }
 
-const vehicleSection = createContainer("Vehicle Information", "vehicle-section", vehicleInputs);
-defendantWrapper.appendChild(vehicleSection);
+} 
 
-
-
-
-
-
-
-}
-
-
-
+    
 
     /**
      * 4) The function that sets up Google Places Autocomplete for the "street" input
@@ -675,92 +838,14 @@ defendantWrapper.appendChild(vehicleSection);
         if (zipField) zipField.value = foundZip; 
       });
     }
-  
-/**
- * Creates a toggle (checkbox + label) and the "Defendant Vehicle Section"
- * as a <div> with all inputs/datalists. The container starts hidden.
- * When the user checks the toggle, we remove the "hidden" class.
- */
-
 
 
  
             // Call the function to populate the Defendant section
             populateDefendantSection();
-            const carData = {
-              "Ford": ["Focus", "Mustang", "F-150", "Explorer", "Escape"],
-              "Chevrolet": ["Malibu", "Camaro", "Silverado", "Tahoe", "Suburban"],
-              "Tesla": ["Model S", "Model 3", "Model X", "Model Y", "Cybertruck"],
-              "BMW": ["3 Series", "5 Series", "7 Series", "X5", "i8"],
-              "Toyota": ["Corolla", "Camry", "RAV4", "Highlander", "Tacoma"],
-              "Honda": ["Civic", "Accord", "CR-V", "Pilot", "Fit"],
-              "Nissan": ["Altima", "Sentra", "Rogue", "Murano", "Frontier"],
-              "Hyundai": ["Elantra", "Sonata", "Tucson", "Santa Fe", "Kona"],
-              "Mercedes-Benz": ["C-Class", "E-Class", "S-Class", "GLC", "GLE"],
-              "Audi": ["A3", "A4", "A6", "Q5", "Q7"],
-              "Volkswagen": ["Jetta", "Passat", "Tiguan", "Atlas", "Golf"],
-              "Kia": ["Soul", "Sportage", "Sorento", "Telluride", "Optima"],
-              "Subaru": ["Impreza", "Outback", "Forester", "Crosstrek", "Legacy"],
-              "Mazda": ["Mazda3", "Mazda6", "CX-5", "CX-9", "MX-5 Miata"],
-              "Jeep": ["Wrangler", "Grand Cherokee", "Cherokee", "Renegade", "Compass"],
-              "Dodge": ["Charger", "Challenger", "Durango", "Ram 1500", "Journey"],
-              "Lexus": ["IS", "ES", "RX", "NX", "GX"],
-              "Acura": ["ILX", "TLX", "RDX", "MDX", "NSX"],
-              "Volvo": ["S60", "S90", "XC60", "XC90", "V60"],
-              "Porsche": ["911", "Cayenne", "Macan", "Panamera", "Taycan"],
-              "Jaguar": ["XE", "XF", "XJ", "F-Pace", "I-Pace"],
-              "Land Rover": ["Range Rover", "Discovery", "Defender", "Evoque", "Velar"],
-              "Ferrari": ["488", "Portofino", "Roma", "F8 Tributo", "SF90 Stradale"],
-              "Lamborghini": ["Huracán", "Aventador", "Urus", "Sian", "Gallardo"],
-              "Maserati": ["Ghibli", "Quattroporte", "Levante", "GranTurismo", "MC20"],
-              "Bentley": ["Continental GT", "Flying Spur", "Bentayga", "Mulsanne", "Azure"],
-              "Rolls-Royce": ["Phantom", "Ghost", "Wraith", "Dawn", "Cullinan"],
-              "Aston Martin": ["Vantage", "DB11", "DBS", "Rapide", "Valhalla"],
-              "Alfa Romeo": ["Giulia", "Stelvio", "4C", "Tonale", "GTV"],
-              "Infiniti": ["Q50", "Q60", "QX50", "QX60", "QX80"],
-              "Genesis": ["G70", "G80", "G90", "GV70", "GV80"],
-              "Cadillac": ["CT4", "CT5", "XT5", "XT6", "Escalade"],
-              "Buick": ["Encore", "Enclave", "Envision", "Regal", "LaCrosse"],
-              "Chrysler": ["300", "Pacifica", "Voyager", "Aspen", "Sebring"],
-              "Lincoln": ["MKZ", "Nautilus", "Aviator", "Navigator", "Corsair"],
-              "Fiat": ["500", "500X", "500L", "Panda", "Tipo"],
-              "Peugeot": ["208", "308", "3008", "5008", "508"],
-              "Citroën": ["C3", "C4", "C5 Aircross", "Berlingo", "DS3"],
-              "Renault": ["Clio", "Megane", "Captur", "Kadjar", "Talisman"],
-              "Skoda": ["Fabia", "Octavia", "Superb", "Kodiaq", "Karoq"],
-              "SEAT": ["Ibiza", "Leon", "Ateca", "Arona", "Tarraco"],
-              "Mini": ["Cooper", "Countryman", "Clubman", "Paceman", "Convertible"],
-              "Mitsubishi": ["Lancer", "Outlander", "Eclipse Cross", "Pajero", "Mirage"],
-              "Suzuki": ["Swift", "Vitara", "Baleno", "Jimny", "S-Cross"],
-              "Saab": ["9-3", "9-5", "900", "9000", "9-4X"],
-              "Isuzu": ["D-Max", "MU-X", "Trooper", "Rodeo", "Axiom"],
-              "GMC": ["Sierra", "Yukon", "Acadia", "Canyon", "Terrain"],
-              "Ram": ["1500", "2500", "3500", "ProMaster", "ProMaster City"],
-              "Bugatti": ["Veyron", "Chiron", "Divo", "Centodieci", "Bolide"],
-              "McLaren": ["570S", "720S", "GT", "Senna", "Artura"],
-              "Pagani": ["Zonda", "Huayra", "Imola", "Utopia", "C10"],
-              "Koenigsegg": ["Agera", "Regera", "Jesko", "Gemera", "CCX"],
-              "Rivian": ["R1T", "R1S"],
-            };
+          
             
 
-            document.getElementById("vehicle-make").addEventListener("input", function () {
-              const make = this.value;
-              const modelDatalist = document.getElementById("vehicle-model-datalist");
-            
-              // Clear existing options
-              modelDatalist.innerHTML = "";
-            
-              // Populate datalist with models for the selected make
-              if (carData[make]) {
-                carData[make].forEach(model => {
-                  const option = document.createElement("option");
-                  option.value = model;
-                  modelDatalist.appendChild(option);
-                });
-              }
-            });
-            
                           // Height Formatting Logic
         const heightInput = document.getElementById("height");
         if (heightInput) {
