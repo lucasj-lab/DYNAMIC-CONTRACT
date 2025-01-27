@@ -329,9 +329,9 @@ function populateDefendantSection() {
   }
 
   /**************************************
-   * 2) DEMOGRAPHICS
+   * 2) DESCRIPTION
    **************************************/
-  const descriptionContainer = createContainer("Defendant Description", "defendant-description", [
+  const descriptionContainer = createContainer("Description", "defendant-description", [
     { label: "SEX:",  id: "sex",   name: "defendant[sex]",  placeholder: "SEX",  type: "datalist", options: ["Male", "Female"] },
     { label: "RACE:", id: "race",  name: "defendant[race]", placeholder: "RACE", type: "datalist", options: ["White", "Black", "Asian", "Hispanic", "Native American", "Other"] },
     { label: "HGT:",  id: "height",name: "defendant[height]",placeholder: "HGT", type: "datalist",
@@ -348,14 +348,22 @@ function populateDefendantSection() {
     },
     { label: "EYES:", id: "eyes",   name: "defendant[eyes]", placeholder: "EYES", type: "datalist",
       options: ["Brown", "Blue", "Green", "Hazel", "Gray", "Other"]
-    }
+    },  // NEW ID Mark Description field
+    {
+      label: "ID Mark Description:",
+      id: "idMarkDescription",
+      name: "defendant[idMarkDescription]",
+      placeholder: "Scars, Tattoos, etc.",
+      type: "text"
+    },
+  
   ]);
   defendantWrapper.appendChild(descriptionContainer);
 
   /**************************************
    * 3) CONTACT INFO
    **************************************/
-  const contactInfoContainer = createContainer("Contact Info", "contact-info", [
+  const contactInfoContainer = createContainer("Contact", "contact-info", [
     {
       label: "PHONE #:",
       id: "phoneInput",
@@ -837,11 +845,613 @@ function populateDefendantSection() {
         const zipField = document.getElementById("zipCode");
         if (zipField) zipField.value = foundZip; 
       });
+    
+
+
+  
+      // -------------------------------------------------
+      // 2) EMPLOYMENT INFO
+      // -------------------------------------------------
+      const employmentInfoContainer = createContainer("Employment Info", "employment-info", [
+        {
+          label: "Employer:",
+          id: "currentEmployer",
+          name: "employment[currentEmployer]",
+          placeholder: "Company Name",
+          type: "text"
+        },
+        {
+          label: "City:",
+          id: "employerCity",
+          name: "employment[employerCity]",
+          placeholder: "City",
+          type: "text"
+        },
+        {
+          label: "State:",
+          id: "employerState",
+          name: "employment[employerState]",
+          placeholder: "State",
+          type: "datalist",
+          options: [
+            "AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA",
+            "HI","ID","IL","IN","IA","KS","KY","LA","ME","MD",
+            "MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ",
+            "NM","NY","NC","ND","OH","OK","OR","PA","RI","SC",
+            "SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"
+          ]
+        },
+        {
+          label: "Phone #:",
+          id: "employerPhone",
+          name: "employment[employerPhone]",
+          placeholder: "(XXX) XXX-XXXX",
+          type: "text"
+        }
+      ]);
+      defendantWrapper.appendChild(employmentInfoContainer);
+  
+      // -------------------------------------------------
+      // 3) PREVIOUS EMPLOYMENT INFO
+      // -------------------------------------------------
+      const previousEmploymentContainer = createContainer("Previous Employment", "previous-employment", [
+        {
+          label: "Employer:",
+          id: "prevEmployer",
+          name: "employment[prevEmployer]",
+          placeholder: "Previous Company",
+          type: "text"
+        },
+        {
+          label: "City:",
+          id: "prevEmployerCity",
+          name: "employment[prevEmployerCity]",
+          placeholder: "City",
+          type: "text"
+        },
+        {
+          label: "State:",
+          id: "prevEmployerState",
+          name: "employment[prevEmployerState]",
+          placeholder: "State",
+          type: "datalist",
+          options: [
+            "AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA",
+            "HI","ID","IL","IN","IA","KS","KY","LA","ME","MD",
+            "MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ",
+            "NM","NY","NC","ND","OH","OK","OR","PA","RI","SC",
+            "SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"
+          ]
+        },
+        {
+          label: "End Date:",
+          id: "prevEmployerEndDate",
+          name: "employment[prevEmployerEndDate]",
+          placeholder: "MM/DD/YYYY",
+          type: "date"
+        }
+      ]);
+      defendantWrapper.appendChild(previousEmploymentContainer);
+  
+      // -------------------------------------------------
+      // 4) PRIOR ARREST
+      // -------------------------------------------------
+      const priorArrestContainer = createContainer("Prior Arrest", "prior-arrest", [
+        {
+          label: "Was there a previous arrest?",
+          id: "previousArrestYesNo",
+          name: "arrest[yesNo]",
+          placeholder: "Yes or No",
+          type: "datalist",
+          options: ["Yes","No"]
+        },
+        {
+          label: "County:",
+          id: "previousArrestCounty",
+          name: "arrest[county]",
+          placeholder: "County",
+          type: "text"
+        },
+        {
+          label: "Month of Arrest:",
+          id: "arrestMonth",
+          name: "arrest[month]",
+          placeholder: "Select Month",
+          type: "datalist",
+          options: [
+            "January","February","March","April","May","June",
+            "July","August","September","October","November","December"
+          ]
+        },
+        {
+          label: "Year of Arrest:",
+          id: "arrestYear",
+          name: "arrest[year]",
+          placeholder: "YYYY",
+          type: "text"
+        },
+        {
+          label: "Bonding Company:",
+          id: "bondingCompany",
+          name: "arrest[bondingCompany]",
+          placeholder: "Name of Company",
+          type: "text"
+        },
+        {
+          label: "Co-Defendant(s):",
+          id: "coDefendants",
+          name: "arrest[coDefendants]",
+          placeholder: "List co-defendants if any",
+          type: "text"
+        },
+        {
+          label: "Co-Defendant's Bonding Company:",
+          id: "coDefendantBondingCompany",
+          name: "arrest[coDefendantBondingCompany]",
+          placeholder: "Bonding Co. for Co-Defendant",
+          type: "text"
+        },
+        {
+          label: "On Probation?",
+          id: "probationYesNo",
+          name: "arrest[probationYesNo]",
+          placeholder: "Yes or No",
+          type: "datalist",
+          options: ["Yes", "No"]
+        },
+        {
+          label: "Probation County:",
+          id: "probationCounty",
+          name: "arrest[probationCounty]",
+          placeholder: "County",
+          type: "text"
+        },
+        {
+          label: "Probation Officer Name:",
+          id: "probationOfficerName",
+          name: "arrest[probationOfficerName]",
+          placeholder: "Probation/Parole Officer",
+          type: "text"
+        },
+      ]);
+      
+      defendantWrapper.appendChild(priorArrestContainer);
+  
+      /**************************************
+ * DEFENDANT SPOUSE SECTION
+ **************************************/
+const spouseContainer = createContainer("Defendant Spouse", "defendant-spouse", [
+  // 1) Spouse Name
+  {
+    label: "First Name:",
+    id: "spouseFirstName",
+    name: "spouse[firstName]",
+    placeholder: "FIRST",
+    type: "text"
+  },
+  {
+    label: "Middle Name:",
+    id: "spouseMiddleName",
+    name: "spouse[middleName]",
+    placeholder: "MIDDLE",
+    type: "text"
+  },
+  {
+    label: "Last Name:",
+    id: "spouseLastName",
+    name: "spouse[lastName]",
+    placeholder: "LAST",
+    type: "text"
+  },
+
+  // 2) Spouse Address (Street, City, State, Zip)
+  {
+    label: "Address:",
+    id: "spouseStreet",
+    name: "spouse[street]",
+    placeholder: "STREET",
+    type: "text"
+  },
+  {
+    label: "",
+    id: "spouseCity",
+    name: "spouse[city]",
+    placeholder: "CITY",
+    type: "text"
+  },
+  {
+    label: "",
+    id: "spouseState",
+    name: "spouse[state]",
+    placeholder: "STATE",
+    type: "datalist",
+    options: [
+      "AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID",
+      "IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS",
+      "MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK",
+      "OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV",
+      "WI","WY"
+    ]
+  },
+  {
+    label: "",
+    id: "spouseZip",
+    name: "spouse[zip]",
+    placeholder: "ZIP CODE",
+    type: "text"
+  },
+
+  // 3) Phone & Email
+  {
+    label: "Phone #:",
+    id: "spousePhone",
+    name: "spouse[phone]",
+    placeholder: "(XXX) XXX-XXXX",
+    type: "text"
+  },
+  {
+    label: "Email:",
+    id: "spouseEmail",
+    name: "spouse[email]",
+    placeholder: "username@example.com",
+    type: "text"
+  },
+
+  // 4) Spouse SSN & Driver’s License
+  {
+    label: "SSN#:",
+    id: "spouseSsn",
+    name: "spouse[ssn]",
+    placeholder: "XXX-XX-XXXX",
+    type: "text"
+  },
+  {
+    label: "DL#:",
+    id: "spouseDlNumber",
+    name: "spouse[dlNumber]",
+    placeholder: "DRIVER'S LICENSE #",
+    type: "text"
+  },
+
+  // 5) Spouse Vehicle Info: year, make, model
+  {
+    label: "Vehicle Year:",
+    id: "spouseVehicleYear",
+    name: "spouse[vehicleYear]",
+    placeholder: "2010 ... 2025",
+    type: "datalist",
+    options: Array.from({ length: 16 }, (_, i) => String(2010 + i)) 
+  },
+  {
+    label: "Vehicle Make:",
+    id: "spouseVehicleMake",
+    name: "spouse[vehicleMake]",
+    placeholder: "Make",
+    type: "text"
+  },
+  {
+    label: "Vehicle Model:",
+    id: "spouseVehicleModel",
+    name: "spouse[vehicleModel]",
+    placeholder: "Model",
+    type: "text"
+  }
+]);
+
+// Finally, append spouseContainer to the defendantWrapper
+defendantWrapper.appendChild(spouseContainer);
+
+/**************************************
+ * Father CONTAINER
+ **************************************/
+const FatherContainer = createContainer("Father", "Father-container", [
+  {
+    label: "First Name:",
+    id: "FatherFirstName",
+    name: "Father[firstName]",
+    placeholder: "FIRST",
+    type: "text"
+  },
+  {
+    label: "Middle Name:",
+    id: "FatherMiddleName",
+    name: "Father[middleName]",
+    placeholder: "MIDDLE",
+    type: "text"
+  },
+  {
+    label: "Last Name:",
+    id: "FatherLastName",
+    name: "Father[lastName]",
+    placeholder: "LAST",
+    type: "text"
+  },
+  {
+    label: "City:",
+    id: "FatherCity",
+    name: "Father[city]",
+    placeholder: "CITY",
+    type: "text"
+  },
+  {
+    label: "State:",
+    id: "FatherState",
+    name: "Father[state]",
+    placeholder: "STATE",
+    type: "datalist",
+    options: [
+      "AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID",
+      "IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS",
+      "MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK",
+      "OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV",
+      "WI","WY"
+    ]
+  },
+  {
+    label: "Phone #:",
+    id: "FatherPhone",
+    name: "Father[phone]",
+    placeholder: "(XXX) XXX-XXXX",
+    type: "text"
+  }
+]);
+
+defendantWrapper.appendChild(FatherContainer);
+
+/**************************************
+ * mother CONTAINER
+ **************************************/
+const motherContainer = createContainer("mother", "mother-container", [
+  {
+    label: "First Name:",
+    id: "motherFirstName",
+    name: "mother[firstName]",
+    placeholder: "FIRST",
+    type: "text"
+  },
+  {
+    label: "Middle Name:",
+    id: "motherMiddleName",
+    name: "mother[middleName]",
+    placeholder: "MIDDLE",
+    type: "text"
+  },
+  {
+    label: "Last Name:",
+    id: "motherLastName",
+    name: "mother[lastName]",
+    placeholder: "LAST",
+    type: "text"
+  },
+  {
+    label: "City:",
+    id: "motherCity",
+    name: "mother[city]",
+    placeholder: "CITY",
+    type: "text"
+  },
+  {
+    label: "State:",
+    id: "motherState",
+    name: "mother[state]",
+    placeholder: "STATE",
+    type: "datalist",
+    options: [
+      "AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID",
+      "IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS",
+      "MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK",
+      "OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV",
+      "WI","WY"
+    ]
+  },
+  {
+    label: "Phone #:",
+    id: "motherPhone",
+    name: "mother[phone]",
+    placeholder: "(XXX) XXX-XXXX",
+    type: "text"
+  }
+]);
+
+defendantWrapper.appendChild(motherContainer);
+
+
+/**************************************
+ * REFERENCES CONTAINER (3 references)
+ **************************************/
+// Create a top-level container for references
+const referencesContainer = document.createElement("div");
+referencesContainer.className = "container";
+referencesContainer.id = "references-container";
+
+// Title
+const referencesTitle = document.createElement("h2");
+referencesTitle.textContent = "References";
+referencesContainer.appendChild(referencesTitle);
+
+// We want 3 references
+for (let i = 1; i <= 3; i++) {
+  // A single "reference" card
+  const referenceCard = createCard(`Reference #${i}`, [
+    {
+      label: "First Name:",
+      id: `reference${i}FirstName`,
+      name: `references[${i}][firstName]`,
+      placeholder: "FIRST",
+      type: "text"
+    },
+    {
+      label: "Last Name:",
+      id: `reference${i}LastName`,
+      name: `references[${i}][lastName]`,
+      placeholder: "LAST",
+      type: "text"
+    },
+    {
+      label: "City:",
+      id: `reference${i}City`,
+      name: `references[${i}][city]`,
+      placeholder: "CITY",
+      type: "text"
+    },
+    {
+      label: "State:",
+      id: `reference${i}State`,
+      name: `references[${i}][state]`,
+      placeholder: "STATE",
+      type: "datalist",
+      options: [
+        "AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID",
+        "IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS",
+        "MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK",
+        "OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV",
+        "WI","WY"
+      ]
+    },
+    {
+      label: "Relation to Defendant:",
+      id: `reference${i}Relation`,
+      name: `references[${i}][relation]`,
+      placeholder: "Friend, Sibling, etc.",
+      type: "text"
+    },
+    {
+      label: "Phone #:",
+      id: `reference${i}Phone`,
+      name: `references[${i}][phone]`,
+      placeholder: "(XXX) XXX-XXXX",
+      type: "text"
     }
+  ]);
 
+  // Append each reference card
+  referencesContainer.appendChild(referenceCard);
+}
 
+// Finally, append referencesContainer to the defendantWrapper
+defendantWrapper.appendChild(referencesContainer);
+
+/**************************************
+ * ATTORNEY CONTAINER
+ **************************************/
+const attorneyContainer = createContainer("Attorney", "attorney-container", [
+  {
+    label: "First Name:",
+    id: "attorneyFirstName",
+    name: "attorney[firstName]",
+    placeholder: "FIRST",
+    type: "text"
+  },
+  {
+    label: "Last Name:",
+    id: "attorneyLastName",
+    name: "attorney[lastName]",
+    placeholder: "LAST",
+    type: "text"
+  },
+  {
+    label: "Phone #:",
+    id: "attorneyPhone",
+    name: "attorney[phone]",
+    placeholder: "(XXX) XXX-XXXX",
+    type: "text"
+  },
+  {
+    label: "Device Type:",
+    id: "attorneyDeviceType",
+    name: "attorney[deviceType]",
+    placeholder: "Mobile, Home, Other",
+    type: "datalist",
+    options: ["Mobile","Home","Office","Other"]
+  }
+]);
+
+defendantWrapper.appendChild(attorneyContainer);
  
-            // Call the function to populate the Defendant section
+/**************************************
+ * BOND INFO CONTAINER
+ **************************************/
+const bondInfoContainer = createContainer("Bond Info", "bond-info", [
+  {
+    label: "County:",
+    id: "bondCounty",
+    name: "bond[county]",
+    placeholder: "County",
+    type: "text"
+  },
+  {
+    label: "Jail:",
+    id: "bondJail",
+    name: "bond[jail]",
+    placeholder: "Jail Name",
+    type: "text"
+  },
+  {
+    label: "Agency:",
+    id: "bondAgency",
+    name: "bond[agency]",
+    placeholder: "Arresting Agency",
+    type: "text"
+  },
+  {
+    label: "Court:",
+    id: "bondCourt",
+    name: "bond[court]",
+    placeholder: "Court Name",
+    type: "text"
+  },
+  {
+    label: "TIME/CRT DATE:",
+    id: "bondTimeOrCourtDate",
+    name: "bond[timeOrCourtDate]",
+    placeholder: "MM/DD/YYYY or HH:MM",
+    type: "text"
+    // or type: "datetime-local" if you prefer a date/time picker
+  },
+  {
+    label: "Charges:",
+    id: "bondCharges",
+    name: "bond[charges]",
+    placeholder: "Charges (e.g. 'Theft, Assault')",
+    type: "text"
+  },
+  {
+    label: "Bond Amount:",
+    id: "bondAmount",
+    name: "bond[bondAmount]",
+    placeholder: "$",
+    type: "text"
+  },
+  {
+    label: "WARRANT #:",
+    id: "bondWarrantNumber",
+    name: "bond[warrantNumber]",
+    placeholder: "000000",
+    type: "text"
+  },
+  {
+    label: "CASE #:",
+    id: "bondCaseNumber",
+    name: "bond[caseNumber]",
+    placeholder: "Case #",
+    type: "text"
+  },
+  {
+    label: "HOLDS:",
+    id: "bondHolds",
+    name: "bond[holds]",
+    placeholder: "List holds if any",
+    type: "text"
+  }
+]);
+
+// Finally, append the container so it shows up in "populateDefendantSection"
+defendantWrapper.appendChild(bondInfoContainer);
+
+
+  }
+  
+           
             populateDefendantSection();
           
             
@@ -940,6 +1550,212 @@ stateSelectInput.addEventListener("input", function () {
         }`
     );
 });
+
+
+function updateCourtAndJail() {
+  let county = document.getElementById("county").value;
+  console.log("Selected County:", county);
+  // Future logic for updating court and jail options based on county will be added here
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const countyCourts = {
+      'Barrow': [
+          'State Court',
+          'Superior Court',
+          'Auburn City Court',
+          'Statham City Court',
+          'Winder City Court'
+      ],
+      'Bartow': [
+          'State Court',
+          'Superior Court',
+          'Adairsville City Court',
+          'Cartersville City Court'
+      ],
+      'Carroll': [
+          'State Court',
+          'Superior Court',
+          'Carrollton City Court',
+          'Villa Rica City Court'
+      ],
+      'Cherokee': [
+          'State Court',
+          'Superior Court',
+          'Canton City Court',
+          'Woodstock City Court'
+      ],
+      'Clarke': [
+          'State Court',
+          'Superior Court',
+          'Athens-Clarke County Court'
+      ],
+      'Cobb': [
+          'State Court',
+          'Superior Court',
+          'Marietta City Court',
+          'Smyrna City Court',
+          'Kennesaw City Court',
+          'Acworth City Court',
+          'Powder Springs City Court',
+          'Austell City Court'
+      ],
+      'Floyd': [
+          'State Court',
+          'Superior Court',
+          'Rome City Court',
+          'Cave Spring City Court'
+      ],
+      'Gordon': [
+          'State Court',
+          'Superior Court',
+          'Calhoun City Court',
+          'Fairmount City Court'
+      ],
+      'Gwinnett': [
+          'State Court',
+          'Superior Court',
+          'Duluth City Court',
+          'Lawrenceville City Court',
+          'Lilburn City Court',
+          'Norcross City Court',
+          'Snellville City Court',
+          'Suwanee City Court'
+      ],
+      'Haralson': [
+          'State Court',
+          'Superior Court',
+          'Bremen City Court',
+          'Tallapoosa City Court',
+          'Buchanan City Court',
+          'Waco City Court'
+      ],
+      'Paulding': [
+          'State Court',
+          'Superior Court',
+          'Hiram City Court',
+          'Dallas City Court'
+      ],
+      'Polk': [
+          'State Court',
+          'Superior Court',
+          'Cedartown City Court',
+          'Rockmart City Court',
+          'Aragon City Court',
+          'Braswell City Court'
+      ],
+      'Pickens': [
+          'State Court',
+          'Superior Court',
+          'Jasper City Court',
+          'Nelson City Court',
+          'Talking Rock City Court'
+      ]
+  };
+
+  const countyInput = document.getElementById('county');
+  const courtInput = document.getElementById('courtLocation');
+  const courtDatalist = document.getElementById('court-options');
+
+  countyInput.addEventListener('input', () => {
+      const selectedCounty = countyInput.value;
+      
+      // Clear previous options
+      courtDatalist.innerHTML =  '<option value="">Select Court</option>';
+      if (selectedCounty in countyCourts) {
+        countyCourts[selectedCounty].forEach(court => {
+            let option = document.createElement('option');
+            option.value = court;
+            courtDatalist.appendChild(option);
+        });
+      }
+  });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const courtDateInput = document.getElementById('courtDateInput');
+  
+  courtDateInput.addEventListener('change', () => {
+      let value = courtDateInput.value;
+
+  });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const heightInput = document.getElementById('height');
+
+  heightInput.addEventListener('input', () => {
+      let numericString = heightInput.value.replace(/[^0-9]/g, ''); // Strip non-digits
+
+      if (numericString === '') {
+          heightInput.value = ''; // Allow clearing the field
+          return;
+      }
+
+      let feet = parseInt(numericString.substring(0, 1), 10) || 0; // First digit is feet
+      let inches = parseInt(numericString.substring(1), 10) || 0; // Remaining digits are inches
+
+      if (inches > 11) {
+          inches = inches % 10; // Prevent inches from exceeding 11
+      }
+
+      // Preserve backspace functionality by only formatting when more than 1 digit is entered
+      if (numericString.length === 1) {
+          heightInput.value = feet; // Show only feet for single-digit input
+      } else {
+          heightInput.value = `${feet}'${inches}"`; // Properly format feet & inches
+      }
+  });
+
+  // WEIGHT FORMATTING
+  const weightInput = document.getElementById('weight');
+  weightInput.addEventListener('blur', () => {
+      const value = weightInput.value.replace(/[^0-9]/g, ''); // Strip non-numeric characters
+      if (value) {
+          weightInput.value = `${parseInt(value, 10)} lbs`;
+      } else {
+          weightInput.value = ''; // Clear if empty
+      }
+  });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const bondAmountInput = document.getElementById('bondAmount');
+
+  bondAmountInput.addEventListener('input', () => {
+      let value = bondAmountInput.value.replace(/[^0-9.]/g, ''); // Remove non-numeric characters except for '.'
+
+      // Ensure only one decimal point
+      let parts = value.split('.');
+      if (parts.length > 2) {
+          value = parts[0] + '.' + parts.slice(1).join(''); // Keep only the first decimal point
+      }
+
+      bondAmountInput.value = value; // Update the field with clean numeric value
+  });
+
+  bondAmountInput.addEventListener('blur', () => {
+      let value = bondAmountInput.value.replace(/[^0-9.]/g, ''); // Remove unwanted characters
+      let numericValue = parseFloat(value);
+
+      if (!isNaN(numericValue)) {
+          bondAmountInput.value = numericValue.toLocaleString('en-US', {
+              style: 'currency',
+              currency: 'USD',
+              minimumFractionDigits: 2,
+          });
+      } else {
+          bondAmountInput.value = ''; // Clear if invalid
+      }
+  });
+});
+
+
+
+
+
+
+
+
 
 
 

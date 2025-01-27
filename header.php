@@ -89,7 +89,7 @@ if (isset($_GET['section'])) {
         /* The text area that changes when a nav item is clicked */
         #sectionHeader {
             text-align: center;
-            margin: 10px 0;
+            margin: 10px;
             font-size: 1.2rem;
             font-weight: bold;
             background-color: #f9f9f917;
@@ -100,6 +100,11 @@ if (isset($_GET['section'])) {
             justify-content: space-evenly;
             align-self: center;
             min-width: 240px;
+            padding: 5px;
+            color: #ffffff;
+
+    border-radius: 04px;
+            
         }
 
 
@@ -166,7 +171,7 @@ if (isset($_GET['section'])) {
             padding: 8px 12px;
             background-color: #333c4d;
             color: #ffffff;
-            border-radius: 5px;
+            border-radius: 4px;
             border: 1px solid #ccc;
         }
 
