@@ -1,6 +1,6 @@
 <?php
 // Initialize the logo title with a default value
-$logoTitle = "James Bond"; // Default logo title
+$logoTitle = "BOND, JAMES BOND"; // Default logo title
 
 // Check if a section is active via a query parameter
 if (isset($_GET['section'])) {

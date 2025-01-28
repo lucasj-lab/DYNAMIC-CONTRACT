@@ -244,7 +244,7 @@ function populateDefendantSection() {
   /**************************************
    * 1) PERSONAL INFO + ADDITIONAL INFO
    **************************************/
-  const personalInfoContainer = createContainer("Personal Info", "defendant-personal", [
+  const personalInfoContainer = createContainer("Personal", "defendant-personal", [
     { label: "NAME", id: "firstName", name: "defendant[firstName]", placeholder: "FIRST", type: "text" },
     { label: "",      id: "middleName", name: "defendant[middleName]", placeholder: "MIDDLE", type: "text" },
     { label: "",      id: "lastName",   name: "defendant[lastName]",   placeholder: "LAST",   type: "text" },
@@ -428,6 +428,8 @@ function populateDefendantSection() {
       label: "RESIDENCE:",
       id: "residenceType",
       name: "residential[type]",
+       pattern: "\\(\\d{3}\\) \\d{3}-\\d{4}",
+      title: "Phone number format: (XXX) XXX-XXXX",
       placeholder: "TYPE",
       type: "datalist",
       options: ["APT","HOUSE","CONDO","MOBILE HOME","TOWNHOUSE","DUPLEX","TRAILER","OTHER"]
@@ -852,7 +854,7 @@ function populateDefendantSection() {
       // -------------------------------------------------
       // 2) EMPLOYMENT INFO
       // -------------------------------------------------
-      const employmentInfoContainer = createContainer("Employment Info", "employment-info", [
+      const employmentInfoContainer = createContainer("Employment", "employment-info", [
         {
           label: "Employer:",
           id: "currentEmployer",
@@ -885,6 +887,8 @@ function populateDefendantSection() {
           label: "Phone #:",
           id: "employerPhone",
           name: "employment[employerPhone]",
+          pattern: "\\(\\d{3}\\) \\d{3}-\\d{4}",
+           title: "Phone number format: (XXX) XXX-XXXX",
           placeholder: "(XXX) XXX-XXXX",
           type: "text"
         }
@@ -1086,6 +1090,8 @@ const spouseContainer = createContainer("Defendant Spouse", "defendant-spouse", 
     label: "Phone #:",
     id: "spousePhone",
     name: "spouse[phone]",
+    pattern: "\\(\\d{3}\\) \\d{3}-\\d{4}",
+    title: "Phone number format: (XXX) XXX-XXXX",
     placeholder: "(XXX) XXX-XXXX",
     type: "text"
   },
@@ -1191,6 +1197,8 @@ const FatherContainer = createContainer("Father", "Father-container", [
     label: "Phone #:",
     id: "FatherPhone",
     name: "Father[phone]",
+    pattern: "\\(\\d{3}\\) \\d{3}-\\d{4}",
+    title: "Phone number format: (XXX) XXX-XXXX",
     placeholder: "(XXX) XXX-XXXX",
     type: "text"
   }
@@ -1248,6 +1256,8 @@ const motherContainer = createContainer("mother", "mother-container", [
     label: "Phone #:",
     id: "motherPhone",
     name: "mother[phone]",
+    pattern: "\\(\\d{3}\\) \\d{3}-\\d{4}",
+    title: "Phone number format: (XXX) XXX-XXXX",
     placeholder: "(XXX) XXX-XXXX",
     type: "text"
   }
@@ -1319,6 +1329,8 @@ for (let i = 1; i <= 3; i++) {
       label: "Phone #:",
       id: `reference${i}Phone`,
       name: `references[${i}][phone]`,
+      pattern: "\\(\\d{3}\\) \\d{3}-\\d{4}",
+      title: "Phone number format: (XXX) XXX-XXXX",
       placeholder: "(XXX) XXX-XXXX",
       type: "text"
     }
