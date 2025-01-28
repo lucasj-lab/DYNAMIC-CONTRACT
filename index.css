@@ -95,7 +95,7 @@ input[list]::placeholder {
 /* General Button Styling */
 button {
     display: inline-block;
-
+margin: 20px;
     font-size:10px; /* Slightly larger text for better readability */
     font-weight: normal;
     text-align: center;

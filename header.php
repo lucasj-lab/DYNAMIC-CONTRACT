@@ -36,7 +36,7 @@ if (isset($_GET['section'])) {
             margin: 0;
             padding: 0;
         }
-        header {
+header {
   position: sticky;
   top: 0;           /* required for sticky to ‘stick’ at the top */
   z-index: 9999;    /* so it stays on top of all other elements */
