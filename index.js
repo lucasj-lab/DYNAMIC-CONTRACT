@@ -1815,9 +1815,361 @@ defendantWrapper.appendChild(bondInfoContainer);
             }
 
             populateCosignerSection();  // the new function
-
-            
-
+            document.addEventListener('DOMContentLoaded', function() {
+              // County data
+              const countyData = {
+                  'Barrow': {
+                      'jails': ['Barrow County Detention Center'],
+                      'agencies': [
+                          'Barrow County Sheriff\'s Office',
+                          'Auburn Police Department',
+                          'Statham Police Department',
+                          'Winder Police Department'
+                      ]
+                  },
+                  'Bartow': {
+                      'jails': ['Bartow County Jail'],
+                      'agencies': [
+                          'Bartow County Sheriff\'s Office',
+                          'Adairsville Police Department',
+                          'Cartersville Police Department'
+                      ]
+                  },
+                  'Carroll': {
+                      'jails': ['Carroll County Jail'],
+                      'agencies': [
+                          'Carroll County Sheriff\'s Office',
+                          'Carrollton Police Department',
+                          'Villa Rica Police Department'
+                      ]
+                  },
+                  'Cherokee': {
+                      'jails': ['Cherokee County Adult Detention Center'],
+                      'agencies': [
+                          'Cherokee County Sheriff\'s Office',
+                          'Canton Police Department',
+                          'Woodstock Police Department'
+                      ]
+                  },
+                  'Clarke': {
+                      'jails': ['Clarke County Jail'],
+                      'agencies': [
+                          'Clarke County Sheriff\'s Office',
+                          'Athens-Clarke County Police Department'
+                      ]
+                  },
+                  'Cobb': {
+                      'jails': ['Cobb County Adult Detention Center', 'Smyrna City Jail'],
+                      'agencies': [
+                          'Cobb County Sheriff\'s Office',
+                          'Marietta Police Department',
+                          'Smyrna Police Department',
+                          'Kennesaw Police Department',
+                          'Acworth Police Department',
+                          'Powder Springs Police Department',
+                          'Austell Police Department'
+                      ]
+                  },
+                  'Floyd': {
+                      'jails': ['Floyd County Jail'],
+                      'agencies': [
+                          'Floyd County Sheriff\'s Office',
+                          'Rome Police Department',
+                          'Cave Spring Police Department',
+                          'Lindale Police Department'
+                      ]
+                  },
+                  'Gordon': {
+                      'jails': ['Gordon County Jail'],
+                      'agencies': [
+                          'Gordon County Sheriff\'s Office',
+                          'Calhoun Police Department',
+                          'Fairmount Police Department'
+                      ]
+                  },
+                  'Gwinnett': {
+                      'jails': ['Gwinnett County Jail'],
+                      'agencies': [
+                          'Gwinnett County Police Department',
+                          'Duluth Police Department',
+                          'Lawrenceville Police Department',
+                          'Lilburn Police Department',
+                          'Norcross Police Department',
+                          'Snellville Police Department',
+                          'Suwanee Police Department'
+                      ]
+                  },
+                  'Haralson': {
+                      'jails': ['Haralson County Jail'],
+                      'agencies': [
+                          'Haralson County Sheriff\'s Office',
+                          'Bremen Police Department',
+                          'Tallapoosa Police Department',
+                          'Buchanan Police Department',
+                          'Waco Police Department'
+                      ]
+                  },
+                  'Paulding': {
+                      'jails': ['Paulding County Jail'],
+                      'agencies': [
+                          'Paulding County Sheriff\'s Office',
+                          'Hiram Police Department',
+                          'Dallas Police Department'
+                      ]
+                  },
+                  'Polk': {
+                      'jails': ['Polk County Jail'],
+                      'agencies': [
+                          'Polk County Sheriff\'s Office',
+                          'Cedartown Police Department',
+                          'Rockmart Police Department',
+                          'Aragon Police Department',
+                          'Braswell Police Department'
+                      ]
+                  },
+                  'Pickens': {
+                      'jails': ['Pickens County Jail'],
+                      'agencies': [
+                          'Pickens County Sheriff\'s Office',
+                          'Jasper Police Department',
+                          'Nelson Police Department',
+                          'Talking Rock Police Department'
+                      ]
+                  }
+              };
+          
+              // Get references to the inputs and their datalists
+              const countyInput = document.getElementById('countyInput');
+              const countyList = document.getElementById('countyList');
+          
+              const jailInput = document.getElementById('jailInput');
+              const jailList = document.getElementById('jailList');
+          
+              const agencyInput = document.getElementById('agencyInput');
+              const agencyList = document.getElementById('agencyList');
+          
+              // Populate the county datalist
+              for (let county in countyData) {
+                  let option = document.createElement('option');
+                  option.value = county;  // <option value="Barrow">
+                  countyList.appendChild(option);
+              }
+          
+              // When the user picks or types a county, populate Jails and Agencies
+              countyInput.addEventListener('change', handleCountySelection);
+              countyInput.addEventListener('input', handleCountySelection);
+          
+              function handleCountySelection() {
+                  // The user may type any text. We only update jails/agencies if it exactly matches a county
+                  const userCounty = countyInput.value.trim();
+                  
+                  // Clear current jail and agency lists
+                  jailList.innerHTML = '';
+                  agencyList.innerHTML = '';
+          
+                  // Disable jail/agency inputs until we confirm valid county
+                  jailInput.disabled = true;
+                  agencyInput.disabled = true;
+          
+                  // Check if userCounty is a valid key in countyData
+                  if (countyData.hasOwnProperty(userCounty)) {
+                      // Re-enable the other inputs
+                      jailInput.disabled = false;
+                      agencyInput.disabled = false;
+          
+                      // Populate jail options
+                      countyData[userCounty].jails.forEach(jailName => {
+                          let option = document.createElement('option');
+                          option.value = jailName;
+                          jailList.appendChild(option);
+                      });
+          
+                      // Populate agency options
+                      countyData[userCounty].agencies.forEach(agencyName => {
+                          let option = document.createElement('option');
+                          option.value = agencyName;
+                          agencyList.appendChild(option);
+                      });
+                  }
+              }
+          });document.addEventListener('DOMContentLoaded', function() {
+            // County data
+            const countyData = {
+                'Barrow': {
+                    'jails': ['Barrow County Detention Center'],
+                    'agencies': [
+                        'Barrow County Sheriff\'s Office',
+                        'Auburn Police Department',
+                        'Statham Police Department',
+                        'Winder Police Department'
+                    ]
+                },
+                'Bartow': {
+                    'jails': ['Bartow County Jail'],
+                    'agencies': [
+                        'Bartow County Sheriff\'s Office',
+                        'Adairsville Police Department',
+                        'Cartersville Police Department'
+                    ]
+                },
+                'Carroll': {
+                    'jails': ['Carroll County Jail'],
+                    'agencies': [
+                        'Carroll County Sheriff\'s Office',
+                        'Carrollton Police Department',
+                        'Villa Rica Police Department'
+                    ]
+                },
+                'Cherokee': {
+                    'jails': ['Cherokee County Adult Detention Center'],
+                    'agencies': [
+                        'Cherokee County Sheriff\'s Office',
+                        'Canton Police Department',
+                        'Woodstock Police Department'
+                    ]
+                },
+                'Clarke': {
+                    'jails': ['Clarke County Jail'],
+                    'agencies': [
+                        'Clarke County Sheriff\'s Office',
+                        'Athens-Clarke County Police Department'
+                    ]
+                },
+                'Cobb': {
+                    'jails': ['Cobb County Adult Detention Center', 'Smyrna City Jail'],
+                    'agencies': [
+                        'Cobb County Sheriff\'s Office',
+                        'Marietta Police Department',
+                        'Smyrna Police Department',
+                        'Kennesaw Police Department',
+                        'Acworth Police Department',
+                        'Powder Springs Police Department',
+                        'Austell Police Department'
+                    ]
+                },
+                'Floyd': {
+                    'jails': ['Floyd County Jail'],
+                    'agencies': [
+                        'Floyd County Sheriff\'s Office',
+                        'Rome Police Department',
+                        'Cave Spring Police Department',
+                        'Lindale Police Department'
+                    ]
+                },
+                'Gordon': {
+                    'jails': ['Gordon County Jail'],
+                    'agencies': [
+                        'Gordon County Sheriff\'s Office',
+                        'Calhoun Police Department',
+                        'Fairmount Police Department'
+                    ]
+                },
+                'Gwinnett': {
+                    'jails': ['Gwinnett County Jail'],
+                    'agencies': [
+                        'Gwinnett County Police Department',
+                        'Duluth Police Department',
+                        'Lawrenceville Police Department',
+                        'Lilburn Police Department',
+                        'Norcross Police Department',
+                        'Snellville Police Department',
+                        'Suwanee Police Department'
+                    ]
+                },
+                'Haralson': {
+                    'jails': ['Haralson County Jail'],
+                    'agencies': [
+                        'Haralson County Sheriff\'s Office',
+                        'Bremen Police Department',
+                        'Tallapoosa Police Department',
+                        'Buchanan Police Department',
+                        'Waco Police Department'
+                    ]
+                },
+                'Paulding': {
+                    'jails': ['Paulding County Jail'],
+                    'agencies': [
+                        'Paulding County Sheriff\'s Office',
+                        'Hiram Police Department',
+                        'Dallas Police Department'
+                    ]
+                },
+                'Polk': {
+                    'jails': ['Polk County Jail'],
+                    'agencies': [
+                        'Polk County Sheriff\'s Office',
+                        'Cedartown Police Department',
+                        'Rockmart Police Department',
+                        'Aragon Police Department',
+                        'Braswell Police Department'
+                    ]
+                },
+                'Pickens': {
+                    'jails': ['Pickens County Jail'],
+                    'agencies': [
+                        'Pickens County Sheriff\'s Office',
+                        'Jasper Police Department',
+                        'Nelson Police Department',
+                        'Talking Rock Police Department'
+                    ]
+                }
+            };
+        
+            // Get references to the inputs and their datalists
+            const countyInput = document.getElementById('countyInput');
+            const countyList = document.getElementById('countyList');
+        
+            const jailInput = document.getElementById('jailInput');
+            const jailList = document.getElementById('jailList');
+        
+            const agencyInput = document.getElementById('agencyInput');
+            const agencyList = document.getElementById('agencyList');
+        
+            // Populate the county datalist
+            for (let county in countyData) {
+                let option = document.createElement('option');
+                option.value = county;  // <option value="Barrow">
+                countyList.appendChild(option);
+            }
+        
+            // When the user picks or types a county, populate Jails and Agencies
+            countyInput.addEventListener('change', handleCountySelection);
+            countyInput.addEventListener('input', handleCountySelection);
+        
+            function handleCountySelection() {
+                // The user may type any text. We only update jails/agencies if it exactly matches a county
+                const userCounty = countyInput.value.trim();
+                
+                // Clear current jail and agency lists
+                jailList.innerHTML = '';
+                agencyList.innerHTML = '';
+        
+                // Disable jail/agency inputs until we confirm valid county
+                jailInput.disabled = true;
+                agencyInput.disabled = true;
+        
+                // Check if userCounty is a valid key in countyData
+                if (countyData.hasOwnProperty(userCounty)) {
+                    // Re-enable the other inputs
+                    jailInput.disabled = false;
+                    agencyInput.disabled = false;
+        
+                    // Populate jail options
+                    countyData[userCounty].jails.forEach(jailName => {
+                        let option = document.createElement('option');
+                        option.value = jailName;
+                        jailList.appendChild(option);
+                    });
+        
+                    // Populate agency options
+                    countyData[userCounty].agencies.forEach(agencyName => {
+                        let option = document.createElement('option');
+                        option.value = agencyName;
+                        agencyList.appendChild(option);
+                    });
+                }
+            }
+        });
                           // Height Formatting Logic
         const heightInput = document.getElementById("height");
         if (heightInput) {

@@ -472,3 +472,9 @@ input.error {
        but you might also want width: 100% or something else */
     display: flex;
   }
+
+  .desktop-menu ul li a.active-link,
+.mobile-menu ul li a.active-link {
+    background-color: #161920; /* same as your hover color */
+    color: white;             /* make the text white for visibility */
+}

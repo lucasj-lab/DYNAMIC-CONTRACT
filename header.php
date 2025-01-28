@@ -4,7 +4,7 @@ $logoTitle = "James Bond"; // Default logo title
 
 // Check if a section is active via a query parameter
 if (isset($_GET['section'])) {
-    // Sanitize the section name to prevent XSS or other vulnerabilities
+    // Sanitize the section name
     $activeSection = htmlspecialchars($_GET['section']);
 
     // Map the section names to their corresponding titles
@@ -36,19 +36,18 @@ if (isset($_GET['section'])) {
             margin: 0;
             padding: 0;
         }
-header {
-  position: sticky;
-  top: 0;           /* required for sticky to ‘stick’ at the top */
-  z-index: 9999;    /* so it stays on top of all other elements */
-  background-color: #f4f4f4;
-  border-bottom: 2px solid #ccc;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border: 1px solid #ccc;
-}
-
+        header {
+            position: sticky;
+            top: 0;           /* required for sticky to 'stick' at the top */
+            z-index: 9999;    /* so it stays on top of all other elements */
+            background-color: #f4f4f4;
+            border-bottom: 2px solid #ccc;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #ccc;
+        }
 
         /* Logo or site title in the header */
         .logo h1 {
@@ -62,7 +61,6 @@ header {
             margin: 0;
             padding: 0;
             display: flex;
- 
         }
 
         .desktop-menu ul li {
@@ -73,7 +71,7 @@ header {
         .desktop-menu ul li a {
             text-decoration: none;
             padding: 8px 12px;
-            background-color:#444d5c;
+            background-color: #444d5c;
             color: white;
             border-radius: 5px;
             border: 1px solid #ccc;
@@ -81,11 +79,14 @@ header {
         }
 
         .desktop-menu ul li a:hover {
-            background-color:#161920;
+            background-color: #161920;
         }
 
-        .desktop-menu ul li a:hover {
-            background-color:#161920;
+        /* Active link style (matches your hover color) */
+        .desktop-menu ul li a.active-link,
+        .mobile-menu ul li a.active-link {
+            background-color: #161920; 
+            color: #fff;
         }
 
         /* The text area that changes when a nav item is clicked */
@@ -104,11 +105,8 @@ header {
             min-width: 240px;
             padding: 5px;
             border: 1px solid #ccc;
-
-    border-radius: 4px;
-            
+            border-radius: 4px;
         }
-
 
         /* Container area for the sections */
         .container-wrapper {
@@ -123,8 +121,6 @@ header {
 
         .container-wrapper.active {
             display: grid;
-            /* justify-content: space-between; */
-
             padding: 20px;
             border: 1px solid #ccc;
             margin: 10px auto;
@@ -146,9 +142,8 @@ header {
             display: none;
             position: absolute;
             top: 60px; /* Below header */
-          
             width: 25%;
-            background-color:#333c4d;
+            background-color: #333c4d;
             border-bottom: 2px solid #ccc;
         }
 
@@ -189,9 +184,11 @@ header {
             .hamburger {
                 display: block; /* Show the hamburger */
             }
-        }        /* We add these at the bottom so they override any normal styles */
+        }
+
+        /* Dark mode overrides */
         body.dark-mode {
-            background-color: #121212; /* a typical dark background */
+            background-color: #121212;
             color: #ccc;
         }
         body.dark-mode header {
@@ -216,14 +213,9 @@ header {
         body.dark-mode .card {
             background: rgba(50, 50, 50, 0.7);
         }
-        /* Etc. Adjust as desired for your design */
-
-
     </style>
 </head>
 <body>
-
-
 <header>
     <!-- Logo or title from our PHP variable -->
     <div class="logo">
@@ -233,6 +225,7 @@ header {
     <!-- Desktop Menu -->
     <nav class="desktop-menu">
         <ul>
+            <!-- Notice we do not add "active-link" here by default. We’ll do it via JS. -->
             <li><a href="#" data-target="defendant-section">Defendant</a></li>
             <li><a href="#" data-target="cosigner-section">Cosigner</a></li>
             <li><a href="#" data-target="conditions-section">Conditions</a></li>
@@ -242,12 +235,11 @@ header {
         </ul>
     </nav>
 
-    <!-- Add a "Dark Mode" toggle button -->
-   <!-- THE UPDATED TOGGLE BUTTON: two labels -->
-   <button id="darkModeToggle" style="background-color:#666; color:#fff; padding:5px 10px; border:none; cursor:pointer;">
-    <span id="darkLabel">Dark</span>
-    <span id="lightLabel" style="display: none;">Light</span>
-  </button>
+    <!-- Dark Mode toggle button -->
+    <button id="darkModeToggle" style="background-color:#666; color:#fff; padding:5px 10px; border:none; cursor:pointer;">
+        <span id="darkLabel">Dark</span>
+        <span id="lightLabel" style="display: none;">Light</span>
+    </button>
 
     <!-- Hamburger icon for mobile -->
     <button class="hamburger" onclick="toggleMobileMenu()">☰</button>
@@ -268,7 +260,7 @@ header {
 <!-- The text in the “header” region that changes based on which button/link is clicked -->
 <div id="sectionHeader">Agreement for Bail Bond</div>
 
-<!-- Your six sections -->
+<!-- Sections (Defendant is the default one shown) -->
 <div id="defendant-section" class="container-wrapper active">
     <h2>Defendant Information</h2>
     <p>Content related to the Defendant goes here.</p>
@@ -309,6 +301,14 @@ header {
     const sectionHeader = document.getElementById('sectionHeader');
     const navLinks = document.querySelectorAll('[data-target]'); 
 
+    // We'll track which link is "active" and highlight it
+    function setActiveLink(clickedLink) {
+        // Remove .active-link from all
+        navLinks.forEach(link => link.classList.remove('active-link'));
+        // Add .active-link to the clicked one
+        clickedLink.classList.add('active-link');
+    }
+
     navLinks.forEach(link => {
         link.addEventListener('click', (event) => {
             event.preventDefault(); // prevent any default <a> behavior
@@ -332,24 +332,35 @@ header {
                 targetSection.classList.add('active');
             }
 
+            // Set this link as active
+            setActiveLink(link);
+
             // On mobile, close the menu after clicking
             document.getElementById("mobileMenu").classList.remove("active");
         });
+    });
+
+    // By default, highlight "Defendant" link 
+    // (since #defendant-section is displayed on load)
+    window.addEventListener('DOMContentLoaded', () => {
+        // Find the link with data-target="defendant-section" 
+        // and mark it as active
+        const defaultLink = document.querySelector('[data-target="defendant-section"]');
+        if (defaultLink) {
+            defaultLink.classList.add('active-link');
+        }
+
+        // 3) Dark Mode toggle initial check
+        if (document.body.classList.contains('dark-mode')) {
+            darkLabel.style.display  = 'none';
+            lightLabel.style.display = 'inline';
+        } 
     });
 
     // 3) Dark Mode toggle
     const darkModeToggle = document.getElementById('darkModeToggle');
     const darkLabel      = document.getElementById('darkLabel');
     const lightLabel     = document.getElementById('lightLabel');
-
-    // If you're starting in dark mode (body has .dark-mode), show the 'Light Mode' label, hide 'Dark Mode'
-    // We'll do that as soon as the page loads:
-    window.addEventListener('DOMContentLoaded', () => {
-        if (document.body.classList.contains('dark-mode')) {
-            darkLabel.style.display  = 'none';
-            lightLabel.style.display = 'inline';
-        } 
-    });
 
     darkModeToggle.addEventListener('click', () => {
         // Toggle dark mode class
@@ -366,6 +377,5 @@ header {
         }
     });
 </script>
-
 </body>
 </html>
