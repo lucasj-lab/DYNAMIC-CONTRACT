@@ -36,17 +36,19 @@ if (isset($_GET['section'])) {
             margin: 0;
             padding: 0;
         }
-
-        /* Basic reset and structure */
         header {
-            position: relative;
-            background-color: #f4f4f4;
-            border-bottom: 2px solid #ccc;
-            padding: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
+  position: sticky;
+  top: 0;           /* required for sticky to ‘stick’ at the top */
+  z-index: 9999;    /* so it stays on top of all other elements */
+  background-color: #f4f4f4;
+  border-bottom: 2px solid #ccc;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #ccc;
+}
+
 
         /* Logo or site title in the header */
         .logo h1 {
@@ -101,9 +103,9 @@ if (isset($_GET['section'])) {
             align-self: center;
             min-width: 240px;
             padding: 5px;
-            color: #ffffff;
+            border: 1px solid #ccc;
 
-    border-radius: 04px;
+    border-radius: 4px;
             
         }
 
@@ -122,7 +124,7 @@ if (isset($_GET['section'])) {
         .container-wrapper.active {
             display: grid;
             /* justify-content: space-between; */
-            align-items: start;
+
             padding: 20px;
             border: 1px solid #ccc;
             margin: 10px auto;
@@ -180,7 +182,7 @@ if (isset($_GET['section'])) {
         }
 
         /* Media Query for mobile responsiveness */
-        @media (max-width: 599px) {
+        @media (max-width: 699px) {
             .desktop-menu {
                 display: none; /* Hide the desktop menu */
             }
@@ -241,9 +243,11 @@ if (isset($_GET['section'])) {
     </nav>
 
     <!-- Add a "Dark Mode" toggle button -->
-    <button id="darkModeToggle" style="background-color:#666;color:#fff;padding:5px 10px;border:none;cursor:pointer;">
-      Dark Mode
-    </button>
+   <!-- THE UPDATED TOGGLE BUTTON: two labels -->
+   <button id="darkModeToggle" style="background-color:#666; color:#fff; padding:5px 10px; border:none; cursor:pointer;">
+    <span id="darkLabel">Dark</span>
+    <span id="lightLabel" style="display: none;">Light</span>
+  </button>
 
     <!-- Hamburger icon for mobile -->
     <button class="hamburger" onclick="toggleMobileMenu()">☰</button>
@@ -335,9 +339,33 @@ if (isset($_GET['section'])) {
 
     // 3) Dark Mode toggle
     const darkModeToggle = document.getElementById('darkModeToggle');
+    const darkLabel      = document.getElementById('darkLabel');
+    const lightLabel     = document.getElementById('lightLabel');
+
+    // If you're starting in dark mode (body has .dark-mode), show the 'Light Mode' label, hide 'Dark Mode'
+    // We'll do that as soon as the page loads:
+    window.addEventListener('DOMContentLoaded', () => {
+        if (document.body.classList.contains('dark-mode')) {
+            darkLabel.style.display  = 'none';
+            lightLabel.style.display = 'inline';
+        } 
+    });
+
     darkModeToggle.addEventListener('click', () => {
+        // Toggle dark mode class
         document.body.classList.toggle('dark-mode');
+
+        // If now in dark mode, show "Light Mode" label
+        if (document.body.classList.contains('dark-mode')) {
+            darkLabel.style.display  = 'none';
+            lightLabel.style.display = 'inline';
+        } else {
+            // If now in light mode, show "Dark Mode" label
+            darkLabel.style.display  = 'inline';
+            lightLabel.style.display = 'none';
+        }
     });
 </script>
+
 </body>
 </html>
