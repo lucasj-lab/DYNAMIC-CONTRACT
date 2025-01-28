@@ -1,12 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
  
 
-  
-  /**
-   * 1) Dynamically load the Google Maps JS with your two different keys.
-   *    Typically you'd only use one key, but you asked to include both.
-   */
-  const placesApiKey = "AIzaSyBmX2NTZzTOF_bf32YcmIsNa4d1obR0DPo";
+
 
 
   // This callback will be called once the 'places' script has loaded.
@@ -1604,25 +1599,6 @@ defendantWrapper.appendChild(bondInfoContainer);
                   type: "datalist",
                   options: ["OWN","RENT","W/PARENTS"]
                 },
-                {
-                  label: "LENGTH:",
-                  id: "cosignerYears",
-                  name: "cosignerResidential[years]",
-                  placeholder: "YEARS",
-                  type: "datalist",
-                  options: Array.from({ length: 26 }, (_, i) => (i === 25 ? "25 +" : (i + " YRS")))
-                },
-                {
-                  label: "LIVES WITH:",
-                  id: "cosignerLivesWith",
-                  name: "cosignerResidential[livesWith]",
-                  placeholder: "SELF",
-                  type: "datalist",
-                  options: [
-                    "Self","Roommate","Husband","Wife","Son","Daughter","Children","Girlfriend","Boyfriend",
-                    "Sibling","Grandparent","Grandchild","Aunt","Uncle","Cousin","Friends","Parents","Other"
-                  ]
-                }
               ]);
             
               // Address card
