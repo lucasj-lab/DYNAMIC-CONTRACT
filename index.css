@@ -43,8 +43,8 @@ h1, h2 {
     cursor: crosshair;
   }
   button {
-    margin: 5px 5px 0 0;
-    padding: 5px 10px;
+    margin: 5px 0;
+    padding: 5px;
     cursor: pointer;
   }
   .status-container {
@@ -159,21 +159,17 @@ input[list]::placeholder {
     text-align: center; /* Align placeholder text to match input text */
     opacity: 0.9; /* Optional: Makes the placeholder text less prominent */
 }
-
-/* General Button Styling */
 button {
     display: inline-block;
-    font-size:10px; /* Slightly larger text for better readability */
     font-weight: normal;
     text-align: center;
     color: #ffffff;
-    background-color: #121212;
+    background-color: #348859a8;
     border: none;
     border-radius: 2px; /* Fully rounded buttons */
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow for a floating effect */
     cursor: pointer;
     transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effects */
-    width: 40px; /* Adjusts to the button content size */
     min-width: 90px-webkit-fill-available; /* Ensures consistent button size */
 }
 /* Confirm Button */
@@ -192,15 +188,15 @@ button {
 }
 
 /* Remove Button */
-.remove-btn {
-    background-color: #dc3545; /* Red color */
+.remove-phone-button {
+    background-color: #aa2b37; /* Red color */
     color: #ffffff;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* Add Button */
 .add-btn {
-    background-color: #607D8B; /* Teal color */
+    background-color: #16533a; /* Teal color */
     color: #ffffff;
     border-radius: 25px;
     padding: 12px 24px;
@@ -211,7 +207,7 @@ button {
 
 /* Hover States */
 button:hover {
-    background-color: #0e1518; /* Darker blue for default buttons */
+    background-color: #21882685; /* Darker blue for default buttons */
     box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2); /* Increased shadow on hover */
 }
 
@@ -224,7 +220,7 @@ button:hover {
     background-color: #e0a800; /* Darker amber */
 }
 
-.remove-btn:hover {
+.remove-phone-button:hover {
     background-color: #c82333; /* Darker red */
 }
 

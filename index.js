@@ -190,6 +190,11 @@ document.addEventListener("DOMContentLoaded", () => {
       return container;
     }
   
+
+      // Single global listener:
+  function handlePhoneFieldInput(event) {
+    event.target.value = formatPhoneNumber(event.target.value);
+  }
     function formatPhoneNumber(rawValue) {
       let digits = rawValue.replace(/\D/g, "");
     
@@ -206,10 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
       }
     }
-  // Single global listener:
-  function handlePhoneFieldInput(event) {
-    event.target.value = formatPhoneNumber(event.target.value);
-  }
+
 
   document.addEventListener("input", (e) => {
     if (e.target.classList.contains("phoneField")) {
@@ -1527,60 +1529,9 @@ defendantWrapper.appendChild(bondInfoContainer);
   });
 
 
-  
-                }
+   }
     
-// Initialize phone fields on page load
-document.addEventListener("DOMContentLoaded", function() {
-  // Attach existing phone inputs
-  const defaultPhoneField = document.getElementById("phoneInput");
-  if (defaultPhoneField) {
-    // If you want the old single phone input to also have the phone formatting:
-    defaultPhoneField.classList.add("phoneField");
-    defaultPhoneField.addEventListener("input", handlePhoneFieldInput);
-  }
 
-  // If you want to run updateRemoveButtonsVisibility immediately:
-  updateRemoveButtonsVisibility();
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  const heightInput = document.getElementById('height');
-
-  heightInput.addEventListener('input', () => {
-      let numericString = heightInput.value.replace(/[^0-9]/g, ''); // Strip non-digits
-
-      if (numericString === '') {
-          heightInput.value = ''; // Allow clearing the field
-          return;
-      }
-
-      let feet = parseInt(numericString.substring(0, 1), 10) || 0; // First digit is feet
-      let inches = parseInt(numericString.substring(1), 10) || 0; // Remaining digits are inches
-
-      if (inches > 11) {
-          inches = inches % 10; // Prevent inches from exceeding 11
-      }
-
-      // Preserve backspace functionality by only formatting when more than 1 digit is entered
-      if (numericString.length === 1) {
-          heightInput.value = feet; // Show only feet for single-digit input
-      } else {
-          heightInput.value = `${feet}'${inches}"`; // Properly format feet & inches
-      }
-  });
-
-  // WEIGHT FORMATTING
-  const weightInput = document.getElementById('weight');
-  weightInput.addEventListener('blur', () => {
-      const value = weightInput.value.replace(/[^0-9]/g, ''); // Strip non-numeric characters
-      if (value) {
-          weightInput.value = `${parseInt(value, 10)} lbs`;
-      } else {
-          weightInput.value = ''; // Clear if empty
-      }
-  });
-});
 
 document.addEventListener('DOMContentLoaded', () => {
   const bondAmountInput = document.getElementById('bondAmount');
@@ -1616,24 +1567,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-
-
-/**
- * Handler for input on phone fields
- */
-function handlePhoneFieldInput(event) {
-  event.target.value = formatPhoneNumber(event.target.value);
-}
-/**
- * Called by "Add Phone" button. 
- * Creates new phone + device type + remove button in #phoneFieldsContainer.
- */
 function addPhoneField() {
   const phoneFieldsContainer = document.getElementById("phoneFieldsContainer");
   if (!phoneFieldsContainer) {
     console.error("No phoneFieldsContainer found in DOM!");
     return;
   }
+
+
 
   // Next index is often phoneFieldsContainer.children.length,
   // but we can just use a random or unique ID if you prefer:
@@ -1692,7 +1633,7 @@ function addPhoneField() {
   const removeButton = document.createElement("button");
   removeButton.type = "button";
   removeButton.textContent = "Remove Phone";
-  removeButton.className = "remove-phone-btn";
+  removeButton.className = "remove-phone-button";
   removeButton.addEventListener("click", () => {
     // Remove the entire card when this is clicked
     phoneFieldsContainer.removeChild(newPhoneCard);
