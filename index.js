@@ -91,136 +91,133 @@ document.addEventListener("DOMContentLoaded", () => {
     
         return stateDriverLicenseFormats["UNKNOWN"];
     }
-    
 
-    
-    
-    function formatSSN(input) {
-        const ssnInput = document.getElementById("ssnInput");
-
-        if (ssnInput) {
-            ssnInput.addEventListener("input", () => {
-                let value = ssnInput.value.replace(/\D/g, ""); // Remove non-digits
-                if (value.length > 9) value = value.slice(0, 9); // Limit to 9 digits
-    
-                // Format as XXX-XX-XXXX
-                if (value.length <= 3) {
-                    ssnInput.value = value;
-                } else if (value.length <= 5) {
-                    ssnInput.value = `${value.slice(0, 3)}-${value.slice(3)}`;
-                } else {
-                    ssnInput.value = `${value.slice(0, 3)}-${value.slice(3, 5)}-${value.slice(5)}`;
-                }
-            });
-        }
-    }
-    
+    function createInputGroup(labelText, inputConfig) {
+      const inputGroup = document.createElement("div");
+      inputGroup.className = "input-group";
   
-  // Function to create a styled input group with placeholders
-function createInputGroup(labelText, inputConfig) {
-  const inputGroup = document.createElement("div");
-  inputGroup.className = "input-group";
-
-  // Create and append label
-  const label = document.createElement("label");
-  label.setAttribute("for", inputConfig.id);
-  label.textContent = labelText;
-  inputGroup.appendChild(label);
-
-  let input;
-
-  if (inputConfig.type === "datalist") {
-      // Create a text input that uses a <datalist>
-      input = document.createElement("input");
-      input.type = "text";
-      input.id = inputConfig.id;
-      input.name = inputConfig.name;
-      input.placeholder = inputConfig.placeholder || "";
-
-      // Create the datalist element
-      const datalist = document.createElement("datalist");
-      datalist.id = `${inputConfig.id}-options`;
-      // Link the <input> to its <datalist> by "list" attribute
-      input.setAttribute("list", datalist.id);
-
-      // Populate <option> elements
-      (inputConfig.options || []).forEach(option => {
+      // Create and append label
+      const label = document.createElement("label");
+      label.setAttribute("for", inputConfig.id);
+      label.textContent = labelText;
+      inputGroup.appendChild(label);
+  
+      let input;
+  
+      if (inputConfig.type === "datalist") {
+        // Create a text input that uses a <datalist>
+        input = document.createElement("input");
+        input.type = "text";
+        input.id = inputConfig.id;
+        input.name = inputConfig.name;
+        input.placeholder = inputConfig.placeholder || "";
+  
+        // Create the datalist element
+        const dataList = document.createElement("datalist");
+        dataList.id = `${inputConfig.id}-options`;
+  
+        // Link the <input> to its <datalist> by "list" attribute
+        input.setAttribute("list", dataList.id);
+  
+        // Populate <option> elements
+        (inputConfig.options || []).forEach(option => {
           const optionElem = document.createElement("option");
           optionElem.value = option;
-          datalist.appendChild(optionElem);
+          dataList.appendChild(optionElem);
+        });
+  
+        // Append input + datalist to the group
+        inputGroup.appendChild(input);
+        inputGroup.appendChild(dataList);
+  
+      } else {
+        // Normal <input> (text, date, etc.)
+        input = document.createElement("input");
+        input.type = inputConfig.type || "text";
+        input.id = inputConfig.id;
+        input.name = inputConfig.name;
+        input.placeholder = inputConfig.placeholder || "";
+  
+        inputGroup.appendChild(input);
+      }
+  
+      // If 'hidden: true' is specified, hide the input initially
+      if (inputConfig.hidden) {
+        input.style.display = "none";
+      }
+  
+      return inputGroup;
+    }
+  
+    function createCard(title, inputs) {
+      const card = document.createElement("div");
+      card.className = "card";
+  
+      if (title) {
+        const cardTitle = document.createElement("h2");
+        cardTitle.textContent = title;
+        card.appendChild(cardTitle);
+      }
+  
+      const cardContent = document.createElement("div");
+      cardContent.className = "card-content";
+  
+      inputs.forEach((inputConfig) => {
+        const inputGroup = createInputGroup(inputConfig.label, inputConfig);
+        cardContent.appendChild(inputGroup);
       });
-
-      // Append both input and datalist to the group
-      inputGroup.appendChild(input);
-      inputGroup.appendChild(datalist);
-
-  } else {
-      // Normal <input> (text, date, etc.)
-      input = document.createElement("input");
-      input.type = inputConfig.type || "text";
-      input.id = inputConfig.id;
-      input.name = inputConfig.name;
-      input.placeholder = inputConfig.placeholder || "";
-
-      // Append the input
-      inputGroup.appendChild(input);
+  
+      card.appendChild(cardContent);
+      return card;
+    }
+  
+    function createContainer(title, containerId, inputs) {
+      const container = document.createElement("div");
+      container.className = "container";
+      container.id = containerId;
+  
+      // Container heading
+      const containerTitle = document.createElement("h2");
+      containerTitle.textContent = title;
+      container.appendChild(containerTitle);
+  
+      // For each input, create a single card
+      inputs.forEach((inputConfig) => {
+        const singleCard = createCard("", [inputConfig]);
+        container.appendChild(singleCard);
+      });
+  
+      return container;
+    }
+  
+    function formatPhoneNumber(rawValue) {
+      let digits = rawValue.replace(/\D/g, "");
+    
+      // Limit to 10 digits
+      if (digits.length > 10) {
+        digits = digits.slice(0, 10);
+      }
+    
+      if (digits.length <= 3) {
+        return digits;
+      } else if (digits.length <= 6) {
+        return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+      } else {
+        return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+      }
+    }
+  // Single global listener:
+  function handlePhoneFieldInput(event) {
+    event.target.value = formatPhoneNumber(event.target.value);
   }
 
-  // If 'hidden: true' is specified, hide the input initially
-  if (inputConfig.hidden) {
-      input.style.display = "none";
-  }
-
-  return inputGroup;
-}
-
-// Helper function to create a card with a title and inputs
-function createCard(title, inputs) {
-  const card = document.createElement("div");
-  card.className = "card";
-
-  const cardTitle = document.createElement("h2");
-  cardTitle.textContent = title;
-  card.appendChild(cardTitle);
-
-  const cardContent = document.createElement("div");
-  cardContent.className = "card-content";
-
-  inputs.forEach(inputConfig => {
-      const inputGroup = createInputGroup(inputConfig.label, inputConfig);
-      cardContent.appendChild(inputGroup);
+  document.addEventListener("input", (e) => {
+    if (e.target.classList.contains("phoneField")) {
+      e.target.value = formatPhoneNumber(e.target.value);
+    }
   });
 
-  card.appendChild(cardContent);
-
-  return card;
-}
-
-function createContainer(title, containerId, inputs) {
-  const container = document.createElement("div");
-  container.className = "container";
-  container.id = containerId;
-
-  const containerTitle = document.createElement("h2");
-  containerTitle.textContent = title;
-  container.appendChild(containerTitle);
-
-  const card = document.createElement("div");
-  card.className = "card";
-
-  const cardContent = document.createElement("div");
-  cardContent.className = "card-content";
-
-  inputs.forEach(inputConfig => {
-      const inputGroup = createInputGroup(inputConfig.label, inputConfig);
-      cardContent.appendChild(inputGroup);
-  });
-
-  card.appendChild(cardContent);
-  container.appendChild(card);
-
-  return container;
-}
+    
 function populateDefendantSection() {
   const defendantWrapper = document.getElementById("defendant-section");
   if (!defendantWrapper) {
@@ -284,6 +281,7 @@ function populateDefendantSection() {
     type: "text",
     title: "Enter a valid driver's license based on the selected state",
   });
+
   additionalInfoCardContent.appendChild(dlInputGroup);
 
   // Finalize additionalInfoCard
@@ -348,65 +346,95 @@ function populateDefendantSection() {
   ]);
   defendantWrapper.appendChild(descriptionContainer);
 
-  /**************************************
-   * 3) CONTACT INFO
-   **************************************/
-  const contactInfoContainer = createContainer("Contact", "contact-info", [
-    {
-      label: "PHONE #:",
-      id: "phoneInput",
-      name: "defendant[phone]",
-      placeholder: "(XXX) XXX-XXXX",
-      type: "text",
-      pattern: "\\(\\d{3}\\) \\d{3}-\\d{4}",
-      title: "Phone number format: (XXX) XXX-XXXX"
-    },
-    {
-      label: "",
-      id: "deviceTypeDefault",
-      name: "contact[deviceType]",
-      placeholder: "DEVICE TYPE",
-      type: "datalist",
-      options: ["Mobile", "Home", "Other"]
-    },
-    {
-      label: "EMAIL:",
-      id: "emailUser",
-      name: "contact[emailUser]",
-      placeholder: "USER",
-      type: "text"
-    },
-    {
-      label: "@",
-      id: "emailDomain",
-      name: "contact[emailDomain]",
-      type: "datalist",
-      placeholder: "EMAIL",
-      options: ["GMAIL.COM", "YAHOO.COM", "OUTLOOK.COM", "HOTMAIL.COM", "ICLOUD.COM"]
-    },
-    {
-      label: "",
-      id: "fullEmailOutput",
-      name: "contact[fullEmail]",
-      placeholder: "EMAIL ADDRESS",
-      readonly: true
-    }
-  ]);
-  defendantWrapper.appendChild(contactInfoContainer);
-
-  // Email combination logic
-  const emailUserInput = document.getElementById("emailUser");
-  const emailDomainInput = document.getElementById("emailDomain");
-  const fullEmailOutput = document.getElementById("fullEmailOutput");
-  if (emailUserInput && emailDomainInput && fullEmailOutput) {
-    function updateCombinedEmail() {
-      const username = emailUserInput.value.trim();
-      const domain   = emailDomainInput.value.trim();
-      fullEmailOutput.value = (username && domain) ? `${username}@${domain}` : "";
-    }
-    emailUserInput.addEventListener("input", updateCombinedEmail);
-    emailDomainInput.addEventListener("change", updateCombinedEmail);
+/********************************************
+ *  CONTACT CONTAINER (Corrected & Updated)
+ ********************************************/
+const contactInfoContainer = createContainer("Contact", "contact-info", [
+  {
+    // -- The default (first) Phone # --
+    label: "PHONE #:",
+    id: "phoneInput",           
+    name: "phoneNumber[]",       // array notation to allow multiple phone entries
+    placeholder: "(XXX) XXX-XXXX",
+    type: "text",
+    pattern: "\\(\\d{3}\\) \\d{3}-\\d{4}",
+    title: "Phone number format: (XXX) XXX-XXXX",
+    className: "phoneField"      // so you can attach phone-format logic, if desired
+  },
+  {
+    // -- The default (first) Device Type --
+    label: "",
+    id: "deviceTypeDefault",
+    name: "deviceType[]",        // also an array
+    placeholder: "DEVICE TYPE",
+    type: "datalist",
+    options: ["Mobile", "Home", "Other"]
+  },
+  {
+    // -- Email user portion (before '@') --
+    label: "EMAIL:",
+    id: "emailUser",
+    name: "contact[emailUser]",
+    placeholder: "USER",
+    type: "text"
+  },
+  {
+    // -- Email domain portion (after '@') --
+    label: "@",
+    id: "emailDomain",
+    name: "contact[emailDomain]",
+    type: "datalist",
+    placeholder: "EMAIL",
+    options: ["GMAIL.COM", "YAHOO.COM", "OUTLOOK.COM", "HOTMAIL.COM", "ICLOUD.COM"]
+  },
+  {
+    // -- Read-only field that shows the combined email (username@domain) --
+    label: "",
+    id: "fullEmailOutput",
+    name: "contact[fullEmail]",
+    placeholder: "EMAIL ADDRESS",
+    readonly: true
   }
+]);
+
+// Create a container to hold dynamically added phone fields
+// (besides the initial phone input above, if you choose).
+const phoneFieldsContainer = document.createElement("div");
+phoneFieldsContainer.id = "phoneFieldsContainer";
+
+// Optionally, you can place the *existing* phone fields in there,
+// but here we’ll keep them in the container from createContainer(...) 
+// and only use phoneFieldsContainer for new additions.
+
+// Create the "Add Phone" button
+const addPhoneBtn = document.createElement("button");
+addPhoneBtn.type = "button";
+addPhoneBtn.textContent = "Add Phone";
+addPhoneBtn.addEventListener("click", addPhoneField);
+
+// Append our newly created elements to the contact container
+contactInfoContainer.appendChild(phoneFieldsContainer);
+contactInfoContainer.appendChild(addPhoneBtn);
+
+// Finally, append the entire contact container to your main wrapper
+defendantWrapper.appendChild(contactInfoContainer);
+
+/********************************************
+ *  EMAIL COMBINATION LOGIC
+ ********************************************/
+const emailUserInput = document.getElementById("emailUser");
+const emailDomainInput = document.getElementById("emailDomain");
+const fullEmailOutput = document.getElementById("fullEmailOutput");
+
+if (emailUserInput && emailDomainInput && fullEmailOutput) {
+  function updateCombinedEmail() {
+    const username = emailUserInput.value.trim();
+    const domain   = emailDomainInput.value.trim();
+    fullEmailOutput.value = (username && domain) ? `${username}@${domain}` : "";
+  }
+  emailUserInput.addEventListener("input", updateCombinedEmail);
+  emailDomainInput.addEventListener("change", updateCombinedEmail);
+}
 
   /**************************************
    * 4) RESIDENTIAL Info (2 cards: residentialInfoCard + addressCard)
@@ -1471,32 +1499,9 @@ defendantWrapper.appendChild(bondInfoContainer);
             });
         }
     
-        // Weight Formatting Logic
-        const weightInput = document.getElementById("weight");
-        if (weightInput) {
-            weightInput.addEventListener("blur", () => {
-                const value = weightInput.value.replace(/[^0-9]/g, ""); // Strip non-numeric characters
-                if (value) {
-                    weightInput.value = `${parseInt(value, 10)} lbs`;
-                } else {
-                    weightInput.value = ""; // Clear if empty
-                }
-            });
-        }
-    
-          
-document.getElementById('ssnInput').addEventListener('input', function(e) {
-    formatSSN(e.target);
-    });
-    
-    
-    document.getElementById('phoneInput').addEventListener('input', function (e) {
-        formatPhoneNumber(e.target);
-        });
-        
 
-            
-        
+
+
     const defendantWrapper = document.getElementById("defendant-section");
     if (defendantWrapper) {
         
@@ -1525,22 +1530,19 @@ document.getElementById('ssnInput').addEventListener('input', function(e) {
   
                 }
     
+// Initialize phone fields on page load
+document.addEventListener("DOMContentLoaded", function() {
+  // Attach existing phone inputs
+  const defaultPhoneField = document.getElementById("phoneInput");
+  if (defaultPhoneField) {
+    // If you want the old single phone input to also have the phone formatting:
+    defaultPhoneField.classList.add("phoneField");
+    defaultPhoneField.addEventListener("input", handlePhoneFieldInput);
+  }
 
-
-stateSelectInput.addEventListener("input", function () {
-    const selectedState = stateSelectInput.value;
-    const pattern = stateLicenseFormats[selectedState] || "^.*$"; // Default pattern
-    dlInputConfig.setAttribute("pattern", pattern);
-    dlInputConfig.setAttribute(
-        "title",
-        `License format for ${selectedState}: ${
-            pattern !== ".*" ? pattern.replace(/\\d/g, "0").replace(/\\w/g, "A") : "Any"
-        }`
-    );
+  // If you want to run updateRemoveButtonsVisibility immediately:
+  updateRemoveButtonsVisibility();
 });
-
-
-
 
 document.addEventListener('DOMContentLoaded', () => {
   const heightInput = document.getElementById('height');
@@ -1614,6 +1616,98 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+
+
+/**
+ * Handler for input on phone fields
+ */
+function handlePhoneFieldInput(event) {
+  event.target.value = formatPhoneNumber(event.target.value);
+}
+/**
+ * Called by "Add Phone" button. 
+ * Creates new phone + device type + remove button in #phoneFieldsContainer.
+ */
+function addPhoneField() {
+  const phoneFieldsContainer = document.getElementById("phoneFieldsContainer");
+  if (!phoneFieldsContainer) {
+    console.error("No phoneFieldsContainer found in DOM!");
+    return;
+  }
+
+  // Next index is often phoneFieldsContainer.children.length,
+  // but we can just use a random or unique ID if you prefer:
+  const nextIndex = phoneFieldsContainer.children.length + 1;
+
+  const fieldGroup = document.createElement("div");
+  fieldGroup.className = "phone-field-group";
+  const phoneInputConfig = {
+    label: `PHONE #${nextIndex}:`,
+    id: `phoneNumber${nextIndex}`,
+    name: "phoneNumber[]",
+    placeholder: "(XXX) XXX-XXXX",
+    type: "text",
+    className: "phoneField"
+  };
+  // 1) PHONE Label + Input
+  const phoneLabel = document.createElement("label");
+  phoneLabel.textContent = "PHONE #:";
+  phoneLabel.className = "phone-input-label";
+  phoneLabel.htmlFor = `phoneNumber${nextIndex}`;
+
+  const phoneInput = document.createElement("input");
+  phoneInput.id = `phoneNumber${nextIndex}`;
+  phoneInput.type = "text";
+  phoneInput.name = "phoneNumber[]"; 
+  phoneInput.placeholder = "(XXX) XXX-XXXX";
+  phoneInput.className = "phoneField";
+
+ 
+  // Attach formatting
+  phoneInput.addEventListener("input", handlePhoneFieldInput);
+  const deviceTypeConfig = {
+    label: "Device Type:",
+    id: `deviceType${nextIndex}`,
+    name: "deviceType[]",
+    type: "datalist",
+    placeholder: "Device Type",
+    options: ["Mobile", "Home", "Other"]
+  };
+  // 2) Device Type
+  const deviceTypeLabel = document.createElement("label");
+  deviceTypeLabel.className = "device-type-label";
+  deviceTypeLabel.textContent = "";
+
+  const deviceTypeSelect = document.createElement("select");
+  deviceTypeSelect.name = "deviceType[]";
+  ["Mobile","Home","Other"].forEach(type => {
+    const opt = document.createElement("option");
+    opt.value = type;
+    opt.textContent = type;
+    deviceTypeSelect.appendChild(opt);
+  });
+  const newPhoneCard = createCard("", [phoneInputConfig, deviceTypeConfig]);
+
+  // 3) Remove Button
+  const removeButton = document.createElement("button");
+  removeButton.type = "button";
+  removeButton.textContent = "Remove Phone";
+  removeButton.className = "remove-phone-btn";
+  removeButton.addEventListener("click", () => {
+    // Remove the entire card when this is clicked
+    phoneFieldsContainer.removeChild(newPhoneCard);
+    updateRemoveButtonsVisibility();
+  });
+
+  // Append the remove button to the newly created card
+  newPhoneCard.appendChild(removeButton);
+
+  // 5) Finally, append the card to #phoneFieldsContainer
+  phoneFieldsContainer.appendChild(newPhoneCard);
+
+  // Update remove buttons (so the remove button is hidden if there's only 1)
+  updateRemoveButtonsVisibility();
+}
 
 
 });
