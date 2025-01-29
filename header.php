@@ -134,7 +134,7 @@ if (isset($_GET['section'])) {
             font-size: 16px;
             background: #333c4d;
             border: none;
-            width: 30px;
+          
         }
 
         /* Mobile Menu (hidden by default) */
