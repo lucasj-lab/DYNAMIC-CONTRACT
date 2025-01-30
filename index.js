@@ -1,7 +1,104 @@
 document.addEventListener("DOMContentLoaded", () => {
  
 
-  
+  function createInputGroup(labelText, inputConfig) {
+    const inputGroup = document.createElement("div");
+    inputGroup.className = "input-group";
+
+    // Create and append label
+    const label = document.createElement("label");
+    label.setAttribute("for", inputConfig.id);
+    label.textContent = labelText;
+    inputGroup.appendChild(label);
+
+    let input;
+
+    if (inputConfig.type === "datalist") {
+      // Create a text input that uses a <datalist>
+      input = document.createElement("input");
+      input.type = "text";
+      input.id = inputConfig.id;
+      input.name = inputConfig.name;
+      input.placeholder = inputConfig.placeholder || "";
+
+      // Create the datalist element
+      const dataList = document.createElement("datalist");
+      dataList.id = `${inputConfig.id}-options`;
+
+      // Link the <input> to its <datalist> by "list" attribute
+      input.setAttribute("list", dataList.id);
+
+      // Populate <option> elements
+      (inputConfig.options || []).forEach(option => {
+        const optionElem = document.createElement("option");
+        optionElem.value = option;
+        dataList.appendChild(optionElem);
+      });
+
+      // Append input + datalist to the group
+      inputGroup.appendChild(input);
+      inputGroup.appendChild(dataList);
+
+    } else {
+      // Normal <input> (text, date, etc.)
+      input = document.createElement("input");
+      input.type = inputConfig.type || "text";
+      input.id = inputConfig.id;
+      input.name = inputConfig.name;
+      input.placeholder = inputConfig.placeholder || "";
+
+      inputGroup.appendChild(input);
+    }
+
+    // If 'hidden: true' is specified, hide the input initially
+    if (inputConfig.hidden) {
+      input.style.display = "none";
+    }
+
+    return inputGroup;
+  }
+
+  function createCard(title, inputs) {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    if (title) {
+      const cardTitle = document.createElement("h2");
+      cardTitle.textContent = title;
+      card.appendChild(cardTitle);
+    }
+
+    const cardContent = document.createElement("div");
+    cardContent.className = "card-content";
+
+    inputs.forEach((inputConfig) => {
+      const inputGroup = createInputGroup(inputConfig.label, inputConfig);
+      cardContent.appendChild(inputGroup);
+    });
+
+    card.appendChild(cardContent);
+    return card;
+  }
+
+  function createContainer(title, containerId, inputs) {
+    const container = document.createElement("div");
+    container.className = "container";
+    container.id = containerId;
+
+    // Container heading
+    const containerTitle = document.createElement("h2");
+    containerTitle.textContent = title;
+    container.appendChild(containerTitle);
+
+    // For each input, create a single card
+    inputs.forEach((inputConfig) => {
+      const singleCard = createCard("", [inputConfig]);
+      container.appendChild(singleCard);
+    });
+
+    return container;
+  }
+
 
   const placesApiKey = "AIzaSyBmX2NTZzTOF_bf32YcmIsNa4d1obR0DPo";
 
@@ -91,105 +188,6 @@ document.addEventListener("DOMContentLoaded", () => {
     
         return stateDriverLicenseFormats["UNKNOWN"];
     }
-
-    function createInputGroup(labelText, inputConfig) {
-      const inputGroup = document.createElement("div");
-      inputGroup.className = "input-group";
-  
-      // Create and append label
-      const label = document.createElement("label");
-      label.setAttribute("for", inputConfig.id);
-      label.textContent = labelText;
-      inputGroup.appendChild(label);
-  
-      let input;
-  
-      if (inputConfig.type === "datalist") {
-        // Create a text input that uses a <datalist>
-        input = document.createElement("input");
-        input.type = "text";
-        input.id = inputConfig.id;
-        input.name = inputConfig.name;
-        input.placeholder = inputConfig.placeholder || "";
-  
-        // Create the datalist element
-        const dataList = document.createElement("datalist");
-        dataList.id = `${inputConfig.id}-options`;
-  
-        // Link the <input> to its <datalist> by "list" attribute
-        input.setAttribute("list", dataList.id);
-  
-        // Populate <option> elements
-        (inputConfig.options || []).forEach(option => {
-          const optionElem = document.createElement("option");
-          optionElem.value = option;
-          dataList.appendChild(optionElem);
-        });
-  
-        // Append input + datalist to the group
-        inputGroup.appendChild(input);
-        inputGroup.appendChild(dataList);
-  
-      } else {
-        // Normal <input> (text, date, etc.)
-        input = document.createElement("input");
-        input.type = inputConfig.type || "text";
-        input.id = inputConfig.id;
-        input.name = inputConfig.name;
-        input.placeholder = inputConfig.placeholder || "";
-  
-        inputGroup.appendChild(input);
-      }
-  
-      // If 'hidden: true' is specified, hide the input initially
-      if (inputConfig.hidden) {
-        input.style.display = "none";
-      }
-  
-      return inputGroup;
-    }
-  
-    function createCard(title, inputs) {
-      const card = document.createElement("div");
-      card.className = "card";
-  
-      if (title) {
-        const cardTitle = document.createElement("h2");
-        cardTitle.textContent = title;
-        card.appendChild(cardTitle);
-      }
-  
-      const cardContent = document.createElement("div");
-      cardContent.className = "card-content";
-  
-      inputs.forEach((inputConfig) => {
-        const inputGroup = createInputGroup(inputConfig.label, inputConfig);
-        cardContent.appendChild(inputGroup);
-      });
-  
-      card.appendChild(cardContent);
-      return card;
-    }
-  
-    function createContainer(title, containerId, inputs) {
-      const container = document.createElement("div");
-      container.className = "container";
-      container.id = containerId;
-  
-      // Container heading
-      const containerTitle = document.createElement("h2");
-      containerTitle.textContent = title;
-      container.appendChild(containerTitle);
-  
-      // For each input, create a single card
-      inputs.forEach((inputConfig) => {
-        const singleCard = createCard("", [inputConfig]);
-        container.appendChild(singleCard);
-      });
-  
-      return container;
-    }
-  
 
       // Single global listener:
   function handlePhoneFieldInput(event) {
@@ -380,35 +378,14 @@ const contactInfoContainer = createContainer("Contact", "contact-info", [
     placeholder: "USER",
     type: "text"
   },
-  {
-    // -- Email domain portion (after '@') --
-    label: "@",
-    id: "emailDomain",
-    name: "contact[emailDomain]",
-    type: "datalist",
-    placeholder: "EMAIL",
-    options: ["GMAIL.COM", "YAHOO.COM", "OUTLOOK.COM", "HOTMAIL.COM", "ICLOUD.COM"]
-  },
-  {
-    // -- Read-only field that shows the combined email (username@domain) --
-    label: "",
-    id: "fullEmailOutput",
-    name: "contact[fullEmail]",
-    placeholder: "EMAIL ADDRESS",
-    readonly: true
-  }
+
 ]);
 
-// Create a container to hold dynamically added phone fields
-// (besides the initial phone input above, if you choose).
+// Container to hold dynamically added phone fields
 const phoneFieldsContainer = document.createElement("div");
 phoneFieldsContainer.id = "phoneFieldsContainer";
 
-// Optionally, you can place the *existing* phone fields in there,
-// but here we’ll keep them in the container from createContainer(...) 
-// and only use phoneFieldsContainer for new additions.
-
-// Create the "Add Phone" button
+//  The "Add Phone" button
 const addPhoneBtn = document.createElement("button");
 addPhoneBtn.type = "button";
 addPhoneBtn.textContent = "Add Phone";
@@ -1576,8 +1553,6 @@ function addPhoneField() {
 
 
 
-  // Next index is often phoneFieldsContainer.children.length,
-  // but we can just use a random or unique ID if you prefer:
   const nextIndex = phoneFieldsContainer.children.length + 1;
 
   const fieldGroup = document.createElement("div");
@@ -1629,6 +1604,9 @@ function addPhoneField() {
   });
   const newPhoneCard = createCard("", [phoneInputConfig, deviceTypeConfig]);
 
+    // Add inline margin of 5px
+    newPhoneCard.style.margin = "10px 0";
+
   // 3) Remove Button
   const removeButton = document.createElement("button");
   removeButton.type = "button";
@@ -1652,7 +1630,7 @@ function addPhoneField() {
 
 
 });
-document.addEventListener("DOMContentLoaded", () => {
+
     document.querySelectorAll(".section-buttons button").forEach(button => {
         button.addEventListener("click", () => {
             const targetId = button.getAttribute("data-target");
@@ -1666,4 +1644,4 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     });
-});
+
